@@ -1,6 +1,6 @@
-import HomePage from '@/pages/HomePage'
-import BrowsePage from '@/pages/BrowsePage'
-import HistoryPage from '@/pages/HistoryPage'
+import HomePage from '@/pages/buyer/HomePage'
+import BrowsePage from '@/pages/buyer/BrowsePage'
+import HistoryPage from '@/pages/buyer/HistoryPage'
 import LoginPage from "@/pages/common/LoginPage";
 import RegistrationPage from "@/pages/seller/RegistrationPage";
 
