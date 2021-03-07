@@ -11,6 +11,8 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
+    "firebase": "^8.2.10",
+    "firebaseui": "^4.7.3",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
     "vue-router": "^3.5.1"
