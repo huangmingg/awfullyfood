@@ -2,7 +2,7 @@ import HomePage from '@/pages/buyer/HomePage'
 import BrowsePage from '@/pages/buyer/BrowsePage'
 import HistoryPage from '@/pages/buyer/HistoryPage'
 import LoginPage from "@/pages/common/LoginPage";
-import RegistrationPage from "@/pages/seller/RegistrationPage";
+import RegistrationPage from "@/pages/common/RegistrationPage";
 
 const Routing = [
     {
