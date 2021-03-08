@@ -1,23 +1,30 @@
+import Buyer from "@/pages/buyer/Buyer";
 import HomePage from '@/pages/buyer/HomePage'
 import BrowsePage from '@/pages/buyer/BrowsePage'
 import HistoryPage from '@/pages/buyer/HistoryPage'
 import LoginPage from "@/pages/common/LoginPage";
 import RegistrationPage from "@/pages/common/RegistrationPage";
+import VueRouter from 'vue-router'
+import {authService} from "@/firebase";
 
-const Routing = [
+
+const route = [
     {
         path: '/login',
-        name: 'login',
-        component: LoginPage
+        component: LoginPage,
     },
     {
         path: '/register',
-        name: 'register',
         component: RegistrationPage
     },
     {
+        path: '/buyer',
+        component: Buyer,
+
+
+    },
+    {
         path: '/',
-        name: 'home',
         component: HomePage,
         meta: {
             requiresAuth: true
@@ -25,7 +32,6 @@ const Routing = [
     },
     {
         path: '/browse',
-        name: 'browse',
         component: BrowsePage,
         meta: {
             requiresAuth: true
@@ -33,7 +39,6 @@ const Routing = [
     },
     {
         path: '/history',
-        name: 'history',
         component: HistoryPage,
         meta: {
             requiresAuth: true
@@ -41,8 +46,21 @@ const Routing = [
     },
 ];
 
+const router = new VueRouter({
+    routes: route,
+    mode: 'history'
+});
+
+router.beforeEach((to, from, next) => {
+    const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
+    if (requiresAuth && !authService.currentUser) {
+        next('/login')
+    } else {
+        next()
+    }
+})
 
 export {
-    Routing
+    router
 }
 
