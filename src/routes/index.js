@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { routes } from './routes'
 import { authService } from "@/firebase";
-import { store } from "@/store";
+import { store } from "@/stores";
 
 Vue.use(VueRouter)
 
