@@ -1,13 +1,16 @@
 import { database } from "@/firebase";
+import { store } from "@/stores";
 
 const isUserRegistered = async (userId) => {
     const res = await database.collection("users").doc(userId).get();
     return res.exists;
 }
 
-const checkUserRole = async (userId) => {
+const getUserRole = async (userId) => {
     const res = await database.collection("users").doc(userId).get();
-    return res.data().role;
+    const role = res.data()?.role;
+    await store.dispatch('updateRole', role);
+    return role;
 }
 
 const registerUser = async (userId, metadata) => {
@@ -24,7 +27,7 @@ const updateUser = async (userId, metadata) => {
 
 export {
     isUserRegistered,
-    checkUserRole,
+    getUserRole,
     registerUser,
     updateUser,
 }
