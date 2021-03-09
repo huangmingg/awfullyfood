@@ -48,7 +48,7 @@ export const routes = [
         }
     },
     {
-        path: '/not-found-page',
+        path: '*',
         component: NotFoundPage,
     }
 ];
