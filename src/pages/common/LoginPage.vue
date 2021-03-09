@@ -11,9 +11,11 @@
 <script>
 
 import { auth, authService } from "@/firebase";
+import { router } from "@/routes";
+
 const firebaseui = require('firebaseui');
 import "firebaseui/dist/firebaseui.css";
-import { isUserRegistered } from "@/services/user.service";
+import { isUserRegistered, getUserRole } from "@/services/user.service";
 
 export default {
   name: 'Login',
@@ -24,7 +26,6 @@ export default {
   methods: {
   },
   mounted() {
-    let self = this;
     let ui = firebaseui.auth.AuthUI.getInstance();
     if (!ui) {
       ui = new firebaseui.auth.AuthUI(authService);
@@ -36,13 +37,22 @@ export default {
             const userId = authResult.user.uid;
             const userRegistered = await isUserRegistered(userId);
             if (!userRegistered) {
-              await self.$router.push('/register');
+              await router.push('/register');
             } else {
-              console.log("registered")
-              await self.$router.push('/');
+              const role = await getUserRole(userId);
+              switch (role) {
+                case 'buyer':
+                  await router.push('/home');
+                  break;
+                case 'seller':
+                  await router.push('/seller-home');
+                  break;
+                default:
+                  await router.push('/register');
+                  break;
+              }
             }
           }
-
           successResponse()
         },
       },
