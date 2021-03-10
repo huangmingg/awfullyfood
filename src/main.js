@@ -12,7 +12,6 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 let app
-console.log(router);
 authService.onAuthStateChanged(() => {
   if (!app) {
     app = new Vue({
