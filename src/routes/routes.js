@@ -13,7 +13,9 @@ export const routes = [
     },
     {
         path: '/register',
-        component: RegistrationPage
+        name: 'register',
+        component: RegistrationPage,
+        props: true,
     },
     {
         path: '/home',
