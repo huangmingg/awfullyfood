@@ -3,7 +3,7 @@ import { router } from "@/routes";
 
 const signOut = async () => {
     await authService.signOut();
-    await router.push('/login');
+    await router.go(0);
 }
 
 export {
