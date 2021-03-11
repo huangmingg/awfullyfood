@@ -12,19 +12,12 @@
 
 import { auth, authService } from "@/firebase";
 import { router } from "@/routes";
-
 const firebaseui = require('firebaseui');
 import "firebaseui/dist/firebaseui.css";
-import { isUserRegistered, getUserRole } from "@/services/user.service";
+import { isUserRegistered, getUserProfile } from "@/services/user.service";
 
 export default {
   name: 'Login',
-  data() {
-    return {
-    }
-  },
-  methods: {
-  },
   mounted() {
     let ui = firebaseui.auth.AuthUI.getInstance();
     if (!ui) {
@@ -32,23 +25,24 @@ export default {
     }
     const uiConfig = {
       callbacks: {
-        signInSuccessWithAuthResult: function(authResult) {
+        signInSuccessWithAuthResult: function (authResult) {
           const successResponse = async () => {
             const userId = authResult.user.uid;
             const userRegistered = await isUserRegistered(userId);
             if (!userRegistered) {
-              await router.push('/register');
+              await router.push({ name: 'register', params: { authResult } });
             } else {
-              const role = await getUserRole(userId);
-              switch (role) {
-                case 'buyer':
+              const profile = await getUserProfile(userId);
+              switch (profile.role) {
+                case 'Buyer':
+                  console.log("pushing to home");
                   await router.push('/home');
                   break;
-                case 'seller':
+                case 'Seller':
                   await router.push('/seller-home');
                   break;
                 default:
-                  await router.push('/register');
+                  await router.push({ name: 'register', params: { authResult } });
                   break;
               }
             }
