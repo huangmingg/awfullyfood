@@ -4,6 +4,7 @@ import HomePage from "@/pages/buyer/HomePage";
 import BrowsePage from "@/pages/buyer/BrowsePage";
 import HistoryPage from "@/pages/buyer/HistoryPage";
 import SellerHomePage from "@/pages/seller/SellerHomePage";
+import SellerListPage from "@/pages/seller/SellerListPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 
 export const routes = [
@@ -22,7 +23,7 @@ export const routes = [
         component: HomePage,
         meta: {
             requiresAuth: true,
-            role: 'buyer'
+            role: 'Buyer'
         }
     },
     {
@@ -30,7 +31,7 @@ export const routes = [
         component: BrowsePage,
         meta: {
             requiresAuth: true,
-            role: 'buyer'
+            role: 'Buyer'
         }
     },
     {
@@ -38,15 +39,23 @@ export const routes = [
         component: HistoryPage,
         meta: {
             requiresAuth: true,
-            role: 'buyer'
+            role: 'Buyer'
         }
     },
     {
-        path: '/seller-home',
+        path: '/seller/home',
         component: SellerHomePage,
         meta: {
             requiresAuth: true,
-            role: 'seller'
+            role: 'Seller'
+        }
+    },
+    {
+        path: '/seller/list',
+        component: SellerListPage,
+        meta: {
+            requiresAuth: true,
+            role: 'Seller'
         }
     },
     {
