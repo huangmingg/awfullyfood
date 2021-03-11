@@ -1,21 +1,33 @@
 export default {
     // namespaced: true,
     state: {
-        role: ""
+        profile: {},
     },
     getters: {
         getRole: state => {
-            return state.role;
-        }
+            return state.profile?.role;
+        },
+        getName: state => {
+            return state.profile?.name;
+        },
+        getProfileState: state => {
+            return state.profile;
+        },
     },
     mutations: {
-        updateRole (state, role) {
-            state.role = role;
+        updateProfile (state, profile) {
+            state.profile = profile;
         }
+
     },
     actions: {
-        updateRole (context, role) {
-            context.commit('updateRole', role);
+        updateProfile (context, profile) {
+            context.commit('updateProfile', profile);
+        },
+
+        clearProfile (context) {
+            context.commit('updateProfile', {});
         }
+
     }
 }
