@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import { routes } from './routes'
 import { authService } from "@/firebase";
 import { store } from "@/stores";
+import { getUserProfile } from "@/services/user.service";
 
 Vue.use(VueRouter)
 
@@ -12,19 +13,29 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    // const requiresAuth = to.matched.some(x => x?.meta?.requiresAuth);
-    const userRole = store?.getters?.getRole;
+router.beforeEach(async (to, from, next) => {
+    const currentUser = authService.currentUser;
     const routeRole = to?.meta?.role;
-    if (!authService.currentUser && to.path !== "/login") {
-        next('/login');
-    } else if (routeRole && (routeRole !== userRole)) {
-        next('/not-found-page');
-    } else if (authService.currentUser && to.path === "/login") {
-        next('/home');
-    } else if (authService.currentUser && !userRole && to.path !== "/register") {
-        next('/register');
+    if (!currentUser) {
+        if (to.path !== "/login") {
+            next('/login');
+        } else {
+            next();
+        }
     } else {
+        await getUserProfile(currentUser.uid);
+        const userRole = store?.getters?.getRole;
+        if (!userRole && to.path !== "/register") {
+            next('/register');
+        }
+
+        if (userRole && (to.path === "/register") || (to.path === "/login")) {
+            userRole === "Buyer" ? next('/home') : next('/seller-home');
+        }
+
+        if (routeRole && (routeRole !== userRole)) {
+            next('/not-found-page');
+        }
         next();
     }
 })
