@@ -4,7 +4,7 @@
       <template #button-content>
         <em>Welcome, {{ name }}!</em>
       </template>
-      <b-dropdown-item to="/">Profile</b-dropdown-item>
+      <b-dropdown-item to="/profile">Profile</b-dropdown-item>
       <b-dropdown-item v-on:click="signOut()">Sign Out</b-dropdown-item>
     </b-nav-item-dropdown>
   </b-navbar-nav>
