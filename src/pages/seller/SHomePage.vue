@@ -1,10 +1,11 @@
 <template>
-  <div>History Page</div>
+  <div>Seller Home</div>
+
 </template>
 
 <script>
 export default {
-name: "History"
+name: "SHomePage"
 }
 </script>
 

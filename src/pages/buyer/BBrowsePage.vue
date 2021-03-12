@@ -1,10 +1,10 @@
 <template>
-  <div>Seller Listing Page</div>
+  <div>Browsing page</div>
 </template>
 
 <script>
 export default {
-name: "SellerListPage",
+name: "BBrowsePage"
 }
 </script>
 

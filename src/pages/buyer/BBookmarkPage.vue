@@ -1,10 +1,10 @@
 <template>
-  <div>Browsing page</div>
+  <div>Bookmark Page</div>
 </template>
 
 <script>
 export default {
-name: "Browse"
+name: "BBookmarkPage"
 }
 </script>
 
