@@ -36,10 +36,10 @@ export default {
               switch (profile.role) {
                 case 'Buyer':
                   console.log("pushing to home");
-                  await router.push('/home');
+                  await router.push('/buyer');
                   break;
                 case 'Seller':
-                  await router.push('/seller-home');
+                  await router.push('/seller');
                   break;
                 default:
                   await router.push({ name: 'register', params: { authResult } });
