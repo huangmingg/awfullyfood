@@ -30,7 +30,7 @@ router.beforeEach(async (to, from, next) => {
         }
 
         if (userRole && (to.path === "/register") || (to.path === "/login")) {
-            userRole === "Buyer" ? next('/home') : next('/seller-home');
+            userRole === "Buyer" ? next('/buyer/home') : next('/seller/home');
         }
 
         if (routeRole && (routeRole !== userRole)) {
