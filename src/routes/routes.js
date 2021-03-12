@@ -1,14 +1,14 @@
 import LoginPage from "@/pages/common/LoginPage";
 import RegistrationPage from "@/pages/common/RegistrationPage";
 import ProfilePage from "@/pages/common/ProfilePage";
-import Buyer from "@/pages/buyer/Buyer";
 import BuyerHomePage from "@/pages/buyer/BHomePage";
 import BrowsePage from "@/pages/buyer/BBrowsePage";
 import BookmarkPage from "@/pages/buyer/BBookmarkPage";
-import Seller from "@/pages/seller/Seller";
+import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
 import SellerListPage from "@/pages/seller/SListPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
+import RouterViewWrapper from "@/pages/common/RouterViewWrapper";
 
 export const routes = [
     {
@@ -31,9 +31,9 @@ export const routes = [
         component: ProfilePage,
     },
     {
-        path: '/buyer*',
+        path: '/buyer',
         redirect: '/buyer/home',
-        component: Buyer,
+        component: RouterViewWrapper,
         role: 'Buyer',
         children: [
             {
@@ -42,7 +42,18 @@ export const routes = [
             },
             {
                 path: 'browse',
-                component: BrowsePage,
+                component: RouterViewWrapper,
+                children: [
+                    {
+                        path: '',
+                        component: BrowsePage,
+                    },
+                    {
+                        path: ':id',
+                        component: BListDetailPage,
+                        props: true
+                    },
+                ]
             },
             {
                 path: 'bookmark',
@@ -51,9 +62,9 @@ export const routes = [
         ]
     },
     {
-        path: '/seller*',
+        path: '/seller',
         redirect: '/seller/home',
-        component: Seller,
+        component: RouterViewWrapper,
         role: 'Seller',
         children: [
             {
