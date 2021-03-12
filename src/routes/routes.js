@@ -1,13 +1,20 @@
 import LoginPage from "@/pages/common/LoginPage";
 import RegistrationPage from "@/pages/common/RegistrationPage";
-import HomePage from "@/pages/buyer/HomePage";
-import BrowsePage from "@/pages/buyer/BrowsePage";
-import HistoryPage from "@/pages/buyer/HistoryPage";
-import SellerHomePage from "@/pages/seller/SellerHomePage";
-import SellerListPage from "@/pages/seller/SellerListPage";
+import ProfilePage from "@/pages/common/ProfilePage";
+import Buyer from "@/pages/buyer/Buyer";
+import BuyerHomePage from "@/pages/buyer/BHomePage";
+import BrowsePage from "@/pages/buyer/BBrowsePage";
+import BookmarkPage from "@/pages/buyer/BBookmarkPage";
+import Seller from "@/pages/seller/Seller";
+import SellerHomePage from "@/pages/seller/SHomePage";
+import SellerListPage from "@/pages/seller/SListPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 
 export const routes = [
+    {
+      path: '/',
+      redirect: '/login',
+    },
     {
         path: '/login',
         component: LoginPage,
@@ -19,44 +26,45 @@ export const routes = [
         props: true,
     },
     {
-        path: '/home',
-        component: HomePage,
-        meta: {
-            requiresAuth: true,
-            role: 'Buyer'
-        }
+        path: '/profile',
+        name: 'profile',
+        component: ProfilePage,
     },
     {
-        path: '/browse',
-        component: BrowsePage,
-        meta: {
-            requiresAuth: true,
-            role: 'Buyer'
-        }
+        path: '/buyer*',
+        redirect: '/buyer/home',
+        component: Buyer,
+        role: 'Buyer',
+        children: [
+            {
+                path: 'home',
+                component: BuyerHomePage,
+            },
+            {
+                path: 'browse',
+                component: BrowsePage,
+            },
+            {
+                path: 'bookmark',
+                component: BookmarkPage,
+            }
+        ]
     },
     {
-        path: '/history',
-        component: HistoryPage,
-        meta: {
-            requiresAuth: true,
-            role: 'Buyer'
-        }
-    },
-    {
-        path: '/seller/home',
-        component: SellerHomePage,
-        meta: {
-            requiresAuth: true,
-            role: 'Seller'
-        }
-    },
-    {
-        path: '/seller/list',
-        component: SellerListPage,
-        meta: {
-            requiresAuth: true,
-            role: 'Seller'
-        }
+        path: '/seller*',
+        redirect: '/seller/home',
+        component: Seller,
+        role: 'Seller',
+        children: [
+            {
+                path: '/home',
+                component: SellerHomePage,
+            },
+            {
+                path: '/list',
+                component: SellerListPage,
+            },
+        ]
     },
     {
         path: '*',
