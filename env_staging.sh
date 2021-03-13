@@ -1,4 +1,4 @@
-ECHO "export const firebaseConfig = {
+echo "export const firebaseConfig = {
   apiKey: '$APIKEY',
   authDomain: 'awfullyfood-f3e55.firebaseapp.com',
   projectId: 'awfullyfood-f3e55',
@@ -6,4 +6,3 @@ ECHO "export const firebaseConfig = {
   messagingSenderId: '$MSID',
   appId: '$APPID',
 };" > src/environments/environment.staging.js
-
