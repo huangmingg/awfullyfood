@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Creating environment file
-        run: sh env_staging.sh
+        run: |
+          chmod +x "./env_staging.sh"
+          ./env_staging.sh
         env:
           APIKEY: '${{ secrets.FIREBASE_API_KEY }}'
           MSID: '${{ secrets.FIREBASE_MESSAGING_ID }}'
