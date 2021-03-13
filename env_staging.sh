@@ -1,2 +1,2 @@
-ECHO "testing" > src/environments/environment.staging.js
+echo "testing" > src/environments/environment.staging.js
 
