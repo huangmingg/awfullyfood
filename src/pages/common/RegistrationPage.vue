@@ -77,7 +77,12 @@ export default {
       if (!res) {
         alert("Something went wrong, please try again!")
       } else {
-        await router.push('/home');
+        const profile = await getUserProfile(this.userId);
+        if (profile?.role == "Buyer") {
+          await router.push('/buyer/home');
+        } else if (profile?.role == "Seller") {
+          await router.push('/seller/home');
+        }
       }
     },
 
