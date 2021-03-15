@@ -33,7 +33,7 @@ export default {
               await router.push({ name: 'register', params: { authResult } });
             } else {
               const profile = await getUserProfile(userId);
-              switch (profile.role) {
+              switch (profile?.role) {
                 case 'Buyer':
                   console.log("pushing to home");
                   await router.push('/buyer');
