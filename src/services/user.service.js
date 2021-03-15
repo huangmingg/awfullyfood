@@ -1,7 +1,6 @@
 import { database } from "@/firebase";
 import { store } from "@/stores";
 import { storage } from "@/firebase";
-import user from "@/stores/modules/user";
 
 const isUserRegistered = async (userId) => {
     const res = await database.collection("users").doc(userId).get();
