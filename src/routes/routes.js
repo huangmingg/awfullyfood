@@ -68,11 +68,11 @@ export const routes = [
         role: 'Seller',
         children: [
             {
-                path: '/home',
+                path: 'home',
                 component: SellerHomePage,
             },
             {
-                path: '/list',
+                path: 'list',
                 component: SellerListPage,
             },
         ]
