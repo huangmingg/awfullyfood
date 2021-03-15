@@ -1,5 +1,7 @@
 import { database } from "@/firebase";
 import { store } from "@/stores";
+import { storage } from "@/firebase";
+import user from "@/stores/modules/user";
 
 const isUserRegistered = async (userId) => {
     const res = await database.collection("users").doc(userId).get();
@@ -27,13 +29,53 @@ const registerUser = async (userId, metadata) => {
         .catch((error) => {
             console.log(error);
             return false;
-        })
+        });
 }
 
 const updateUser = async (userId, metadata) => {
     const body = metadata
-    const res = await database.collection('users').doc(userId).update(body);
-    return res;
+    return database.collection("users").doc(userId).update(body)
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
+
+const getDisplayPhoto = async (userId) => {
+    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
+    return endpointRef.getDownloadURL()
+        .then((url) => {
+            return url
+        })
+        .catch((error) => {
+            console.log(error)
+            return false;
+        });
+}
+
+const updateDisplayPhoto = async (userId, file) => {
+    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
+    return endpointRef.put(file)
+        .then(() => {
+            return true
+        })
+        .catch(() => {
+            return false;
+        });
+}
+
+const deleteDisplayPhoto = async (userId) => {
+    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
+    return endpointRef.delete()
+        .then(() => {
+            return true
+        })
+        .catch(() => {
+            return false;
+        });
 }
 
 export {
@@ -41,5 +83,8 @@ export {
     getUserProfile,
     registerUser,
     updateUser,
+    getDisplayPhoto,
+    updateDisplayPhoto,
+    deleteDisplayPhoto
 }
 
