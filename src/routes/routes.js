@@ -8,6 +8,7 @@ import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
 import SellerListPage from "@/pages/seller/SListPage";
 import SellerListDetailPage from "@/pages/seller/SListDetailPage";
+import SellerTransactionPage from "@/pages/seller/STransactionPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 import RouterViewWrapper from "@/pages/common/RouterViewWrapper";
 
@@ -86,6 +87,10 @@ export const routes = [
                     },
                 ]
             },
+            {
+                path: 'transaction',
+                component: SellerTransactionPage,
+            }
         ]
     },
     {
