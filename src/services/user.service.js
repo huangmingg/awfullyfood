@@ -10,7 +10,8 @@ const isUserRegistered = async (userId) => {
 const getUserProfile = (userId) => {
     return database.collection("users").doc(userId).get()
         .then(async(res) => {
-            await store.dispatch('updateProfile', res.data());
+            const profile = { ...res.data(), 'id': res.id };
+            await store.dispatch('updateProfile', profile);
             return res.data();
         })
         .catch((error) => {
