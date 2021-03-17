@@ -7,6 +7,7 @@ import BookmarkPage from "@/pages/buyer/BBookmarkPage";
 import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
 import SellerListPage from "@/pages/seller/SListPage";
+import SellerListDetailPage from "@/pages/seller/SListDetailPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 import RouterViewWrapper from "@/pages/common/RouterViewWrapper";
 
@@ -68,12 +69,22 @@ export const routes = [
         role: 'Seller',
         children: [
             {
-                path: '/home',
+                path: 'home',
                 component: SellerHomePage,
             },
             {
-                path: '/list',
-                component: SellerListPage,
+                path: 'list',
+                component: RouterViewWrapper,
+                children: [
+                    {
+                        path: '',
+                        component: SellerListPage,
+                    },
+                    {
+                        path: 'add',
+                        component: SellerListDetailPage
+                    },
+                ]
             },
         ]
     },

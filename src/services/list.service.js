@@ -1,5 +1,5 @@
 import { store } from "@/stores";
-import {database} from "@/firebase";
+import { database } from "@/firebase";
 
 const getListings = async () => {
     return database.collection("listings").get()
@@ -15,12 +15,28 @@ const getListings = async () => {
         })
         .catch((error) => {
             console.log(error);
-            return {};
+            return [];
         });
 }
 
 const getListingBySeller = async (sellerId) => {
-    console.log(sellerId)
+    return database.collection("listings")
+        .where("sellerId", "==", sellerId)
+        .get()
+        .then(async(res) => {
+            const output =  res.docs.map(doc => {
+                return {
+                    ...doc.data(),
+                    'id': doc.id,
+                };
+            });
+            await store.dispatch('updateList', output);
+            return output;
+        })
+        .catch((error) => {
+            console.log(error);
+            return {};
+        });
 }
 
 const getListing = async (listingId) => {
