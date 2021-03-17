@@ -7,11 +7,11 @@ const isUserRegistered = async (userId) => {
     return res.exists;
 }
 
-const getUserProfile = (userId) => {
+const getUserProfile = (userId, saveState= true) => {
     return database.collection("users").doc(userId).get()
         .then(async(res) => {
             const profile = { ...res.data(), 'id': res.id };
-            await store.dispatch('updateProfile', profile);
+            saveState ? await store.dispatch('updateProfile', profile) : null;
             return res.data();
         })
         .catch((error) => {
