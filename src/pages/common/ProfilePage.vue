@@ -1,19 +1,34 @@
 <template>
-  <div>Profile Page</div>
+  <div>
+    <p>
+      Name: {{ this.profile.name }}
+    </p>
+    <p>
+      Role: {{ this.profile.role }}
+    </p>
+    <p>
+      Number: {{ this.profile.phoneNumber }}
+    </p>
+  </div>
 </template>
 
 <script>
 
-import {store} from "@/stores";
-import {getUserProfile} from "@/services/user.service";
-import {authService} from "@/firebase";
+import { getUserProfile } from "@/services/user.service";
 
 export default {
   name: "ProfilePage",
-  async created() {
-    if (!store.getters.getProfileState) {
-      await getUserProfile(authService.currentUser.uid);
+  data() {
+    return {
+      userId: '',
+      profile: {},
     }
+  },
+  created() {
+    this.userId = this.$route.params.id;
+  },
+  async mounted() {
+    this.profile = await getUserProfile(this.userId, false);
   }
 }
 </script>
