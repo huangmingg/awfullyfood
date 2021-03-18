@@ -1,7 +1,7 @@
 import { storage } from "@/firebase";
 
 const downloadFile = async(referencePath) => {
-    storage.ref().child(referencePath).getDownloadURL()
+    return storage.ref().child(referencePath).getDownloadURL()
         .then((url) => {
             return url;
         })
@@ -12,7 +12,7 @@ const downloadFile = async(referencePath) => {
 }
 
 const uploadFile = async(file, reference) => {
-    storage.ref().child(reference).put(file)
+    return storage.ref().child(reference).put(file)
         .then(() => {
             return true;
         })
