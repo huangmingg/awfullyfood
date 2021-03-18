@@ -1,8 +1,4 @@
-import { authService } from "@/firebase";
-import { router } from "@/routes";
 import { storage } from "@/firebase";
-
-console.log(storage);
 
 const downloadFile = async(referencePath) => {
     storage.ref().child(referencePath).getDownloadURL()
@@ -12,7 +8,7 @@ const downloadFile = async(referencePath) => {
         .catch((error) => {
             console.log(error)
             return null;
-        })
+        });
 }
 
 const uploadFile = async(file, reference) => {
@@ -23,9 +19,8 @@ const uploadFile = async(file, reference) => {
         .catch((error) => {
             console.log(error);
             return false;
-        })
+        });
 }
-
 
 export {
     uploadFile,
