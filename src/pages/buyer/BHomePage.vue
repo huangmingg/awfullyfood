@@ -4,9 +4,16 @@
     <ul class="chartCardContainer">
       <li>
         <category-chart></category-chart>
+        
       </li>
       <li>
-        <category-chart></category-chart>
+        <div class = "numberCard">
+          <h1 class="bigNumber"><transactions-counter></transactions-counter></h1>
+          <h5>Number of Approved Transactions</h5>
+        </div>
+      </li>
+      <li>
+        <transactions-counter></transactions-counter>
       </li>
       <li>
         <category-chart></category-chart>
@@ -22,12 +29,15 @@
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
-import CategoryChart from "./charts/CategoryChart.vue";
+import CategoryChart from "./visualisation/CategoryChart.vue";
+import TransactionsCounter from "./visualisation/TransactionsCounter.vue";
 
 export default {
   name: "BHomePage",
   components: {
     CategoryChart,
+    TransactionsCounter,
+    
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -38,19 +48,6 @@ export default {
 </script>
 
 <style scoped>
-#ordersList {
-  width: 50%;
-  max-width: 100%;
-  margin: 10px;
-  padding: 0 5px;
-  box-sizing: border-box;
-}
-
-#listContainer {
-  float: left;
-  width: 100%;
-}
-
 ul {
   display: flex;
   flex-wrap: wrap;
@@ -59,16 +56,23 @@ ul {
 }
 
 li {
-  flex-grow: 1;
+  flex-grow: 0;
   flex-basis: 300px;
   text-align: center;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
-
   margin: 10px;
+  border: 1px solid #e6e6e6;
 }
 
-button {
-  padding: 5px;
-  margin: 10px;
+.numberCard {
+  align-content: center;
+  justify-content: center;
+  align-items:center;
+  margin-top:50%;
+
+  
 }
+
 </style>
