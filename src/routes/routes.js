@@ -7,6 +7,7 @@ import BrowsePage from "@/pages/buyer/BBrowsePage";
 import BookmarkPage from "@/pages/buyer/BBookmarkPage";
 import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
+import SellerAddListPage from "@/pages/seller/SAddListPage";
 import SellerListPage from "@/pages/seller/SListPage";
 import SellerListDetailPage from "@/pages/seller/SListDetailPage";
 import SellerTransactionPage from "@/pages/seller/STransactionPage";
@@ -99,7 +100,7 @@ export const routes = [
                     },
                     {
                         path: 'add',
-                        component: SellerListDetailPage
+                        component: SellerAddListPage,
                     },
                 ]
             },
