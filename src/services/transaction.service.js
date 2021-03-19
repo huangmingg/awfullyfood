@@ -1,6 +1,7 @@
 import { database } from "@/firebase";
+import { store } from "@/stores";
 
-const getTransactions = async () => {
+const getTransactions = async (saveState= true) => {
     return database.collection("transactions").get()
         .then(async(res) => {
             const output =  res.docs.map(doc => {
@@ -9,6 +10,7 @@ const getTransactions = async () => {
                     'id': doc.id,
                 };
             });
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -17,7 +19,7 @@ const getTransactions = async () => {
         });
 }
 
-const getTransactionsBySeller = async (sellerId) => {
+const getTransactionsBySeller = async (sellerId, saveState= true) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
         .get()
@@ -28,6 +30,7 @@ const getTransactionsBySeller = async (sellerId) => {
                     'id': doc.id,
                 };
             });
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -36,7 +39,7 @@ const getTransactionsBySeller = async (sellerId) => {
         });
 }
 
-const getTransactionByBuyer = async (buyerId) => {
+const getTransactionByBuyer = async (buyerId, saveState= true) => {
     return database.collection("transactions")
         .where("buyerId", "==", buyerId)
         .get()
@@ -47,6 +50,7 @@ const getTransactionByBuyer = async (buyerId) => {
                     'id': doc.id,
                 };
             });
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
