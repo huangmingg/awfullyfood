@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <h5>Order History</h5>
+    <h5>Pending Orders</h5>
     <hr>
     <ul>
       <li v-for="order in orderHistory" v-bind:key="order.id">
-        You saved! {{order.quantity}} {{order.unit}} of {{order.item}} from being wasted from {{order.seller}}! <br>Order completed at {{order.date}}.
+        You have a pending order of {{order.quantity}} {{order.unit}} of {{order.item}} from {{order.seller}}! <br> Order created at {{order.date}}
         <hr>
       </li>
     </ul>
@@ -18,7 +18,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Order History",
+  name: "Pending Orders",
   data() {
     return {
       orderHistory: [],
@@ -34,7 +34,7 @@ export default {
             var orderMap = new Map();
             
             if (
-              doc.data()["isApproved"] &&
+              !doc.data()["isApproved"] &&
               doc.data()["buyerId"] == store.getters.getProfileState?.id
             ) {
               
@@ -43,8 +43,7 @@ export default {
               //console.log(listingId);
               //console.log(sellerId)
               orderMap["quantity"] = doc.data()["quantity"];
-              var date = new Date(doc.data()["completedAt"].seconds * 1000);
-              
+              var date = new Date(doc.data()["createdAt"].seconds * 1000);
               orderMap["date"] = date.toLocaleString();
               database
                 .collection("listings")

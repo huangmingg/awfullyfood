@@ -16,6 +16,9 @@
         <order-history></order-history>
       </li>
       <li>
+        <pending-orders></pending-orders>
+      </li>
+      <li>
         <category-chart></category-chart>
       </li>
     </ul>
@@ -30,7 +33,7 @@ import CategoryChart from "./visualisation/CategoryChart.vue";
 import ApprovedTransactionsCounter from "./visualisation/ApprovedTransactionsCounter.vue";
 import PendingTransactionsCounter from "./visualisation/PendingTransactionsCounter.vue";
 import OrderHistory from "./visualisation/OrderHistory.vue";
-
+import PendingOrders from "./visualisation/PendingOrders.vue";
 
 
 export default {
@@ -40,6 +43,7 @@ export default {
     ApprovedTransactionsCounter,
     PendingTransactionsCounter,
     OrderHistory,
+    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
