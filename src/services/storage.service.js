@@ -22,7 +22,19 @@ const uploadFile = async(file, reference) => {
         });
 }
 
+const deleteFile = async(referencePath) => {
+    return storage.ref().child(referencePath).delete()
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        })
+}
+
 export {
     uploadFile,
-    downloadFile
+    downloadFile,
+    deleteFile
 }
