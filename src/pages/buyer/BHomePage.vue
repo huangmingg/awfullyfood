@@ -3,20 +3,17 @@
     Buyer Home Page
     <ul class="chartCardContainer">
       <li>
-        <category-chart></category-chart>
-        
-      </li>
-      <li>
-        <div class = "numberCard">
-          <h1 class="bigNumber"><transactions-counter></transactions-counter></h1>
-          <h5>Number of Approved Transactions</h5>
+        <div class="numberCard">
+          <approved-transactions-counter></approved-transactions-counter>
         </div>
       </li>
       <li>
-        <transactions-counter></transactions-counter>
+        <div class="numberCard">
+          <pending-transactions-counter></pending-transactions-counter>
+        </div>
       </li>
       <li>
-        <category-chart></category-chart>
+        <order-history></order-history>
       </li>
       <li>
         <category-chart></category-chart>
@@ -30,14 +27,19 @@ import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import CategoryChart from "./visualisation/CategoryChart.vue";
-import TransactionsCounter from "./visualisation/TransactionsCounter.vue";
+import ApprovedTransactionsCounter from "./visualisation/ApprovedTransactionsCounter.vue";
+import PendingTransactionsCounter from "./visualisation/PendingTransactionsCounter.vue";
+import OrderHistory from "./visualisation/OrderHistory.vue";
+
+
 
 export default {
   name: "BHomePage",
   components: {
     CategoryChart,
-    TransactionsCounter,
-    
+    ApprovedTransactionsCounter,
+    PendingTransactionsCounter,
+    OrderHistory,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -69,10 +71,7 @@ li {
 .numberCard {
   align-content: center;
   justify-content: center;
-  align-items:center;
-  margin-top:50%;
-
-  
+  align-items: center;
+  margin-top: 50%;
 }
-
 </style>

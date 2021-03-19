@@ -1,6 +1,8 @@
 <template>
   <div class="content">
-      {{noTransactions}}
+    <h1>{{ noTransactions }}</h1>
+    
+    <h5>Number of Pending Transactions</h5>
   </div>
 </template>
 
@@ -11,7 +13,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Approved Transaction Counter",
+  name: "Pending Transaction Counter",
   data() {
     return {
       noTransactions: 0,
@@ -19,30 +21,31 @@ export default {
   },
   methods: {
     fetchItems: function () {
-      database.collection('transactions').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => { 
+      database
+        .collection("transactions")
+        .get()
+        .then((querySnapShot) => {
+          querySnapShot.forEach((doc) => {
             //console.log(doc.data()["sellerId"])
-            console.log(store.getters.getProfileState?.id)
-            if (doc.data()["isApproved"] && doc.data()["buyerId"] == store.getters.getProfileState?.id) {
-                this.noTransactions++;
-            
+            //console.log(store.getters.getProfileState?.id);
+            if (
+              !doc.data()["isApproved"] &&
+              doc.data()["buyerId"] == store.getters.getProfileState?.id
+            ) {
+              this.noTransactions++;
             }
-        })
-      })
+          });
+        });
     },
-
   },
   components: {},
-//   created() {
-//     this.fetchItems();
-//   },
 
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
     this.fetchItems();
-  }
+  },
 };
 </script>
 
