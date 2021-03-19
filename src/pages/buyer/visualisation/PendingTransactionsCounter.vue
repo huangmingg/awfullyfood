@@ -2,7 +2,7 @@
   <div class="content">
     <h1>{{ noTransactions }}</h1>
     
-    <h5>Number of Pending Transactions</h5>
+    <h5>Number of Pending Orders</h5>
   </div>
 </template>
 

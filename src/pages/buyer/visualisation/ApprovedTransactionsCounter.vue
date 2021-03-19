@@ -1,7 +1,7 @@
 <template>
   <div class="content">
       <h1>{{noTransactions}}</h1>
-      <h5>Number of Approved Transactions</h5>
+      <h5>Number of Approved Orders</h5>
   </div>
 </template>
 
