@@ -1,11 +1,13 @@
 <template>
   <div class="content">
     <h5>Order History</h5>
-    <hr>
+    <hr />
     <ul>
       <li v-for="order in orderHistory" v-bind:key="order.id">
-        You saved! {{order.quantity}} {{order.unit}} of {{order.item}} from being wasted from {{order.seller}}! <br>Order completed at {{order.date}}.
-        <hr>
+        You saved {{ order.quantity }} {{ order.unit }} of {{ order.item }} from
+        being wasted from {{ order.seller }}! <br />Order completed at
+        {{ order.date }}.
+        <hr />
       </li>
     </ul>
   </div>
@@ -32,32 +34,31 @@ export default {
         .then((querySnapShot) => {
           querySnapShot.forEach((doc) => {
             var orderMap = new Map();
-            
+
             if (
               doc.data()["isApproved"] &&
               doc.data()["buyerId"] == store.getters.getProfileState?.id
             ) {
-              
               var listingId = doc.data()["listingId"];
               var sellerId = doc.data()["sellerId"].toString();
               //console.log(listingId);
               //console.log(sellerId)
               orderMap["quantity"] = doc.data()["quantity"];
               var date = new Date(doc.data()["completedAt"].seconds * 1000);
-              
+
               orderMap["date"] = date.toLocaleString();
               database
                 .collection("listings")
                 .doc(listingId)
                 .get()
                 .then((querySnapShot2) => {
-                  var itemListing = querySnapShot2.data()
+                  var itemListing = querySnapShot2.data();
                   //console.log(itemListing ["name"])
-                  orderMap["item"] = itemListing ["name"];
+                  orderMap["item"] = itemListing["name"];
                   //console.log(orderMap["item"]);
-                  orderMap["unit"] = itemListing ["unit"];
+                  orderMap["unit"] = itemListing["unit"];
                 });
-              
+
               database
                 .collection("users")
                 .doc(sellerId)
@@ -73,7 +74,6 @@ export default {
           });
         });
     },
-
   },
   components: {},
 

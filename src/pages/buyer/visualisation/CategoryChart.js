@@ -1,34 +1,28 @@
 
-import { Bar } from 'vue-chartjs'
+import { Doughnut } from 'vue-chartjs'
 import database from '../../../firebase.js'
 
 export default {
-  extends: Bar,
+  extends: Doughnut,
   data: function () {
     return {
         datacollection: {
             labels: ["Ugly", "Expiring"],
             datasets: [{
                 label: "Number of Listings per Category",
-                backgroundColor: [],
+                backgroundColor: ["",""],
                 data: [0,0]
               }]
         },
         options: {
-            legend: { display: false },
+            legend: { display: true },
             title: {
               display: true,
               text: 'Number of Listings per Category'
             },
             responsive: true,
             maintainAspectRatio: false,
-            scales: {
-              yAxes: [{
-                  ticks: {
-                      beginAtZero: true
-                  }
-              }]
-          }
+            
         }
     }
   },
@@ -42,8 +36,10 @@ export default {
             //console.log(key)
             if (key[1] == "Ugly") {
               this.datacollection.datasets[0].data[0] += 1
+              this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour()
             } else if (key[1] == "Expired") {
               this.datacollection.datasets[0].data[1] += 1
+              this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour()
             }
           }
           

@@ -1,11 +1,13 @@
 <template>
   <div class="content">
     <h5>Pending Orders</h5>
-    <hr>
+    <hr />
     <ul>
       <li v-for="order in orderHistory" v-bind:key="order.id">
-        You have a pending order of {{order.quantity}} {{order.unit}} of {{order.item}} from {{order.seller}}! <br> Order created at {{order.date}}
-        <hr>
+        You have a pending order of {{ order.quantity }} {{ order.unit }} of
+        {{ order.item }} from {{ order.seller }}! <br />
+        Order created at {{ order.date }}
+        <hr />
       </li>
     </ul>
   </div>
@@ -32,12 +34,10 @@ export default {
         .then((querySnapShot) => {
           querySnapShot.forEach((doc) => {
             var orderMap = new Map();
-            
             if (
               !doc.data()["isApproved"] &&
               doc.data()["buyerId"] == store.getters.getProfileState?.id
             ) {
-              
               var listingId = doc.data()["listingId"];
               var sellerId = doc.data()["sellerId"].toString();
               //console.log(listingId);
@@ -45,18 +45,19 @@ export default {
               orderMap["quantity"] = doc.data()["quantity"];
               var date = new Date(doc.data()["createdAt"].seconds * 1000);
               orderMap["date"] = date.toLocaleString();
+
               database
                 .collection("listings")
                 .doc(listingId)
                 .get()
                 .then((querySnapShot2) => {
-                  var itemListing = querySnapShot2.data()
+                  var itemListing = querySnapShot2.data();
                   //console.log(itemListing ["name"])
-                  orderMap["item"] = itemListing ["name"];
+                  orderMap["item"] = itemListing["name"];
                   //console.log(orderMap["item"]);
-                  orderMap["unit"] = itemListing ["unit"];
+                  orderMap["unit"] = itemListing["unit"];
                 });
-              
+
               database
                 .collection("users")
                 .doc(sellerId)
@@ -67,12 +68,11 @@ export default {
                 });
               //console.log(orderMap);
               this.orderHistory.push(orderMap);
-              //console.log(this.orderHistory);
+              console.log(orderMap);
             }
           });
-        });
+        })
     },
-
   },
   components: {},
 
@@ -80,7 +80,7 @@ export default {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    this.fetchItems();
+    await this.fetchItems();
   },
 };
 </script>
