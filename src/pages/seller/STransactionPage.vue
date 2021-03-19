@@ -3,6 +3,21 @@
     Transaction Page
     <br><br>
 
+  <b-card-group deck>
+    <b-card
+        v-for="list in listing"
+        v-bind:key="list.id">
+      <b-card-text>
+        {{ list.buyerId }}
+      </b-card-text>
+
+      <b-button variant="primary" v-on:click="navigate(list.id)">
+        View More
+      </b-button>
+    </b-card>
+  </b-card-group>
+
+  
     <b-list-group>
     <b-list-group-item class="d-flex justify-content-between align-items-center">
             Cras justo odio
@@ -21,9 +36,10 @@
     </b-list-group>
 
     <br><br>
-    <b-button variant="primary" v-on:click="navigate(transaction.id)">
+    <b-button variant="primary" v-on:click="navigate(list.id)">
         View More
       </b-button>
+
   </div>
 </template>
 
