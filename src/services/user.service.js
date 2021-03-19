@@ -17,7 +17,7 @@ const getUserProfile = (userId, saveState= true) => {
         .catch((error) => {
             console.log(error);
             return {};
-        })
+        });
 }
 
 const registerUser = async (userId, metadata) => {
