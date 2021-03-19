@@ -1,5 +1,8 @@
 <template>
   <div>
+    Transaction Page
+    <br><br>
+
     <b-list-group>
     <b-list-group-item class="d-flex justify-content-between align-items-center">
             Cras justo odio
@@ -18,25 +21,32 @@
     </b-list-group>
 
     <br><br>
-    <b-button v-on:click="back()">Back </b-button>
-    Transaction Page
+    <b-button variant="primary" v-on:click="navigate(transaction.id)">
+        View More
+      </b-button>
   </div>
 </template>
 
 <script>
+import { getTransactions } from "@/services/transaction.service";
+import { store } from "@/stores";
 import { router } from "@/routes";
 
 export default {
-  name: "SListPage",
+  name: "STransactionPage",
   computed: {
+    listing() {
+      return store.getters.getList;
+    },
   },
-  async created() {
+  created() {
+    getTransactions();
   },
   methods: {
-    back: function() {
-      router.back();
+    navigate: function (transactionId) {
+      router.push(`transaction/${transactionId}`);
     }
-  },
+  }
 }
 </script>
 
