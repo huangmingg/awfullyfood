@@ -3,48 +3,26 @@
     Transaction Page
     <br><br>
 
-  <b-card-group deck>
-    <b-card
-        v-for="list in listing"
-        v-bind:key="list.id">
-      <b-card-text>
-        {{ list.buyerId }}
-      </b-card-text>
-
-      <b-button variant="primary" v-on:click="navigate(list.id)">
-        View More
-      </b-button>
-    </b-card>
-  </b-card-group>
-
-  
-    <b-list-group>
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Cras justo odio
+  <b-list-group deck>
+      <b-list-group-item v-for="list in listing"
+        v-bind:key="list.id"
+        v-on:click="navigate(list.id)"
+        class="d-flex justify-content-between align-items-center">
+        {{ list.name }}<br>
+        >> {{ list.description }}
+        
         <b-badge variant="primary" pill>14</b-badge>
-    </b-list-group-item>
+      </b-list-group-item>
 
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Dapibus ac facilisis in
-        <b-badge variant="primary" pill>2</b-badge>
-    </b-list-group-item>
+  </b-list-group>
 
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Morbi leo risus
-        <b-badge variant="primary" pill>1</b-badge>
-    </b-list-group-item>
-    </b-list-group>
-
-    <br><br>
-    <b-button variant="primary" v-on:click="navigate(list.id)">
-        View More
-      </b-button>
+  <br><br>
 
   </div>
 </template>
 
 <script>
-import { getTransactions } from "@/services/transaction.service";
+import { getListingBySeller } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -55,9 +33,12 @@ export default {
       return store.getters.getList;
     },
   },
-  created() {
-    getTransactions();
+
+  async created() {
+    const res = await getListingBySeller(store.getters.getProfileState?.id);
+    console.log(res);
   },
+  
   methods: {
     navigate: function (transactionId) {
       router.push(`transaction/${transactionId}`);
