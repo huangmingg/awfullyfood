@@ -1,23 +1,23 @@
 import { database } from "@/firebase";
 import { store } from "@/stores";
-import { storage } from "@/firebase";
+import { uploadFile, downloadFile, deleteFile } from "@/services/storage.service";
 
 const isUserRegistered = async (userId) => {
     const res = await database.collection("users").doc(userId).get();
     return res.exists;
 }
 
-const getUserProfile = (userId) => {
+const getUserProfile = (userId, saveState= true) => {
     return database.collection("users").doc(userId).get()
         .then(async(res) => {
             const profile = { ...res.data(), 'id': res.id };
-            await store.dispatch('updateProfile', profile);
+            saveState ? await store.dispatch('updateProfile', profile) : null;
             return res.data();
         })
         .catch((error) => {
             console.log(error);
             return {};
-        })
+        });
 }
 
 const registerUser = async (userId, metadata) => {
@@ -45,37 +45,15 @@ const updateUser = async (userId, metadata) => {
 }
 
 const getDisplayPhoto = async (userId) => {
-    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
-    return endpointRef.getDownloadURL()
-        .then((url) => {
-            return url
-        })
-        .catch((error) => {
-            console.log(error)
-            return false;
-        });
+    return downloadFile(`users/${userId}`);
 }
 
 const updateDisplayPhoto = async (userId, file) => {
-    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
-    return endpointRef.put(file)
-        .then(() => {
-            return true
-        })
-        .catch(() => {
-            return false;
-        });
+    return uploadFile(file, `users/${userId}`);
 }
 
 const deleteDisplayPhoto = async (userId) => {
-    const endpointRef = storage.ref().child(`users/${userId}/displayPhoto`);
-    return endpointRef.delete()
-        .then(() => {
-            return true
-        })
-        .catch(() => {
-            return false;
-        });
+    return deleteFile(`users/${userId}`);
 }
 
 export {
