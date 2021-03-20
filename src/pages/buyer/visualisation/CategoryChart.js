@@ -30,8 +30,7 @@ export default {
     }
   },
   watch: {
-    options: function() {
-      this._data._chart.destroy();
+    datacollection: function() {
       this.renderChart(this.datacollection, this.options);
     }
   },
@@ -43,7 +42,7 @@ export default {
           //console.log(doc.data())
           if (doc.data()["isApproved"] &&
             doc.data()["buyerId"] == store.getters.getProfileState?.id) {
-            console.log("hi")
+            //console.log("hi")
             var listingId = doc.data()["listingId"];
             database
               .collection("listings")
@@ -53,23 +52,20 @@ export default {
                 //console.log(querySnapShot2)
                 var key = querySnapShot2.data()['category']
                 if (key == "Ugly") {
-                  console.log(key)
+                  //console.log(key)
                   this.datacollection.datasets[0].data[0] += 1
                   this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour()
-                  console.log(this.datacollection.datasets[0].data[0])
+                  //console.log(this.datacollection.datasets[0].data[0])
                 } else if (key == "Expired") {
                   this.datacollection.datasets[0].data[1] += 1
                   this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour()
-                  console.log(this.datacollection.datasets[0].data[1])
+                  //console.log(this.datacollection.datasets[0].data[1])
                 }
                 this.renderChart(this.datacollection, this.options)
               });
           }
         })
       })
-    },
-    sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
     },
 
     getRandomColour: function () {
@@ -79,12 +75,7 @@ export default {
         colour += letters[Math.floor(Math.random() * 16)]
       }
       return colour
-
     },
-
-    logmsg: function (msg) {
-      console.log(msg)
-    }
 
   },
   async created() {
