@@ -12,10 +12,10 @@
           <pending-transactions-counter></pending-transactions-counter>
         </div>
       </li>
-      <li>
+      <li class="orderList">
         <order-history></order-history>
       </li>
-      <li>
+      <li class="orderList">
         <pending-orders></pending-orders>
       </li>
       <li>
@@ -70,12 +70,17 @@ li {
   padding: 10px;
   margin: 10px;
   border: 1px solid #e6e6e6;
+  max-height: 500px;
 }
 
 .numberCard {
   align-content: center;
   justify-content: center;
   align-items: center;
-  margin-top: 50%;
+  margin-top: 180px;
+}
+
+.orderList {
+  overflow:auto;
 }
 </style>
