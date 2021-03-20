@@ -38,7 +38,7 @@ export default {
     },
   },
   async created() {
-    const res = await getTransactionsByBuyer(); //change to getTransactionsByBuyer
+    const res = await getTransactionsByBuyer(store.getters.getProfileState?.id); //change to getTransactionsByBuyer
     console.log(res)
   },
   methods: {
