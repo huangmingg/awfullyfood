@@ -63,12 +63,12 @@ export default {
 <style scoped>
 
 .login-container {
-  border: 3px dashed black;
+  background-color: #3ca2b9;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20%;
-  width: 20%;
+  width:20%;
 }
 
 

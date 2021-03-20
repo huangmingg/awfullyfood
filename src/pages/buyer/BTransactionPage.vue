@@ -1,33 +1,32 @@
 <template>
   <div>
     
-    <h2>Transaction Details</h2>
+    <h2>Available Transactions</h2>
     <br>
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id" 
-        class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">Buyer Name: {{ list.buyerId }}
+        class="d-flex justify-content-between list-group-item-action align-items-center">
+        <h1 class="mb-1">Transaction Status: {{ list.isApproves }}
+        <br><br>
+        {{ list.listingId }}
         <br>
         Quantity: {{ list.quantity }}
         <br> 
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
-        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Buyer</b-button>
+        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Seller or nah</b-button>
       
       </b-list-group-item>
 
   </b-list-group>
 
-    <br><br>
-    
-    <b-button v-on:click="back()">Back </b-button>
   </div>
 </template>
 
 <script>
-import { getTransactionsBySeller } from "@/services/transaction.service";
+import { getTransactionsByBuyer } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -39,7 +38,7 @@ export default {
     },
   },
   async created() {
-    const hi = await getTransactionsBySeller(); //change to getTransactionsBySeller
+    const hi = await getTransactionsByBuyer(); //change to getTransactionsByBuyer
     console.log(hi)
   },
   methods: {
@@ -47,9 +46,8 @@ export default {
       router.back();
     },
     contact:function() {
-      alert("contact buyer at 999")
-      //change isApproves to true
-      //show buyer contact details or something HOW
+      alert("contact seller at 999")
+      //show seller contact details or something HOW
     },
   },
 }

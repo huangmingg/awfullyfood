@@ -1,17 +1,17 @@
 <template>
   <div>
-    Transaction Page
-    <br><br>
+    <h1>Available Transactions</h1><br>
 
   <b-list-group deck>
       <b-list-group-item v-for="list in listing"
         v-bind:key="list.id"
         v-on:click="navigate(list.id)"
-        class="d-flex justify-content-between align-items-center">
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
         {{ list.name }}<br>
         >> {{ list.description }}
         
-        <b-badge variant="primary" pill>14</b-badge>
+         
+        <b-badge variant="primary" pill> {{ list.interests.length }} </b-badge>
       </b-list-group-item>
 
   </b-list-group>
@@ -48,5 +48,13 @@ export default {
 </script>
 
 <style scoped>
+
+h1 {
+  color:  #cc0044;
+  font-size: 26px;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}
 
 </style>

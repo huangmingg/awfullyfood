@@ -5,6 +5,7 @@ import EditProfilePage from "@/pages/common/EditProfilePage";
 import BuyerHomePage from "@/pages/buyer/BHomePage";
 import BrowsePage from "@/pages/buyer/BBrowsePage";
 import BookmarkPage from "@/pages/buyer/BBookmarkPage";
+import TransactionPage from "@/pages/buyer/BTransactionPage";
 import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
 import SellerAddListPage from "@/pages/seller/SAddListPage";
@@ -73,6 +74,10 @@ export const routes = [
             {
                 path: 'bookmark',
                 component: BookmarkPage,
+            },
+            {
+                path: 'transaction',
+                component: TransactionPage,
             }
         ]
     },
