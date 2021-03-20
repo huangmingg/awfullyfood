@@ -4,12 +4,14 @@
     <hr />
     <ul>
       <li v-cloak v-for="order in orderHistory" v-bind:key="order.name">
+        <transition name="fade">
         <div v-if="show">
           You have a pending order of {{ order.quantity }} {{ order.unit }} of
           {{ order.item }} from {{ order.seller }}! <br />
           Order created at {{ order.date }}.
           <hr />
         </div>
+        </transition>
       </li>
     </ul>
   </div>
@@ -136,4 +138,12 @@ button {
   padding: 5px;
   margin: 10px;
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
 </style>

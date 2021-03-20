@@ -4,12 +4,14 @@
     <hr />
     <ul>
       <li v-for="order in orderHistory" v-bind:key="order.id">
-        <div v-if="show">
-          You saved {{ order.quantity }} {{ order.unit }} of
-          {{ order.item }} from being wasted from {{ order.seller }}!
-          <br />Order completed at {{ order.date }}.
-          <hr />
-        </div>
+        <transition name="fade">
+          <div v-if="show">
+            You saved {{ order.quantity }} {{ order.unit }} of
+            {{ order.item }} from being wasted from {{ order.seller }}!
+            <br />Order completed at {{ order.date }}.
+            <hr />
+          </div>
+        </transition>
       </li>
     </ul>
   </div>
@@ -26,7 +28,7 @@ export default {
   data() {
     return {
       orderHistory: [],
-      show: false
+      show: false,
     };
   },
   methods: {
@@ -92,7 +94,7 @@ export default {
       await getUserProfile(authService.currentUser.uid);
     }
     await this.fetchItems();
-    await this.sleep(400).then(this.forceUpdate);
+    await this.sleep(300).then(this.forceUpdate);
   },
 };
 </script>
@@ -130,5 +132,13 @@ li {
 button {
   padding: 5px;
   margin: 10px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
