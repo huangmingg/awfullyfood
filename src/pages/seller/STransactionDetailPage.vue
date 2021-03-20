@@ -39,8 +39,8 @@ export default {
     },
   },
   async created() {
-    const hi = await getTransactionsBySeller(); //change to getTransactionsBySeller
-    console.log(hi)
+    const res = await getTransactionsBySeller(); //change to getTransactionsBySeller
+    console.log(res);
   },
   methods: {
     back: function() {

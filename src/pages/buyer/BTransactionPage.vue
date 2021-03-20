@@ -16,7 +16,7 @@
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
-        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Seller or nah</b-button>
+        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Seller</b-button>
       
       </b-list-group-item>
 
@@ -38,8 +38,8 @@ export default {
     },
   },
   async created() {
-    const hi = await getTransactionsByBuyer(); //change to getTransactionsByBuyer
-    console.log(hi)
+    const res = await getTransactionsByBuyer(); //change to getTransactionsByBuyer
+    console.log(res)
   },
   methods: {
     back: function() {
