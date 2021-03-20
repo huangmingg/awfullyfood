@@ -35,7 +35,7 @@
     </span>
 
     </b-button-group>
-    
+
     <!--search button problem: unable to show listing upon clearing search input-->
     <span class="float-right">
       <div class="input-group">
@@ -105,21 +105,7 @@ export default {
   },
   computed: {
     listing() {
-      var lst = store.getters.getList;
-      if (this.itemCategory.length == 1) {
-        //if both expiring and ugly are checked, lst is still the same
-        for (var i = 0; i < this.itemCategory.length; i++) {
-          lst = lst.filter((x) => x.category === this.itemCategory[i]);
-        }
-      }
-
-      if (this.searchItem.length !== 0) {
-
-        lst = lst.filter((x) => x.name.search(this.searchItem) !== -1);
-        console.log(lst)
-      }
-      //return store.getters.getList;
-      return lst;
+      return store.getters.getList;
     },
   },
   created() {
@@ -129,36 +115,6 @@ export default {
   methods: {
     navigate: function (listId) {
       router.push(`browse/${listId}`);
-    },
-    //set filter's datePosted
-    getDate: function (date) {
-      this.datePosted = date;
-    },
-    resetFn: function () {
-      document
-        .getElementsByClassName("form-check-input")
-        .forEach((x) => (x.checked = false));
-      this.itemCategory = [];
-      this.datePosted = "";
-      this.discount = "";
-    },
-    showResultsFn: function () {
-      console.log("will show result");
-    },
-    updateCategory: function (itemCat) {
-      if (this.itemCategory.includes(itemCat)) {
-        //remove itemCat
-        var tempLst = [];
-        for (var i = 0; i < this.itemCategory.length; i++) {
-          if (this.itemCategory[i] !== itemCat) {
-            tempLst.push(this.itemCategory[i]);
-          }
-        }
-        this.itemCategory = tempLst;
-      } else {
-        //add
-        this.itemCategory.push(itemCat);
-      }
     },
     search: function () {
       this.searchItem = document.getElementById("searchEntry").value;
