@@ -5,11 +5,14 @@ import EditProfilePage from "@/pages/common/EditProfilePage";
 import BuyerHomePage from "@/pages/buyer/BHomePage";
 import BrowsePage from "@/pages/buyer/BBrowsePage";
 import BookmarkPage from "@/pages/buyer/BBookmarkPage";
+import TransactionPage from "@/pages/buyer/BTransactionPage";
 import BListDetailPage from "@/pages/buyer/BListDetailPage";
 import SellerHomePage from "@/pages/seller/SHomePage";
+import SellerAddListPage from "@/pages/seller/SAddListPage";
 import SellerListPage from "@/pages/seller/SListPage";
 import SellerListDetailPage from "@/pages/seller/SListDetailPage";
 import SellerTransactionPage from "@/pages/seller/STransactionPage";
+import SellerTransactionDetailPage from "@/pages/seller/STransactionDetailPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 import RouterViewWrapper from "@/pages/common/RouterViewWrapper";
 
@@ -71,6 +74,10 @@ export const routes = [
             {
                 path: 'bookmark',
                 component: BookmarkPage,
+            },
+            {
+                path: 'transaction',
+                component: TransactionPage,
             }
         ]
     },
@@ -99,13 +106,23 @@ export const routes = [
                     },
                     {
                         path: 'add',
-                        component: SellerListDetailPage
+                        component: SellerAddListPage,
                     },
                 ]
             },
             {
                 path: 'transaction',
-                component: SellerTransactionPage,
+                component: RouterViewWrapper,
+                children: [
+                    {
+                        path: '',
+                        component: SellerTransactionPage,
+                    },
+                    {
+                        path: ':id',
+                        component: SellerTransactionDetailPage,
+                    },
+                ]
             }
         ]
     },
