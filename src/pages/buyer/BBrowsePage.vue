@@ -1,192 +1,41 @@
 <template>
   <div>
-    <!--filter button-->
-    <span>
-      <b-button variant="info" class="mr-2" v-b-modal.filter>Filter</b-button>
-      <b-modal id="filter" centered title="Filters">
-        <div class="modal-content">
-          <div class="modal-body">
-            <b> Item Category </b>
-            <br />
-            <!-- need clear the array upon creation of the page??-->
-            <div
-              class="form-check form-check-inline"
-              v-on:click="updateCategory('Expiring')"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="Expiring"
-                value="Expiring"
-              />
-              <label class="form-check-label" for="Expiring">Expiring</label>
-            </div>
-            <div
-              class="form-check form-check-inline"
-              v-on:click="updateCategory('Ugly')"
-            >
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="Ugly"
-                value="Ugly"
-              />
-              <label class="form-check-label" for="Ugly">Ugly</label>
-            </div>
-
-            <div>
-              <b>Date Posted</b>
-              <br />
-              <div
-                class="form-check form-check-inline"
-                v-on:click="getDate('Anytime')"
-              >
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="inlineRadioOptions"
-                  id="Anytime"
-                  value="anytime"
-                />
-                <label class="form-check-label" for="Anytime">Anytime</label>
-              </div>
-              <div
-                class="form-check form-check-inline"
-                v-on:click="getDate('Past 24 hours')"
-              >
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="inlineRadioOptions"
-                  id="Past 24 hours"
-                  value="oneDay"
-                />
-                <label class="form-check-label" for="Past 24 hours"
-                  >Past 24 hours</label
-                >
-              </div>
-              <div
-                class="form-check form-check-inline"
-                v-on:click="getDate('Past Week')"
-              >
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="inlineRadioOptions"
-                  id="Past Week"
-                  value="oneWeek"
-                />
-                <label class="form-check-label" for="Past Week"
-                  >Past Week</label
-                >
-              </div>
-              <div
-                class="form-check form-check-inline"
-                v-on:click="getDate('Past 2 weeks')"
-              >
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="inlineRadioOptions"
-                  id="Past 2 weeks"
-                  value="twoWeek"
-                />
-                <label class="form-check-label" for="Past 2 weeks"
-                  >Past 2 weeks</label
-                >
-              </div>
-              <div
-                class="form-check form-check-inline"
-                v-on:click="getDate('Past Month')"
-              >
-                <input
-                  class="form-check-input"
-                  type="radio"
-                  name="inlineRadioOptions"
-                  id="Past Month"
-                  value="pastMth"
-                />
-                <label class="form-check-label" for="Past Month"
-                  >Past Month</label
-                >
-              </div>
-            </div>
-
-            <!-- issue with dropdown-->
-            <div>
-              <b>Discount</b>
-              <div class="dropdown">
-                <button
-                  class="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="dropdownMenu2"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                  <li>
-                    <button class="dropdown-item" type="button">Action</button>
-                  </li>
-                  <li>
-                    <button class="dropdown-item" type="button">
-                      Another action
-                    </button>
-                  </li>
-                  <li>
-                    <button class="dropdown-item" type="button">
-                      Something else here
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <template v-slot:modal-footer>
-          <b-button @click="resetFn()" variant="info">Reset</b-button>
-          <!--not able to close the modal-->
-          <b-button data-dismiss="modal" aria-hidden="true" variant="info"
-            >Show Results</b-button
-          >
-        </template>
-      </b-modal>
-    </span>
-
-    <!--sort button-->
-    <span>
+    <b-button-group>
+      <BrowseModal/>
+      <span>
       <b-button variant="info" v-b-modal.sortBy>Sort By</b-button>
       <b-modal id="sortBy" centered title="Sort By">
         <div class="modal-content">
           <div class="form-check form-check-inline">
             <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="ascendingPrice"
-              value="ascendingPrice"
+                class="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="ascendingPrice"
+                value="ascendingPrice"
             />
             <label class="form-check-label" for="ascendingPrice"
-              >Ascending Price</label
+            >Ascending Price</label
             >
           </div>
           <div class="form-check form-check-inline">
             <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="descendingPrice"
-              value="descendingPrice"
+                class="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                id="descendingPrice"
+                value="descendingPrice"
             />
             <label class="form-check-label" for="descendingPrice"
-              >Descending Price</label
+            >Descending Price</label
             >
           </div>
         </div>
       </b-modal>
     </span>
 
+    </b-button-group>
+    
     <!--search button problem: unable to show listing upon clearing search input-->
     <span class="float-right">
       <div class="input-group">
@@ -241,9 +90,11 @@
 import { getListings } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
+import BrowseModal from "@/components/BrowseModal";
 
 export default {
   name: "BBrowsePage",
+  components: { BrowseModal },
   data() {
     return {
       itemCategory: [],
@@ -263,7 +114,7 @@ export default {
       }
 
       if (this.searchItem.length !== 0) {
-        
+
         lst = lst.filter((x) => x.name.search(this.searchItem) !== -1);
         console.log(lst)
       }
