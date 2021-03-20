@@ -1,45 +1,60 @@
 <template>
   <div>
-    <b-list-group>
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Cras justo odio
-        <b-badge variant="primary" pill>14</b-badge>
-    </b-list-group-item>
+    <h1>Available Transactions</h1><br>
 
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Dapibus ac facilisis in
-        <b-badge variant="primary" pill>2</b-badge>
-    </b-list-group-item>
+  <b-list-group deck>
+      <b-list-group-item v-for="list in listing"
+        v-bind:key="list.id"
+        v-on:click="navigate(list.id)"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        {{ list.name }}<br>
+        >> {{ list.description }}
+        
+         
+        <b-badge variant="primary" pill> {{ list.interests.length }} </b-badge>
+      </b-list-group-item>
 
-    <b-list-group-item class="d-flex justify-content-between align-items-center">
-            Morbi leo risus
-        <b-badge variant="primary" pill>1</b-badge>
-    </b-list-group-item>
-    </b-list-group>
+  </b-list-group>
 
-    <br><br>
-    <b-button v-on:click="back()">Back </b-button>
-    Transaction Page
+  <br><br>
+
   </div>
 </template>
 
 <script>
+import { getListingBySeller } from "@/services/list.service";
+import { store } from "@/stores";
 import { router } from "@/routes";
 
 export default {
-  name: "SListPage",
+  name: "STransactionPage",
   computed: {
+    listing() {
+      return store.getters.getList;
+    },
   },
+
   async created() {
+    const res = await getListingBySeller(store.getters.getProfileState?.id);
+    console.log(res);
   },
+  
   methods: {
-    back: function() {
-      router.back();
+    navigate: function (transactionId) {
+      router.push(`transaction/${transactionId}`);
     }
-  },
+  }
 }
 </script>
 
 <style scoped>
+
+h1 {
+  color:  #cc0044;
+  font-size: 26px;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}
 
 </style>

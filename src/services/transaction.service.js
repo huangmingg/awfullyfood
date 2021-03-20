@@ -39,7 +39,7 @@ const getTransactionsBySeller = async (sellerId, saveState= true) => {
         });
 }
 
-const getTransactionByBuyer = async (buyerId, saveState= true) => {
+const getTransactionsByBuyer = async (buyerId, saveState= true) => {
     return database.collection("transactions")
         .where("buyerId", "==", buyerId)
         .get()
@@ -59,7 +59,7 @@ const getTransactionByBuyer = async (buyerId, saveState= true) => {
         });
 }
 
-const getTransactionByListing = async (listingId) => {
+const getTransactionsByListing = async (listingId) => {
     return database.collection("transactions")
         .where("listingId", "==", listingId)
         .get()
@@ -81,7 +81,7 @@ const getTransactionByListing = async (listingId) => {
 
 export {
     getTransactions,
-    getTransactionByBuyer,
-    getTransactionByListing,
+    getTransactionsByBuyer,
+    getTransactionsByListing,
     getTransactionsBySeller
 }
