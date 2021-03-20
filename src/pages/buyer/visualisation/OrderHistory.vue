@@ -4,10 +4,12 @@
     <hr />
     <ul>
       <li v-for="order in orderHistory" v-bind:key="order.id">
-        You saved {{ order.quantity }} {{ order.unit }} of {{ order.item }} from
-        being wasted from {{ order.seller }}! <br />Order completed at
-        {{ order.date }}.
-        <hr />
+        <div v-if="show">
+          You saved {{ order.quantity }} {{ order.unit }} of
+          {{ order.item }} from being wasted from {{ order.seller }}!
+          <br />Order completed at {{ order.date }}.
+          <hr />
+        </div>
       </li>
     </ul>
   </div>
@@ -24,6 +26,7 @@ export default {
   data() {
     return {
       orderHistory: [],
+      show: false
     };
   },
   methods: {
@@ -74,6 +77,13 @@ export default {
           });
         });
     },
+    forceUpdate() {
+      this.show = true;
+    },
+
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
   },
   components: {},
 
@@ -81,7 +91,8 @@ export default {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    this.fetchItems();
+    await this.fetchItems();
+    await this.sleep(400).then(this.forceUpdate);
   },
 };
 </script>

@@ -3,11 +3,13 @@
     <h5>Pending Orders</h5>
     <hr />
     <ul>
-      <li v-for="order in orderHistory" v-bind:key="order.id">
-        You have a pending order of {{ order.quantity }} {{ order.unit }} of
-        {{ order.item }} from {{ order.seller }}! <br />
-        Order created at {{ order.date }}
-        <hr />
+      <li v-cloak v-for="order in orderHistory" v-bind:key="order.name">
+        <div v-if="show">
+          You have a pending order of {{ order.quantity }} {{ order.unit }} of
+          {{ order.item }} from {{ order.seller }}! <br />
+          Order created at {{ order.date }}.
+          <hr />
+        </div>
       </li>
     </ul>
   </div>
@@ -24,10 +26,11 @@ export default {
   data() {
     return {
       orderHistory: [],
+      show: false,
     };
   },
   methods: {
-    fetchItems: function () {
+    fetchItems() {
       database
         .collection("transactions")
         .get()
@@ -68,19 +71,33 @@ export default {
                 });
               //console.log(orderMap);
               this.orderHistory.push(orderMap);
-              console.log(orderMap);
+              //console.log(orderMap);
             }
           });
-        })
+        });
+    },
+
+    forceUpdate() {
+      this.show = true;
+    },
+
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
   },
   components: {},
+  watch: {
+    orderHistory: function () {
+      this.updatedHistory = this.orderHistory;
+    },
+  },
 
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
     await this.fetchItems();
+    await this.sleep(400).then(this.forceUpdate);
   },
 };
 </script>
