@@ -1,69 +1,97 @@
 
 import { Doughnut } from 'vue-chartjs'
 import database from '../../../firebase.js'
+import { getUserProfile } from "@/services/user.service";
+import { authService } from "@/firebase";
+import { store } from "@/stores";
 
 export default {
   extends: Doughnut,
   data: function () {
     return {
-        datacollection: {
-            labels: ["Ugly", "Expiring"],
-            datasets: [{
-                label: "Number of Listings per Category",
-                backgroundColor: ["",""],
-                data: [0,0]
-              }]
+      datacollection: {
+        labels: ["Ugly", "Expiring"],
+        datasets: [{
+          label: "Number of Orders by Category",
+          backgroundColor: ["", ""],
+          data: [0, 0]
+        }]
+      },
+      options: {
+        legend: { display: true },
+        title: {
+          display: true,
+          text: 'Number of Orders by Category'
         },
-        options: {
-            legend: { display: true },
-            title: {
-              display: true,
-              text: 'Number of Listings per Category'
-            },
-            responsive: true,
-            maintainAspectRatio: false,
-            
-        }
+        responsive: true,
+        maintainAspectRatio: false,
+
+      }
+    }
+  },
+  watch: {
+    options: function() {
+      this._data._chart.destroy();
+      this.renderChart(this.datacollection, this.options);
     }
   },
   methods: {
     fetchItems: function () {
 
-      database.collection('listings').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => { 
+      database.collection('transactions').get().then(querySnapShot => {
+        querySnapShot.forEach(doc => {
           //console.log(doc.data())
-          for (var key of Object.entries(doc.data()).sort()) {
-            //console.log(key)
-            if (key[1] == "Ugly") {
-              this.datacollection.datasets[0].data[0] += 1
-              this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour()
-            } else if (key[1] == "Expired") {
-              this.datacollection.datasets[0].data[1] += 1
-              this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour()
-            }
+          if (doc.data()["isApproved"] &&
+            doc.data()["buyerId"] == store.getters.getProfileState?.id) {
+            console.log("hi")
+            var listingId = doc.data()["listingId"];
+            database
+              .collection("listings")
+              .doc(listingId)
+              .get()
+              .then((querySnapShot2) => {
+                //console.log(querySnapShot2)
+                var key = querySnapShot2.data()['category']
+                if (key == "Ugly") {
+                  console.log(key)
+                  this.datacollection.datasets[0].data[0] += 1
+                  this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour()
+                  console.log(this.datacollection.datasets[0].data[0])
+                } else if (key == "Expired") {
+                  this.datacollection.datasets[0].data[1] += 1
+                  this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour()
+                  console.log(this.datacollection.datasets[0].data[1])
+                }
+                this.renderChart(this.datacollection, this.options)
+              });
           }
-          
         })
-        this.renderChart(this.datacollection, this.options)
       })
     },
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
 
-  getRandomColour: function() {
-    var letters = '0123456789ABCDEF'.split('')
-    var colour = '#'
-    for (var i = 0; i < 6; i++) {
+    getRandomColour: function () {
+      var letters = '0123456789ABCDEF'.split('')
+      var colour = '#'
+      for (var i = 0; i < 6; i++) {
         colour += letters[Math.floor(Math.random() * 16)]
+      }
+      return colour
+
+    },
+
+    logmsg: function (msg) {
+      console.log(msg)
     }
-    return colour
 
   },
-
-  logmsg: function(msg) {
-    console.log(msg)
-  }
-
+  async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
+    await this.fetchItems()
   },
-  created () {
-    this.fetchItems()
-  }
+
 }
