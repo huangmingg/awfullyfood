@@ -31,9 +31,9 @@ export default {
 
       database.collection('listings').get().then(querySnapShot => {
         querySnapShot.forEach(doc => { 
-          console.log(doc.data())
+          //console.log(doc.data())
           for (var key of Object.entries(doc.data()).sort()) {
-            console.log(key)
+            //console.log(key)
             if (key[1] == "Ugly") {
               this.datacollection.datasets[0].data[0] += 1
               this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour()

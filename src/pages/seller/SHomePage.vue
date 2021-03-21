@@ -21,6 +21,9 @@
       <li>
         <s-listing-category-chart></s-listing-category-chart>
       </li>
+      <li>
+        <s-top-likes></s-top-likes>
+      </li>
     </ul>
   </div>
 </template>
@@ -34,6 +37,7 @@ import SApprovedTransactionsCounter from "./visualisation/SApprovedTransactionsC
 import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCounter.vue";
 import SOrderHistory from "./visualisation/SOrderHistory.vue";
 import SPendingOrders from "./visualisation/SPendingOrders.vue";
+import STopLikes from "./visualisation/STopLikes.vue";
 
 
 export default {
@@ -44,6 +48,7 @@ export default {
     SPendingTransactionsCounter,
     SOrderHistory,
     SPendingOrders,
+    STopLikes,
   },
   async created() {
     if (!store.getters.getProfileState) {
