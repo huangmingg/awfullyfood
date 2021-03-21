@@ -1,16 +1,16 @@
 <template>
   <div class="chart">
     <div class="chartCard">
-      <category-chart></category-chart>
+      <s-listing-category-chart></s-listing-category-chart>
     </div>
   </div>
 </template>
 
 <script>
-import CategoryChart from "./CategoryChart.js";
+import SListingCategoryChart from "./SListingCategoryChart.js";
 export default {
   components: {
-    CategoryChart,
+    SListingCategoryChart,
   },
 };
 </script>

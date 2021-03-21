@@ -3,47 +3,57 @@
     Seller Home Page
     <ul class="chartCardContainer">
       <li>
-        <category-chart></category-chart>
+        <div class="numberCard">
+          <s-approved-transactions-counter></s-approved-transactions-counter>
+        </div>
       </li>
       <li>
-        <category-chart></category-chart>
+        <div class="numberCard">
+          <s-pending-transactions-counter></s-pending-transactions-counter>
+        </div>
+      </li>
+      <li class="orderList">
+        <s-order-history></s-order-history>
+      </li>
+      <li class="orderList">
+        <s-pending-orders></s-pending-orders>
       </li>
       <li>
-        <category-chart></category-chart>
-      </li>
-      <li>
-        <category-chart></category-chart>
+        <s-listing-category-chart></s-listing-category-chart>
       </li>
     </ul>
   </div>
 </template>
 
-
 <script>
-import CategoryChart from "./charts/CategoryChart.vue";
+import { getUserProfile } from "@/services/user.service";
+import { authService } from "@/firebase";
+import { store } from "@/stores";
+import SListingCategoryChart from "./visualisation/SListingCategoryChart.vue";
+import SApprovedTransactionsCounter from "./visualisation/SApprovedTransactionsCounter.vue";
+import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCounter.vue";
+import SOrderHistory from "./visualisation/SOrderHistory.vue";
+import SPendingOrders from "./visualisation/SPendingOrders.vue";
+
+
 export default {
-name: "SHomePage",
+  name: "SHomePage",
   components: {
-    CategoryChart,
+    SListingCategoryChart,
+    SApprovedTransactionsCounter,
+    SPendingTransactionsCounter,
+    SOrderHistory,
+    SPendingOrders,
   },
-}
+  async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
+  },
+};
 </script>
 
-
 <style scoped>
-#ordersList {
-  width: 50%;
-  max-width: 100%;
-  margin: 10px;
-  padding: 0 5px;
-  box-sizing: border-box;
-}
-
-#listContainer {
-  float: left;
-  width: 100%;
-}
-
 ul {
   display: flex;
   flex-wrap: wrap;
@@ -52,16 +62,25 @@ ul {
 }
 
 li {
-  flex-grow: 1;
+  flex-grow: 0;
   flex-basis: 300px;
   text-align: center;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
-
   margin: 10px;
+  border: 1px solid #e6e6e6;
+  max-height: 500px;
 }
 
-button {
-  padding: 5px;
-  margin: 10px;
+.numberCard {
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin-top: 180px;
+}
+
+.orderList {
+  overflow:auto;
 }
 </style>

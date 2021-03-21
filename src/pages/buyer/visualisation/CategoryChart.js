@@ -21,7 +21,7 @@ export default {
         legend: { display: true },
         title: {
           display: true,
-          text: 'Number of Orders by Category'
+          text: 'Number of Completed Orders by Category'
         },
         responsive: true,
         maintainAspectRatio: false,
