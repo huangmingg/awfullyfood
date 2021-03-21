@@ -21,8 +21,11 @@
       <li>
         <s-listing-category-chart></s-listing-category-chart>
       </li>
-      <li>
+      <li class="orderList">
         <s-top-likes></s-top-likes>
+      </li>
+      <li class="orderList">
+        <s-top-interest></s-top-interest>
       </li>
     </ul>
   </div>
@@ -38,7 +41,7 @@ import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCou
 import SOrderHistory from "./visualisation/SOrderHistory.vue";
 import SPendingOrders from "./visualisation/SPendingOrders.vue";
 import STopLikes from "./visualisation/STopLikes.vue";
-
+import STopInterest from "./visualisation/STopInterest.vue";
 
 export default {
   name: "SHomePage",
@@ -49,6 +52,7 @@ export default {
     SOrderHistory,
     SPendingOrders,
     STopLikes,
+    STopInterest,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -86,6 +90,6 @@ li {
 }
 
 .orderList {
-  overflow:auto;
+  overflow: auto;
 }
 </style>

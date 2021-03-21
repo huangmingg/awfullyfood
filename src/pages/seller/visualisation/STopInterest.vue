@@ -1,11 +1,11 @@
 <template>
   <div class="content">
-    <h5>Most Bookmarked Listings</h5>
+    <h5>Most Interested Listings</h5>
     <hr />
     <ul>
       <li v-for="order in sellerListings" v-bind:key="order.id">
         {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br />
-        {{ order.likes.length }} bookmarked.
+        {{ order.interests.length }} interested.
         <hr />
       </li>
     </ul>
@@ -20,7 +20,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Top Likes",
+  name: "Top Interests",
   data() {
     return {
       sellerListings: [],
@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     sortArrays(arrays) {
-      return this._.orderBy(arrays, "likes", "desc");
+      return this._.orderBy(arrays, "interests", "desc");
     },
     forceUpdate() {
       this.show = true;
