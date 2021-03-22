@@ -1,8 +1,8 @@
-import { getTransactionsBySeller, getTransactionByBuyer } from "@/services/transaction.service";
+import { getTransactionsBySeller, getTransactionsByBuyer } from "@/services/transaction.service";
 
 const getReviews = async (userId, role) => {
     const key = role === 'Buyer' ? 'buyerReview' : 'sellerReview';
-    const transactions = role === 'Buyer' ? await getTransactionByBuyer(userId) : await getTransactionsBySeller(userId);
+    const transactions = role === 'Buyer' ? await getTransactionsByBuyer(userId) : await getTransactionsBySeller(userId);
     return transactions.map((ele) => {
         return { ...ele[key], userId: role === 'Buyer' ? ele['sellerId'] : ele['buyerId'] };
     });
