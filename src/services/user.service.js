@@ -61,6 +61,11 @@ const deleteDisplayPhoto = async (userId) => {
     return deleteFile(`users/${userId}`);
 }
 
+const getDisplayName = async function(userId) {
+    const res = await getUserProfile(userId);
+    return res?.name;
+}
+
 export {
     isUserRegistered,
     getUserProfile,
@@ -68,6 +73,7 @@ export {
     updateUser,
     getDisplayPhoto,
     updateDisplayPhoto,
-    deleteDisplayPhoto
+    deleteDisplayPhoto,
+    getDisplayName
 }
 
