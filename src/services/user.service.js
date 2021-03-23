@@ -49,7 +49,8 @@ const updateUser = async (userId, metadata) => {
 }
 
 const getDisplayPhoto = async (userId) => {
-    return downloadFile(`users/${userId}`);
+    const res = await downloadFile(`users/${userId}`);
+    return res ? res : downloadFile('users/dummy.png');
 }
 
 const updateDisplayPhoto = async (userId, file) => {
