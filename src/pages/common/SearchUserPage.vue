@@ -43,27 +43,7 @@
             </b-col>
           </b-row>
           <hr/>
-          <b-card-title>
-            Recent Reviews
-          </b-card-title>
-          <b-list-group>
-            <b-list-group-item
-                v-for="(review, index) in reviews"
-                v-bind:key="index"
-                class="flex-column align-items-start list-item"
-            >
-              <div class="d-flex w-100 justify-content-between">
-                <p class="mb-1 font-italic"> "{{ review.description }}" </p>
-                <small>
-                  <b-form-rating :value="review.rating" readonly precision="2" inline></b-form-rating>
-                </small>
-              </div>
-              <small> {{ review.username }}, {{ review.updatedAt.toDate().toLocaleDateString() }} </small>
-            </b-list-group-item>
-            <b-card-text v-show="!reviews.length">
-              Oops there are no reviews for this user yet, check back later!
-            </b-card-text>
-          </b-list-group>
+          <Review v-bind:reviews="reviews"/>
         </div>
       </b-collapse>
     </b-container>
@@ -76,9 +56,10 @@ import { getReviews, getAggregatedRating } from "@/services/review.service";
 import { getDisplayPhoto } from "@/services/user.service";
 import { isEmptyObject } from "@/services/utils.service";
 import { router } from "@/routes";
-
+import Review from "@/components/Review";
 export default {
   name: "ProfilePage",
+  components: { Review },
   data() {
     return {
       userId: '',
@@ -102,11 +83,6 @@ export default {
   },
 
   methods: {
-    getDisplayName: async function(userId) {
-      const res = await getUserProfile(userId);
-      return res.name;
-    },
-
     searchUser: async function() {
       if (!this.userId) {
         alert("Please key in user ID you wish to search...");
@@ -123,9 +99,6 @@ export default {
       if (this.found) {
         this.photo = await getDisplayPhoto(this.userId);
         this.reviews = await getReviews(this.userId, this.profile?.role);
-        for (const review of this.reviews) {
-          review.username = await this.getDisplayName(review.userId);
-        }
         this.averageRating = getAggregatedRating(this.reviews);
       }
     },
