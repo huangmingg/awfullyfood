@@ -3,14 +3,14 @@
     <b-container fluid class="p-4 bg-light">
       <b-row>
         <b-btn-group class="ml-auto" >
-          <b-button variant="outline-info" v-on:click="editProfile()">Edit Profile</b-button>
-          <b-button variant="outline-info" v-on:click="saveProfile()">Save Profile</b-button>
+          <b-button v-show="!edit" variant="outline-info" v-on:click="editProfile()">Edit Profile</b-button>
+          <b-button v-show="edit" variant="info" v-on:click="saveProfile()">Save Profile</b-button>
         </b-btn-group>
       </b-row>
-      <b-form @submit="onSubmit">
+      <b-form>
         <b-row>
-          <b-img width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
-          <input type="file"/>
+          <b-img @click="clickImage()" width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
+          <input accept="image/*" v-on:change="onFileChange()" type="file"/>
           <b-col>
             <b-form-group id="input-group-1" label="Unique ID" label-for="input-1">
               <b-form-input
@@ -82,9 +82,8 @@
 <script>
 
 import { store } from "@/stores";
-import { getUserProfile, registerUser, getDisplayPhoto } from "@/services/user.service";
+import { getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser } from "@/services/user.service";
 import { authService } from "@/firebase";
-import { router } from "@/routes";
 import { getAggregatedRating, getReviews } from "@/services/review.service";
 import Review from "@/components/Review";
 
@@ -93,10 +92,12 @@ export default {
   components: { Review },
   data() {
     return {
+      edit: false,
+      editableFields: ["input-3", "input-4", "input-5"],
+      file: '',
       imageInput: '',
       averageRating: 0,
       reviews: [],
-      userId: '',
       photo: '',
       form: {
         id: '',
@@ -105,7 +106,6 @@ export default {
         phoneNumber: '',
         address: '',
         role: '',
-        photo: '',
       },
     }
   },
@@ -125,27 +125,43 @@ export default {
   },
 
   methods: {
-    onSubmit: async function(event) {
-      event.preventDefault();
-      const res = await registerUser(this.userId, this.form);
-      if (!res) {
-        alert("Something went wrong, please try again!")
-      } else {
-        this.form.role === 'Buyer' ? await router.push('/buyer') : await router.push('/seller');
-      }
-    },
-
     editProfile: function() {
-      this.imageInput.addEventListener('click', function () {
-        document.querySelector('[type="file"]').click();
+      this.toggleEdit(true);
+    },
+
+    saveProfile: async function() {
+      if (!this.validateForm()) {
+        alert("Something went wrong, please check the input and try again");
+        return;
+      }
+      this.toggleEdit(false);
+      await updateUser(this.form.id, this.form);
+      await getUserProfile(this.form.id);
+    },
+
+    toggleEdit: function(isEdit) {
+      this.edit = isEdit;
+      this.editableFields.forEach((field) => {
+        document.getElementById(field).disabled = !isEdit;
       });
     },
 
-    saveProfile: function() {
-      this.imageInput.removeEventListener('click',function () {
-        document.querySelector('[type="file"]').click();
-      });
+    validateForm: function() {
+      return true
+    },
+
+    clickImage: function() {
+      this.edit ? document.querySelector('[type="file"]').click() : null;
+    },
+
+    onFileChange: async function() {
+      const input = document.querySelector('[type="file"]');
+      if (input.files) {
+        await updateDisplayPhoto(this.form.id, input.files[0]);
+        this.photo = await getDisplayPhoto(this.form.id);
+      }
     }
+
   }
 }
 </script>
