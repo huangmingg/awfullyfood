@@ -12,7 +12,7 @@
       <hr/>
       <b-collapse id="collapse-1" class="mt-2">
         <b-row class="my-5" v-show="found == false">
-          <b-card-text>
+          <b-card-text class="ml-4">
             User Not Found, please try again!
           </b-card-text>
         </b-row>
@@ -24,6 +24,9 @@
             <b-col>
               <b-card-text>
                 <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
+              </b-card-text>
+              <b-card-text>
+                Email: {{ this.profile.email }}
               </b-card-text>
               <b-card-text>
                 Name: {{ this.profile.name }}
@@ -39,6 +42,7 @@
               </b-card-text>
             </b-col>
           </b-row>
+          <hr/>
           <b-card-title>
             Recent Reviews
           </b-card-title>
@@ -118,9 +122,6 @@ export default {
       this.found = !isEmptyObject(this.profile);
       if (this.found) {
         this.photo = await getDisplayPhoto(this.userId);
-        if (!this.photo) {
-          this.photo = await getDisplayPhoto('dummy.png');
-        }
         this.reviews = await getReviews(this.userId, this.profile?.role);
         for (const review of this.reviews) {
           review.username = await this.getDisplayName(review.userId);
