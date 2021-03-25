@@ -36,7 +36,7 @@
 
     </b-button-group>
 
-    <!--search button problem: unable to show listing upon clearing search input-->
+    <!--search button-->
     <span class="float-right">
       <div class="input-group">
         <input
@@ -46,6 +46,7 @@
           aria-label="Search"
           aria-describedby="search-addon"
           id="searchEntry"
+          v-model.lazy="content"
         />
         <button
           type="button"
@@ -62,7 +63,7 @@
     <!--listing-->
     <b-card-group deck>
       <b-card
-        v-for="list in listing"
+        v-for="list in getDisplayList()"
         v-bind:key="list.id"
         :title="list.name"
         :img-src="list.imageURL"
@@ -101,15 +102,16 @@ export default {
       datePosted: "",
       discount: "",
       searchItem: "",
+      content:""
     };
   },
-  computed: {
+   computed: {
     listing() {
-      return store.getters.getList;
+      return store.getters.getList; //get listings from store
     },
-  },
+  }, 
   created() {
-    getListings();
+    getListings();  //store listings in store
   },
 
   methods: {
@@ -119,6 +121,17 @@ export default {
     search: function () {
       this.searchItem = document.getElementById("searchEntry").value;
     },
+    getDisplayList: function() {
+      var lst = this.listing;
+      //handle the cross in search bar
+      if (this.content == "") {
+        this.searchItem=""
+      }
+      if (this.searchItem != "") {
+        lst=lst.filter(element => element.name.toUpperCase().includes(this.searchItem.toUpperCase()))
+      }
+      return lst;
+    }
   },
 };
 </script>
