@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-button-group>
-      <BrowseModal/>
+      <BrowseModal v-on:filterBy="filterContent"/>
       <span>
       <b-button variant="info" v-b-modal.sortBy>Sort By</b-button>
       <b-modal id="sortBy" centered title="Sort By">
@@ -100,7 +100,6 @@ export default {
     return {
       itemCategory: [],
       datePosted: "",
-      discount: "",
       searchItem: "",
       content:""
     };
@@ -130,7 +129,20 @@ export default {
       if (this.searchItem != "") {
         lst=lst.filter(element => element.name.toUpperCase().includes(this.searchItem.toUpperCase()))
       }
+
+      if (this.itemCategory.length != 0) {
+        if (this.itemCategory.length != 2) {
+          //only one category selected
+          //if both selected, return original lst
+          lst=lst.filter(element => element.category == this.itemCategory[0])
+        }
+      }
+
       return lst;
+    },
+    filterContent (value) {
+      this.itemCategory=value[0];
+      this.datePosted=value[1];
     }
   },
 };

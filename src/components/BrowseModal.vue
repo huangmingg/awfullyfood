@@ -8,6 +8,7 @@
               <b-form-checkbox-group
                   v-model="form.category"
                   :options="categories"
+                  :values="categories"
               ></b-form-checkbox-group>
             </b-form-group>
             <b-form-group label="Date Posted">
@@ -44,6 +45,7 @@ export default {
     onSubmit: function() {
       console.log("Submitting form")
       this.show = false;
+      this.$emit('filterBy', [this.form.category, this.form.datePosted])
     },
 
     onReset: function() {
