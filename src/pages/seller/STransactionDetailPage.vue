@@ -14,6 +14,8 @@
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
+        
+  <b-navbar-nav class="ml-auto">
     <b-nav-item-dropdown right>
       <template #button-content>
         Actions
@@ -21,6 +23,7 @@
       <b-dropdown-item v-on:click="contact()">Contact Buyer</b-dropdown-item>
       <b-dropdown-item v-on:click="approve()">Approve Transaction</b-dropdown-item>
     </b-nav-item-dropdown>
+    </b-navbar-nav>
       </b-list-group-item>
 
   </b-list-group>
