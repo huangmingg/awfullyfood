@@ -6,9 +6,9 @@
       <li v-for="order in sellerListings" v-bind:key="order.id">
         {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br />
         {{ order.likes.length }} bookmarked. <br />
-        <button v-bind:id="order.id" v-on:click="route($event)">
+        <b-button v-bind:id="order.id" v-on:click="route($event)">
           View Listing
-        </button>
+        </b-button>
         <hr />
       </li>
     </ul>
