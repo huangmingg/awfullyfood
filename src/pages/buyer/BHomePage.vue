@@ -4,22 +4,22 @@
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <approved-transactions-counter></approved-transactions-counter>
+          <b-approved-transactions-counter></b-approved-transactions-counter>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <pending-transactions-counter></pending-transactions-counter>
+          <b-pending-transactions-counter></b-pending-transactions-counter>
         </div>
       </li>
       <li class="orderList">
-        <order-history></order-history>
+        <b-order-history></b-order-history>
       </li>
       <li class="orderList">
-        <pending-orders></pending-orders>
+        <b-pending-orders></b-pending-orders>
       </li>
       <li>
-        <category-chart></category-chart>
+        <b-category-chart></b-category-chart>
       </li>
     </ul>
   </div>
@@ -29,21 +29,21 @@
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
-import CategoryChart from "./visualisation/CategoryChart.vue";
-import ApprovedTransactionsCounter from "./visualisation/ApprovedTransactionsCounter.vue";
-import PendingTransactionsCounter from "./visualisation/PendingTransactionsCounter.vue";
-import OrderHistory from "./visualisation/OrderHistory.vue";
-import PendingOrders from "./visualisation/PendingOrders.vue";
+import BCategoryChart from "./visualisation/BCategoryChart.vue";
+import BApprovedTransactionsCounter from "./visualisation/BApprovedTransactionsCounter.vue";
+import BPendingTransactionsCounter from "./visualisation/BPendingTransactionsCounter.vue";
+import BOrderHistory from "./visualisation/BOrderHistory.vue";
+import BPendingOrders from "./visualisation/BPendingOrders.vue";
 
 
 export default {
   name: "BHomePage",
   components: {
-    CategoryChart,
-    ApprovedTransactionsCounter,
-    PendingTransactionsCounter,
-    OrderHistory,
-    PendingOrders,
+    BCategoryChart,
+    BApprovedTransactionsCounter,
+    BPendingTransactionsCounter,
+    BOrderHistory,
+    BPendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {

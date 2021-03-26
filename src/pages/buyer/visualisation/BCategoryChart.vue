@@ -1,16 +1,16 @@
 <template>
   <div class="chart">
     <div class="chartCard">
-      <category-chart></category-chart>
+      <b-category-chart></b-category-chart>
     </div>
   </div>
 </template>
 
 <script>
-import CategoryChart from "./CategoryChart.js";
+import BCategoryChart from "./BCategoryChart.js";
 export default {
   components: {
-    CategoryChart,
+    BCategoryChart,
   },
 };
 </script>

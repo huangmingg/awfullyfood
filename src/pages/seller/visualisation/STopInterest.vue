@@ -5,7 +5,8 @@
     <ul>
       <li v-for="order in sellerListings" v-bind:key="order.id">
         {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br />
-        {{ order.interests.length }} interested.
+        {{ order.interests.length }} interested. <br />
+        <button v-bind:id="order.id" v-on:click="route($event)">View Listing</button>
         <hr />
       </li>
     </ul>
@@ -28,23 +29,13 @@ export default {
     };
   },
   methods: {
-    sortArrays(arrays) {
-      return this._.orderBy(arrays, "interests", "desc");
-    },
-    forceUpdate() {
-      this.show = true;
-    },
+    route: function(event) {
+        var userId = event.target.getAttribute("id")
+        this.$router.push({ path: `/buyer/browse/${userId}` }) 
 
-    sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
+    }
   },
   components: {},
-  //   computed: {
-  //       orderedByLikes: function () {
-  //           return this._.orderBy(this.sellerListings, 'likes')
-  //       }
-  //   },
 
   async created() {
     if (!store.getters.getProfileState) {

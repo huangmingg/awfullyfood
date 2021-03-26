@@ -5,7 +5,10 @@
     <ul>
       <li v-for="order in sellerListings" v-bind:key="order.id">
         {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br />
-        {{ order.likes.length }} bookmarked.
+        {{ order.likes.length }} bookmarked. <br />
+        <button v-bind:id="order.id" v-on:click="route($event)">
+          View Listing
+        </button>
         <hr />
       </li>
     </ul>
@@ -28,15 +31,9 @@ export default {
     };
   },
   methods: {
-    sortArrays(arrays) {
-      return this._.orderBy(arrays, "likes", "desc");
-    },
-    forceUpdate() {
-      this.show = true;
-    },
-
-    sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
+    route: function (event) {
+      var userId = event.target.getAttribute("id");
+      this.$router.push({ path: `/buyer/browse/${userId}` });
     },
   },
   components: {},
@@ -52,8 +49,10 @@ export default {
     }
     this.sellerListings = await getListingBySeller(
       store.getters.getProfileState?.id
-    )
-    await this.sellerListings.sort((a,b) => (b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0));
+    );
+    await this.sellerListings.sort((a, b) =>
+      b.likes > a.likes ? 1 : a.likes > b.likes ? -1 : 0
+    );
     //await this.sleep(300).then(this.forceUpdate);
   },
 };
