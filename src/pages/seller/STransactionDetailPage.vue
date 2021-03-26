@@ -14,8 +14,10 @@
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
-        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Buyer</b-button>
-      
+        <div class="btn-group" role="group" aria-label="Basic example">
+        <b-button variant="outline-info" class="ml-auto" v-on:click="contact()">Contact Buyer</b-button><br>
+        <b-button variant="outline-info" class="ml-auto" v-on:click="approve()">Approve Transaction</b-button>
+        </div>
       </b-list-group-item>
 
   </b-list-group>
@@ -48,8 +50,11 @@ export default {
     },
     contact:function() {
       alert("contact buyer at 999")
-      //change isApproves to true
       //show buyer contact details or something HOW
+    },
+    approve:function() {
+      alert("approve transaction")
+      //change isApproves to true
     },
   },
 }
