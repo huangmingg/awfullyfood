@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-button-group>
-      <BrowseModal v-on:filterBy="filterContent"/>
+      <BrowseModal v-on:filterBy="filterContent" v-on:filterDate="dateFilter"/>
       <span>
       <b-button variant="info" v-b-modal.sortBy>Sort By</b-button>
       <b-modal id="sortBy" centered title="Sort By">
@@ -101,7 +101,8 @@ export default {
       itemCategory: [],
       datePosted: "",
       searchItem: "",
-      content:""
+      content:"",
+      reset:false
     };
   },
    computed: {
@@ -120,12 +121,23 @@ export default {
     search: function () {
       this.searchItem = document.getElementById("searchEntry").value;
     },
+    findDiffInDate: function(a) {
+      const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+      //discard time and time-zone information
+      const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+      var today = new Date();
+      const utc2 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+      return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+    },
     getDisplayList: function() {
       var lst = this.listing;
       //handle the cross in search bar
       if (this.content == "") {
         this.searchItem=""
       }
+    
+
       if (this.searchItem != "") {
         lst=lst.filter(element => element.name.toUpperCase().includes(this.searchItem.toUpperCase()))
       }
@@ -138,12 +150,23 @@ export default {
         }
       }
 
+      
+      if (this.datePosted != "") {
+        lst=this.filterByDate(lst, this.datePosted)
+      }
+
       return lst;
     },
     filterContent (value) {
       this.itemCategory=value[0];
       this.datePosted=value[1];
-    }
+    },
+    dateFilter (day) {
+      this.datePosted = day;
+    },
+    filterByDate (currList, daysToFilter) {
+      return currList.filter(element => this.findDiffInDate(new Date(element.createdAt.seconds*1000)) <= daysToFilter);
+    },
   },
 };
 </script>

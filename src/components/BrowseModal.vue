@@ -38,19 +38,32 @@ export default {
         datePosted: "",
       },
       categories: ['Ugly', 'Expiring'],
-      dateOptions: ['Anytime', 'Past 24 Hours', 'Past Week', 'Past 2 Weeks', 'Past Month']
+      dateOptions: [
+        {text: 'Anytime', value: 0},
+        {text: 'Past 24 Hours', value: 1},
+        {text: 'Past Week', value: 7},
+        {text: 'Past 2 Weeks', value: 14},
+        {text: 'Past Month', value: 30}
+        ]
     };
   },
   methods: {
     onSubmit: function() {
       console.log("Submitting form")
       this.show = false;
+      console.log(this.form.datePosted)
       this.$emit('filterBy', [this.form.category, this.form.datePosted])
     },
 
     onReset: function() {
+      console.log(this.form.datePosted)
       this.form = {};
+      this.form.category=[];
+      this.form.datePosted="";
     },
+    filterDate: function() {
+      this.$emit('filterDate', this.form.datePosted)
+    }
   }
 }
 </script>
