@@ -2,38 +2,7 @@
   <div>
     <b-button-group>
       <BrowseModal v-on:filterBy="filterContent" v-on:filterDate="dateFilter"/>
-      <span>
-      <b-button variant="info" v-b-modal.sortBy>Sort By</b-button>
-      <b-modal id="sortBy" centered title="Sort By">
-        <div class="modal-content">
-          <div class="form-check form-check-inline">
-            <input
-                class="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                id="ascendingPrice"
-                value="ascendingPrice"
-            />
-            <label class="form-check-label" for="ascendingPrice"
-            >Ascending Price</label
-            >
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-                class="form-check-input"
-                type="radio"
-                name="inlineRadioOptions"
-                id="descendingPrice"
-                value="descendingPrice"
-            />
-            <label class="form-check-label" for="descendingPrice"
-            >Descending Price</label
-            >
-          </div>
-        </div>
-      </b-modal>
-    </span>
-
+      <SortModal v-on:sortBy="sortContent"/>
     </b-button-group>
 
     <!--search button-->
@@ -92,17 +61,19 @@ import { getListings } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 import BrowseModal from "@/components/BrowseModal";
+import SortModal from "@/components/SortModal";
 
 export default {
   name: "BBrowsePage",
-  components: { BrowseModal },
+  components: { BrowseModal, SortModal },
   data() {
     return {
       itemCategory: [],
       datePosted: "",
       searchItem: "",
       content:"",
-      reset:false
+      reset:false,
+      sortCat:""  //sort category
     };
   },
    computed: {
@@ -149,10 +120,13 @@ export default {
           lst=lst.filter(element => element.category == this.itemCategory[0])
         }
       }
-
       
       if (this.datePosted != "") {
         lst=this.filterByDate(lst, this.datePosted)
+      }
+
+      if (this.sortCat != "") {
+        lst=this.sorting(lst)
       }
 
       return lst;
@@ -167,6 +141,53 @@ export default {
     filterByDate (currList, daysToFilter) {
       return currList.filter(element => this.findDiffInDate(new Date(element.createdAt.seconds*1000)) <= daysToFilter);
     },
+    sortContent(value) {
+      this.sortCat=value;
+    },
+    sorting(list) {
+      var newList = this.deepCopy(list);
+      switch(this.sortCat) {
+        case "price_asc":
+          return newList.sort(this.priceComparator)
+        case "price_des":
+          return newList.sort(this.priceComparator).reverse()
+        case "likes_asc":
+          return newList.sort(this.likesComparator)
+        case "likes_des":
+          return newList.sort(this.likesComparator).reverse()
+        case "expiry_asc":
+          return newList.sort(this.expiryComparator)
+        case "expiry_des":
+          return newList.sort(this.expiryComparator).reverse()
+      }
+    },
+    priceComparator(a,b) {  //ascending
+      if (a.price > b.price) return 1;
+      else if (b.price > a.price) return -1;
+      else return 0;
+    },
+
+    likesComparator(a,b) { //ascending
+      if (a.length > b.length) return 1;
+      else if (b.length > a.length) return -1;
+      else return 0;
+    },
+
+    expiryComparator(a,b) { //ascending
+      if (a.expiredAt.seconds > b.expiredAt.seconds) return 1;
+      else if (b.expiredAt.seconds > a.expiredAt.seconds) return -1;
+      else return 0;
+    },
+
+    deepCopy(list) {
+      var newList = []
+      list.forEach(element => {
+        newList.push(element)
+      });
+      return newList;
+    }
+
+
   },
 };
 </script>
