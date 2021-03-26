@@ -10,9 +10,13 @@ const isUserRegistered = async (userId) => {
 const getUserProfile = (userId, saveState= true) => {
     return database.collection("users").doc(userId).get()
         .then(async(res) => {
-            const profile = { ...res.data(), 'id': res.id };
-            saveState ? await store.dispatch('updateProfile', profile) : null;
-            return res.data();
+            if (!res.data()) {
+                return {};
+            } else {
+                const profile = { ...res.data(), 'id': res.id };
+                saveState ? await store.dispatch('updateProfile', profile) : null;
+                return profile;
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -45,7 +49,8 @@ const updateUser = async (userId, metadata) => {
 }
 
 const getDisplayPhoto = async (userId) => {
-    return downloadFile(`users/${userId}`);
+    const res = await downloadFile(`users/${userId}`);
+    return res ? res : downloadFile('users/dummy.png');
 }
 
 const updateDisplayPhoto = async (userId, file) => {
@@ -56,6 +61,11 @@ const deleteDisplayPhoto = async (userId) => {
     return deleteFile(`users/${userId}`);
 }
 
+const getDisplayName = async function(userId) {
+    const res = await getUserProfile(userId);
+    return res?.name;
+}
+
 export {
     isUserRegistered,
     getUserProfile,
@@ -63,6 +73,7 @@ export {
     updateUser,
     getDisplayPhoto,
     updateDisplayPhoto,
-    deleteDisplayPhoto
+    deleteDisplayPhoto,
+    getDisplayName
 }
 

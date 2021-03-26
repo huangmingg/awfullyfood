@@ -1,86 +1,179 @@
 <template>
+  <div>
     <b-container fluid class="p-4 bg-light">
-      <b-row class="my-5">
-          <b-img thumbnail fluid :src="photo" alt="Display Photo">
-          </b-img>
-        <b-col>
-          <b-card-text>
-            <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
-          </b-card-text>
-          <b-card-text>
-            Name: {{ this.profile.name }}
-          </b-card-text>
-          <b-card-text>
-            Role: {{ this.profile.role }}
-          </b-card-text>
-          <b-card-text>
-            Number: {{ this.profile.phoneNumber }}
-          </b-card-text>
-          <b-card-text>
-            Address: {{ this.profile.address }}
-          </b-card-text>
-        </b-col>
+      <b-row>
+        <b-btn-group class="ml-auto" >
+          <b-button v-show="!edit" variant="outline-info" v-on:click="editProfile()">Edit Profile</b-button>
+          <b-button v-show="edit" variant="info" v-on:click="saveProfile()">Save Profile</b-button>
+        </b-btn-group>
       </b-row>
-        <b-card-title>
-          Recent Reviews
-        </b-card-title>
-        <b-list-group >
-          <b-list-group-item
-              v-for="(review, index) in reviews"
-              v-bind:key="index"
-              class="flex-column align-items-start list-item"
-          >
-            <div class="d-flex w-100 justify-content-between">
-              <p class="mb-1 font-italic"> "{{ review.description }}" </p>
-              <small>
-                <b-form-rating :value="review.rating" readonly precision="2" inline></b-form-rating>
-              </small>
-            </div>
-            <small> {{ review.username }}, {{ review.updatedAt.toDate().toLocaleDateString() }} </small>
-          </b-list-group-item>
-        </b-list-group>
+      <b-form>
+        <b-row>
+          <b-img @click="clickImage()" width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
+          <input accept="image/*" v-on:change="onFileChange()" type="file"/>
+          <b-col>
+            <b-form-group id="input-group-1" label="Unique ID" label-for="input-1">
+              <b-form-input
+                  disabled
+                  id="input-1"
+                  v-model="form.id"
+                  type="text"
+              ></b-form-input>
+            </b-form-group>
 
+            <b-form-group id="input-group-2" label="Email:" label-for="input-2">
+              <b-form-input
+                  disabled
+                  id="input-2"
+                  v-model="form.email"
+                  required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-3" label="Display Name:" label-for="input-3">
+              <b-form-input
+                  disabled
+                  id="input-3"
+                  v-model="form.name"
+                  type="text"
+                  required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-4" label="Phone Number:" label-for="input-4">
+              <b-form-input
+                  disabled
+                  id="input-4"
+                  v-model="form.phoneNumber"
+                  type="number"
+                  required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-5" label="Address:" label-for="input-5">
+              <b-form-input
+                  disabled
+                  id="input-5"
+                  v-model="form.address"
+                  type="text"
+                  required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-form-group id="input-group-6" label="Role:" label-for="input-5">
+              <b-form-input
+                  disabled
+                  id="input-5"
+                  v-model="form.role"
+                  type="text"
+                  required
+              ></b-form-input>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </b-form>
+      <hr/>
+      <Review v-bind:reviews="reviews"/>
     </b-container>
+  </div>
+
 </template>
 
 <script>
 
-import { getUserProfile } from "@/services/user.service";
-import { getReviews, getAggregatedRating } from "@/services/review.service";
-import { getDisplayPhoto } from "@/services/user.service";
+import { store } from "@/stores";
+import { getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser } from "@/services/user.service";
+import { authService } from "@/firebase";
+import { getAggregatedRating, getReviews } from "@/services/review.service";
+import Review from "@/components/Review";
 
 export default {
-  name: "ProfilePage",
+  name: "EditProfilePage",
+  components: { Review },
   data() {
     return {
-      userId: '',
+      edit: false,
+      editableFields: ["input-3", "input-4", "input-5"],
+      file: '',
+      imageInput: '',
       averageRating: 0,
-      profile: {},
       reviews: [],
       photo: '',
+      form: {
+        id: '',
+        email: '',
+        name: '',
+        phoneNumber: '',
+        address: '',
+        role: '',
+      },
     }
   },
-  created() {
-    this.userId = this.$route.params.id;
+
+  async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
+    this.imageInput = document.querySelector('img');
   },
+
   async mounted() {
-    this.profile = await getUserProfile(this.userId, false);
-    this.photo = await getDisplayPhoto(this.userId);
-    this.reviews = await getReviews(this.userId, this.profile?.role);
-    for (const review of this.reviews) {
-      review.username = await this.getDisplayName(review.userId);
-    }
+    this.form = { ...store.getters.getProfileState };
+    this.photo = await getDisplayPhoto(this.form?.id);
+    this.reviews = await getReviews(this.form?.id, this.form?.role);
     this.averageRating = getAggregatedRating(this.reviews);
   },
+
   methods: {
-    getDisplayName: async function(userId) {
-      const res = await getUserProfile(userId);
-      return res.name;
+    editProfile: function() {
+      this.toggleEdit(true);
+    },
+
+    saveProfile: async function() {
+      if (!this.validateForm()) {
+        alert("Something went wrong, please check the input and try again");
+        return;
+      }
+      this.toggleEdit(false);
+      await updateUser(this.form.id, this.form);
+      await getUserProfile(this.form.id);
+    },
+
+    toggleEdit: function(isEdit) {
+      this.edit = isEdit;
+      this.editableFields.forEach((field) => {
+        document.getElementById(field).disabled = !isEdit;
+      });
+    },
+
+    validateForm: function() {
+      return true
+    },
+
+    clickImage: function() {
+      this.edit ? document.querySelector('[type="file"]').click() : null;
+    },
+
+    onFileChange: async function() {
+      const input = document.querySelector('[type="file"]');
+      if (input.files) {
+        await updateDisplayPhoto(this.form.id, input.files[0]);
+        this.photo = await getDisplayPhoto(this.form.id);
+      }
     }
+
   }
 }
 </script>
 
 <style scoped>
 
+.profile-photo {
+  max-width: 400px;
+  max-height: 400px;
+}
+
+input[type="file"] {
+  display: none;
+}
 </style>
