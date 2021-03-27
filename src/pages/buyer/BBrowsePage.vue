@@ -19,7 +19,7 @@
         />
         <button
           type="button"
-          class="btn btn-outline-primary"
+          class="btn btn-outline-info"
           v-on:click="search()"
         >
           search
@@ -42,13 +42,13 @@
         img-width="150"
         style="max-width: 20rem"
         class="mb-2"
-        border-variant="primary"
+        border-variant="info"
       >
         <b-card-text>
           {{ list.description }}
         </b-card-text>
 
-        <b-button variant="primary" v-on:click="navigate(list.id)">
+        <b-button variant="info" v-on:click="navigate(list.id)">
           View More
         </b-button>
       </b-card>
