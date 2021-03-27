@@ -33,6 +33,16 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-4" label="Your Address:" label-for="input-4">
+        <b-form-input
+            id="input-4"
+            v-model="form.address"
+            placeholder="Enter phone number"
+            type="text"
+            required
+        ></b-form-input>
+      </b-form-group>
+
       <b-form-group label="Select Your Role:" v-slot="{ ariaDescribedby }">
         <b-form-radio-group
             v-model="form.role"
@@ -64,6 +74,7 @@ export default {
         email: '',
         name: '',
         phoneNumber: '',
+        address: '',
         role: 'Buyer',
       },
       roles: ['Buyer', 'Seller'],

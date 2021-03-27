@@ -1,7 +1,7 @@
 import LoginPage from "@/pages/common/LoginPage";
 import RegistrationPage from "@/pages/common/RegistrationPage";
 import ProfilePage from "@/pages/common/ProfilePage";
-import EditProfilePage from "@/pages/common/EditProfilePage";
+import SearchUserPage from "@/pages/common/SearchUserPage";
 import BuyerHomePage from "@/pages/buyer/BHomePage";
 import BrowsePage from "@/pages/buyer/BBrowsePage";
 import BookmarkPage from "@/pages/buyer/BBookmarkPage";
@@ -34,17 +34,12 @@ export const routes = [
     {
         path: '/profile',
         name: 'profile',
-        component: RouterViewWrapper,
-        children: [
-            {
-                path: '',
-                component: EditProfilePage
-            },
-            {
-                path: ':id',
-                component: ProfilePage
-            }
-        ]
+        component: ProfilePage,
+    },
+    {
+        path: '/search',
+        name: 'search',
+        component: SearchUserPage,
     },
     {
         path: '/buyer',
