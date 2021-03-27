@@ -5,7 +5,7 @@
     <br>
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
-        v-bind:key="list.id" 
+        v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
         <h1 class="mb-1">Buyer Name: {{ list.buyerId }}
         <br>
@@ -15,16 +15,16 @@
         </h1>
         
         
-  <b-navbar-nav class="ml-auto">
-    <b-nav-item-dropdown right>
-      <template #button-content>
-        Actions
-      </template>
-      <b-dropdown-item v-on:click="contact()">Contact Buyer</b-dropdown-item>
-      <b-dropdown-item v-on:click="approve()">Approve Transaction</b-dropdown-item>
-    </b-nav-item-dropdown>
-    </b-navbar-nav>
-      </b-list-group-item>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item-dropdown right>
+          <template #button-content>
+            Actions
+          </template>
+          <b-dropdown-item v-on:click="contact()">Contact Buyer</b-dropdown-item>
+          <b-dropdown-item v-on:click="approve(list.id)">Approve Transaction</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-list-group-item>
 
   </b-list-group>
 
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getTransactionsBySeller } from "@/services/transaction.service";
+import { getTransactionsBySeller, approveTransaction } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -58,9 +58,10 @@ export default {
       alert("contact buyer at 999")
       //show buyer contact details 
     },
-    approve:function() {
+    approve:function(id) {
       alert("approve transaction")
-      //change isApproves to true
+      approveTransaction(id); 
+      //router.push('list/add');
     },
   },
 }

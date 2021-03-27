@@ -78,10 +78,22 @@ const getTransactionsByListing = async (listingId) => {
         });
 }
 
+const approveTransaction = async (transactionId) => {
+    return database.collection("transactions").doc(transactionId).update({isApproved:true})
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
+
 
 export {
     getTransactions,
     getTransactionsByBuyer,
     getTransactionsByListing,
-    getTransactionsBySeller
+    getTransactionsBySeller,
+    approveTransaction,
 }
