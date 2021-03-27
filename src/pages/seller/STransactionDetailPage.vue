@@ -20,7 +20,7 @@
           <template #button-content>
             Actions
           </template>
-          <b-dropdown-item v-on:click="contact()">Contact Buyer</b-dropdown-item>
+          <b-dropdown-item v-on:click="contact(list)">Contact Buyer</b-dropdown-item>
           <b-dropdown-item v-on:click="approve(list.id)">Approve Transaction</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -35,6 +35,8 @@
 </template>
 
 <script>
+
+//import { getUserProfile } from "@/services/user.service";
 import { getTransactionsBySeller, approveTransaction } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
@@ -56,12 +58,12 @@ export default {
     },
     contact:function() {
       alert("contact buyer at 999")
+      //getUserProfile(id);
       //show buyer contact details 
     },
     approve:function(id) {
-      alert("approve transaction")
       approveTransaction(id); 
-      //router.push('list/add');
+      router.push('Sreview');
     },
   },
 }

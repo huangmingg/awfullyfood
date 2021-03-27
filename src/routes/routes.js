@@ -13,6 +13,7 @@ import SellerListPage from "@/pages/seller/SListPage";
 import SellerListDetailPage from "@/pages/seller/SListDetailPage";
 import SellerTransactionPage from "@/pages/seller/STransactionPage";
 import SellerTransactionDetailPage from "@/pages/seller/STransactionDetailPage";
+import SellerReviewPage from "@/pages/seller/SReviewPage";
 import NotFoundPage from "@/pages/common/NotFoundPage";
 import RouterViewWrapper from "@/pages/common/RouterViewWrapper";
 
@@ -117,6 +118,10 @@ export const routes = [
                         path: ':id',
                         component: SellerTransactionDetailPage,
                     },
+                    {
+                        path: 'Sreview',
+                        component: SellerReviewPage,
+                    }
                 ]
             }
         ]
