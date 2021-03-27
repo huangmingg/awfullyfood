@@ -20,8 +20,33 @@
           <template #button-content>
             Actions
           </template>
-          <b-dropdown-item v-on:click="contact(list)">Contact Buyer</b-dropdown-item>
-          <b-dropdown-item v-on:click="approve(list.id)">Approve Transaction</b-dropdown-item>
+        <div>
+          <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example')">Contact Buyer</b-dropdown-item>
+
+          <b-modal id="bv-modal-example" hide-footer>
+            <template #modal-title>
+              Contact Buyer
+            </template>
+            <div class="d-block text-center">
+              <h1>Here are the buyer details:<br>
+               {{list.buyerId}} </h1> 
+            </div>
+            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
+          </b-modal>
+
+          <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example2')">Approve</b-dropdown-item>
+
+          <b-modal id="bv-modal-example2" hide-footer>
+            <template #modal-title>
+              Approve Transaction
+            </template>
+            <div class="d-block text-center">
+              <h1>Put your review here
+              </h1> 
+            </div>
+            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example2')">Close Me</b-button>
+          </b-modal>
+        </div>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-list-group-item>
@@ -63,7 +88,6 @@ export default {
     },
     approve:function(id) {
       approveTransaction(id); 
-      router.push('Sreview');
     },
   },
 }

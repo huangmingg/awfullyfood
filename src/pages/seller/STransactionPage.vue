@@ -33,6 +33,7 @@ export default {
       return store.getters.getList;
     },
   },
+  
 
   async created() {
     const res = await getListingBySeller(store.getters.getProfileState?.id);
@@ -42,8 +43,8 @@ export default {
   methods: {
     navigate: function (transactionId) {
       router.push(`transaction/${transactionId}`);
-    }
-  }
+    },
+  },
 }
 </script>
 
