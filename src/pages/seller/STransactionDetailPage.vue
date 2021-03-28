@@ -28,11 +28,16 @@
               Contact Buyer
             </template>
             <div class="d-block text-center">
-              <h1>Here are the buyer details:<br>
-               {{ profile.phoneNumber }} </h1> 
+              <h1>Here are the buyer details:<br><br>
+               Name: {{ profile.name }}<br>
+               Contact No: {{ profile.phoneNumber }} <br>
+               Email: {{ profile.email }}
+               </h1> 
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
           </b-modal>
+          
+          
 
 
         </div>
@@ -78,10 +83,9 @@ export default {
     back: function() {
       router.back();
     },
-    contact:function(id) {
-      alert("contact buyer at 999")
-      this.profile = getUserProfile(id, false);
-      //show buyer contact details 
+    contact: async function(id) {
+      this.profile = await getUserProfile(id, false);
+      console.log(this.profile);
     },
     approve:function(id) {
       approveTransaction(id); 
