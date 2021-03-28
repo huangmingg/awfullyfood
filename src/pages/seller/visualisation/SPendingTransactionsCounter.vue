@@ -1,13 +1,13 @@
 <template>
   <div class="content">
     <h1>{{ noTransactions }}</h1>
-    
+
     <h5>Number of Pending Orders</h5>
   </div>
 </template>
 
 <script>
-import database from "../../../firebase.js";
+import { getPendingTransactionsBySeller } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
@@ -17,34 +17,20 @@ export default {
   data() {
     return {
       noTransactions: 0,
+      PendingTransactions: [],
     };
   },
-  methods: {
-    fetchItems: function () {
-      database
-        .collection("transactions")
-        .get()
-        .then((querySnapShot) => {
-          querySnapShot.forEach((doc) => {
-            //console.log(doc.data()["sellerId"])
-            //console.log(store.getters.getProfileState?.id);
-            if (
-              !doc.data()["isApproved"] &&
-              doc.data()["sellerId"] == store.getters.getProfileState?.id
-            ) {
-              this.noTransactions++;
-            }
-          });
-        });
-    },
-  },
+  methods: {},
   components: {},
 
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    this.fetchItems();
+    this.PendingTransactions = await getPendingTransactionsBySeller(
+      store.getters.getProfileState?.id
+    );
+    this.noTransactions = this.PendingTransactions.length;
   },
 };
 </script>
