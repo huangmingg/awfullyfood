@@ -26,19 +26,19 @@
                 <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
               </b-card-text>
               <b-card-text>
-                Email: {{ this.profile.email }}
+                Email: {{ profile.email }}
               </b-card-text>
               <b-card-text>
-                Name: {{ this.profile.name }}
+                Name: {{ profile.name }}
               </b-card-text>
               <b-card-text>
-                Role: {{ this.profile.role }}
+                Role: {{ profile.role }}
               </b-card-text>
               <b-card-text>
-                Number: {{ this.profile.phoneNumber }}
+                Number: {{ profile.phoneNumber }}
               </b-card-text>
               <b-card-text>
-                Address: {{ this.profile.address }}
+                Address: {{ profile.address }}
               </b-card-text>
             </b-col>
           </b-row>
@@ -57,6 +57,7 @@ import { getDisplayPhoto } from "@/services/user.service";
 import { isEmptyObject } from "@/services/utils.service";
 import { router } from "@/routes";
 import Review from "@/components/Review";
+
 export default {
   name: "ProfilePage",
   components: { Review },
