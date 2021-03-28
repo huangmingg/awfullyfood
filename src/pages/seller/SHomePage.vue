@@ -1,6 +1,6 @@
 <template>
   <div>Seller Home
-    
+
   </div>
   
 

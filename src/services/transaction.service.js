@@ -89,6 +89,16 @@ const approveTransaction = async (transactionId) => {
         });
 }
 
+const testUpdateQuantity = async (transactionId) => {
+    return database.collection("transactions").doc(transactionId).update({quantity:10})
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
 
 export {
     getTransactions,
@@ -96,4 +106,5 @@ export {
     getTransactionsByListing,
     getTransactionsBySeller,
     approveTransaction,
+    testUpdateQuantity,
 }

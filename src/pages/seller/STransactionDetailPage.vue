@@ -23,7 +23,7 @@
         <div>
           <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example')" v-on:click="contact(list.buyerId)">Contact Buyer</b-dropdown-item>
 
-          <b-modal id="bv-modal-example" hide-footer>
+          <b-modal id="bv-modal-example" no-close-on-backdrop hide-header hide-footer>
             <template #modal-title>
               Contact Buyer
             </template>
@@ -37,8 +37,54 @@
             <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
           </b-modal>
           
-          
+        <b-dropdown-item @click="showModal()" v-on:click="approve(list.id)">Approve</b-dropdown-item>
 
+          <b-modal id="modal-closing" ref="modal-review" 
+          title="Submit Your Review"
+          
+          @show="resetModal"
+          @hidden="resetModal"
+          @ok="handleOk"
+          no-close-on-backdrop >
+            <template #modal-title>
+              Submit Your Review
+            </template>
+            <div class="d-block text-left">
+              Transaction ID: {{list.id}} <br><br>
+
+              <form ref="form" @submit.stop.prevent="handleSubmit">
+              <div>
+              <b-form-group
+                label="Rating"
+                label-for="rating-inline"
+                invalid-feedback="Please rate your experience"
+                :state="value > 0"
+              >
+              <b-form-rating id="rating-inline" 
+              inline value="1" 
+              v-model="value" 
+              :state="value > 0" 
+              no-border
+              required></b-form-rating>
+              </b-form-group>
+              </div>
+            
+                <b-form-group
+                  label="Review"
+                  label-for="review-input"
+                  invalid-feedback="Review is required and must have at least 10 characters"
+                  :state="text.length >= 10"
+                >
+                <b-form-textarea
+                  id="review-input"
+                  v-model="text"
+                  :state="text.length >= 10"
+                  required
+                ></b-form-textarea> 
+                </b-form-group>
+              </form>          
+            </div>
+            </b-modal>
 
         </div>
         </b-nav-item-dropdown>
@@ -56,7 +102,7 @@
 <script>
 
 import { getUserProfile } from "@/services/user.service";
-import { getTransactionsBySeller, approveTransaction } from "@/services/transaction.service";
+import { getTransactionsBySeller, approveTransaction, testUpdateQuantity } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -67,7 +113,10 @@ export default {
       profile: {},
       name: '',
       nameState: null,
-      submittedNames: []
+      submittedNames: [],
+      text: '', //need to reset text if not its the same for all. ensure text is sent to right db.
+      textState: null,
+      value: 0, //need to send to db.
     }
   },
   computed: {
@@ -80,6 +129,36 @@ export default {
     console.log(res);
   },
   methods: {
+    checkFormValidity() {
+      if (this.value > 0) { 
+        const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
+        this.textState = valid
+        return valid
+      }
+    },
+    resetModal() {
+      this.text = ''
+      this.textState = null
+      this.value = 0
+    },
+    handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+      this.handleSubmit()
+    },
+    handleSubmit() { 
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+      // Push the name to submitted names 
+      this.submittedNames.push(this.text) //This shall be edited to be sent to firebase data. or not.
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-closing')
+      })
+    },
     back: function() {
       router.back();
     },
@@ -90,32 +169,11 @@ export default {
     approve:function(id) {
       approveTransaction(id); 
     },
-    checkFormValidity() {
-        const valid = this.$refs.form.checkValidity()
-        this.nameState = valid
-        return valid
+    submitThis:function(id) {
+      testUpdateQuantity(id);
     },
-    resetModal() {
-        this.name = ''
-        this.nameState = null
-    },
-    handleOk(bvModalEvt) {
-      // Prevent modal from closing
-      bvModalEvt.preventDefault()
-      // Trigger submit handler
-    this.handleSubmit()
-    },
-    handleSubmit() {
-      // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
-        return
-      }
-      // Push the name to submitted names
-      this.submittedNames.push(this.name)
-      // Hide the modal manually
-      this.$nextTick(() => {
-        this.$bvModal.hide('modal-prevent-closing')
-      })
+    showModal(){
+        this.$refs["modal-review"][0].show();
     },
   },
 }
