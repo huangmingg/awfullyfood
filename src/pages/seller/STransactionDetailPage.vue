@@ -21,7 +21,7 @@
             Actions
           </template>
         <div>
-          <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example')">Contact Buyer</b-dropdown-item>
+          <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example')" v-on:click="contact(list.buyerId)">Contact Buyer</b-dropdown-item>
 
           <b-modal id="bv-modal-example" hide-footer>
             <template #modal-title>
@@ -29,23 +29,12 @@
             </template>
             <div class="d-block text-center">
               <h1>Here are the buyer details:<br>
-               {{list.buyerId}} </h1> 
+               {{ profile.phoneNumber }} </h1> 
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
           </b-modal>
 
-          <b-dropdown-item id="show-btn" @click="$bvModal.show('bv-modal-example2')">Approve</b-dropdown-item>
 
-          <b-modal id="bv-modal-example2" hide-footer>
-            <template #modal-title>
-              Approve Transaction
-            </template>
-            <div class="d-block text-center">
-              <h1>Put your review here
-              </h1> 
-            </div>
-            <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example2')">Close Me</b-button>
-          </b-modal>
         </div>
         </b-nav-item-dropdown>
       </b-navbar-nav>
@@ -61,13 +50,21 @@
 
 <script>
 
-//import { getUserProfile } from "@/services/user.service";
+import { getUserProfile } from "@/services/user.service";
 import { getTransactionsBySeller, approveTransaction } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
 export default {
   name: "STransactionDetailPage",
+  data() {
+    return {
+      profile: {},
+      name: '',
+      nameState: null,
+      submittedNames: []
+    }
+  },
   computed: {
     listing() {
       return store.getters.getList;
@@ -81,13 +78,40 @@ export default {
     back: function() {
       router.back();
     },
-    contact:function() {
+    contact:function(id) {
       alert("contact buyer at 999")
-      //getUserProfile(id);
+      this.profile = getUserProfile(id, false);
       //show buyer contact details 
     },
     approve:function(id) {
       approveTransaction(id); 
+    },
+    checkFormValidity() {
+        const valid = this.$refs.form.checkValidity()
+        this.nameState = valid
+        return valid
+    },
+    resetModal() {
+        this.name = ''
+        this.nameState = null
+    },
+    handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault()
+      // Trigger submit handler
+    this.handleSubmit()
+    },
+    handleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return
+      }
+      // Push the name to submitted names
+      this.submittedNames.push(this.name)
+      // Hide the modal manually
+      this.$nextTick(() => {
+        this.$bvModal.hide('modal-prevent-closing')
+      })
     },
   },
 }
