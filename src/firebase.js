@@ -8,6 +8,8 @@ const auth = firebase.auth;
 const authService = firebase.auth();
 const storage = firebase.storage();
 
+export default database;
+
 export {
     database,
     auth,
