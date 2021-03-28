@@ -47,10 +47,17 @@
         <b-card-text>
           {{ list.description }}
         </b-card-text>
-
-        <b-button variant="info" v-on:click="navigate(list.id)">
+        <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
+        <span style="color: red">
+          {{list.bookmark.length}}
+        </span>
+          
+        <b-button variant="info" v-on:click="navigate(list.id)" class="float-right">
           View More
         </b-button>
+      
+        
+        
       </b-card>
     </b-card-group>
   </div>
@@ -62,10 +69,11 @@ import { store } from "@/stores";
 import { router } from "@/routes";
 import BrowseModal from "@/components/BrowseModal";
 import SortModal from "@/components/SortModal";
+import {BIconHeartFill} from "bootstrap-vue";
 
 export default {
   name: "BBrowsePage",
-  components: { BrowseModal, SortModal },
+  components: { BrowseModal, SortModal, BIconHeartFill },
   data() {
     return {
       itemCategory: [],
@@ -109,7 +117,7 @@ export default {
       }
     
 
-      if (this.searchItem != "") {
+      if (this.searchItem != "") { 
         lst=lst.filter(element => element.name.toUpperCase().includes(this.searchItem.toUpperCase()))
       }
 
@@ -195,5 +203,6 @@ export default {
 <style scoped>
 input {
   display: inline-block;
-}
+};
+
 </style>
