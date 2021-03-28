@@ -37,7 +37,13 @@ const registerUser = async (userId, metadata) => {
 }
 
 const updateUser = async (userId, metadata) => {
-    const body = metadata
+    const body = {
+        name: metadata['name'],
+        email: metadata['email'],
+        phoneNumber: metadata['phoneNumber'],
+        role: metadata['role'],
+        address: metadata['address']
+    };
     return database.collection("users").doc(userId).update(body)
         .then(() => {
             return true;
@@ -62,7 +68,7 @@ const deleteDisplayPhoto = async (userId) => {
 }
 
 const getDisplayName = async function(userId) {
-    const res = await getUserProfile(userId);
+    const res = await getUserProfile(userId, false);
     return res?.name;
 }
 
