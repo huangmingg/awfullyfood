@@ -1,12 +1,12 @@
 <template>
   <div class="content">
-      <h1>{{noTransactions}}</h1>
-      <h5>Number of Completed Orders</h5>
+    <h1>{{ noTransactions }}</h1>
+    <h5>Number of Completed Orders</h5>
   </div>
 </template>
 
 <script>
-import database from "../../../firebase.js";
+import { getApprovedTransactionsByBuyer } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
@@ -16,34 +16,21 @@ export default {
   data() {
     return {
       noTransactions: 0,
+      ApprovedTransactions: [],
     };
   },
-  methods: {
-    fetchItems: function () {
-      database.collection('transactions').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => { 
-            //console.log(doc.data()["sellerId"])
-            //console.log(store.getters.getProfileState?.id)
-            if (doc.data()["isApproved"] && doc.data()["buyerId"] == store.getters.getProfileState?.id) {
-                this.noTransactions++;
-            
-            }
-        })
-      })
-    },
-
-  },
+  methods: {},
   components: {},
-//   created() {
-//     this.fetchItems();
-//   },
 
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    this.fetchItems();
-  }
+    this.ApprovedTransactions = await getApprovedTransactionsByBuyer(
+      store.getters.getProfileState?.id
+    );
+    this.noTransactions = this.ApprovedTransactions.length;
+  },
 };
 </script>
 

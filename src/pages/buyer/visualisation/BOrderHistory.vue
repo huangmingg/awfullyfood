@@ -46,11 +46,8 @@ export default {
             ) {
               var listingId = doc.data()["listingId"];
               var sellerId = doc.data()["sellerId"].toString();
-              //console.log(listingId);
-              //console.log(sellerId)
               orderMap["quantity"] = doc.data()["quantity"];
               var date = new Date(doc.data()["completedAt"].seconds * 1000);
-
               orderMap["date"] = date.toLocaleString();
               database
                 .collection("listings")
@@ -58,9 +55,7 @@ export default {
                 .get()
                 .then((querySnapShot2) => {
                   var itemListing = querySnapShot2.data();
-                  //console.log(itemListing ["name"])
                   orderMap["item"] = itemListing["name"];
-                  //console.log(orderMap["item"]);
                   orderMap["unit"] = itemListing["unit"];
                 });
 
@@ -72,9 +67,7 @@ export default {
                   var users = querySnapShot3.data();
                   orderMap["seller"] = users["name"];
                 });
-              //console.log(orderMap);
               this.orderHistory.push(orderMap);
-              //console.log(this.orderHistory);
             }
           });
         });

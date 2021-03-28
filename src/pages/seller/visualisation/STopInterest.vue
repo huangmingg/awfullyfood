@@ -14,7 +14,6 @@
 </template>
 
 <script>
-//import database from "../../../firebase.js";
 import { getListingBySeller } from "@/services/list.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";

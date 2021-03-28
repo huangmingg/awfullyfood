@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <h1>{{ noTransactions }}</h1>
-    
+
     <h5>Number of Pending Orders</h5>
   </div>
 </template>
@@ -26,8 +26,6 @@ export default {
         .get()
         .then((querySnapShot) => {
           querySnapShot.forEach((doc) => {
-            //console.log(doc.data()["sellerId"])
-            //console.log(store.getters.getProfileState?.id);
             if (
               !doc.data()["isApproved"] &&
               doc.data()["buyerId"] == store.getters.getProfileState?.id
