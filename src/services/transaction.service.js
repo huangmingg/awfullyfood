@@ -39,6 +39,49 @@ const getTransactionsBySeller = async (sellerId, saveState = true) => {
         });
 }
 
+const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
+    return database.collection("transactions")
+        .where("sellerId", "==", sellerId)
+        .where("isApproved", "==", true)
+        .get()
+        .then(async (res) => {
+            const output = res.docs.map(doc => {
+                return {
+                    ...doc.data(),
+                    'id': doc.id,
+                };
+            });
+            saveState ? await store.dispatch('updateList', output) : null;
+            return output;
+        })
+        .catch((error) => {
+            console.log(error);
+            return [];
+        });
+}
+
+const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
+    return database.collection("transactions")
+        .where("sellerId", "==", sellerId)
+        .where("isApproved", "==", false)
+        .get()
+        .then(async (res) => {
+            const output = res.docs.map(doc => {
+                return {
+                    ...doc.data(),
+                    'id': doc.id,
+                };
+            });
+            saveState ? await store.dispatch('updateList', output) : null;
+            return output;
+        })
+        .catch((error) => {
+            console.log(error);
+            return [];
+        });
+}
+
+
 const getTransactionsByBuyer = async (buyerId, saveState = true) => {
     return database.collection("transactions")
         .where("buyerId", "==", buyerId)
@@ -129,4 +172,6 @@ export {
     getTransactionsBySeller,
     getApprovedTransactionsByBuyer,
     getPendingTransactionsByBuyer,
+    getApprovedTransactionsBySeller,
+    getPendingTransactionsBySeller
 }
