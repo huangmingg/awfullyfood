@@ -20,7 +20,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "TopInterests",
+  name: "STopInterests",
   data() {
     return {
       sellerListings: [],

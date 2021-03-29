@@ -13,7 +13,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "PendingTransactionCounter",
+  name: "BPendingTransactionCounter",
   data() {
     return {
       noTransactions: 0,

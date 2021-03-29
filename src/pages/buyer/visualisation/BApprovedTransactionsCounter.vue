@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import database from '../../../firebase.js'
 import { getApprovedTransactionsByBuyer } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";

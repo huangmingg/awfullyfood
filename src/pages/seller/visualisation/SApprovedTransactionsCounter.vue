@@ -6,13 +6,14 @@
 </template>
 
 <script>
+import database from '../../../firebase.js'
 import { getApprovedTransactionsBySeller } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "ApprovedTransactionCounter",
+  name: "SApprovedTransactionCounter",
   data() {
     return {
       noTransactions: 0,
