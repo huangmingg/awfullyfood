@@ -13,10 +13,10 @@
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Seller'"/>
+        <OrderHistory :orders="orderHistory" :role="'Seller'" />
       </li>
       <li class="orderList">
-        <s-pending-orders></s-pending-orders>
+        <PendingOrders :orders="pendingOrders" :role="'Seller'" />
       </li>
       <li>
         <s-listing-category-chart></s-listing-category-chart>
@@ -40,25 +40,27 @@ import { store } from "@/stores";
 import SListingCategoryChart from "./visualisation/SListingCategoryChart.vue";
 import SApprovedTransactionsCounter from "./visualisation/SApprovedTransactionsCounter.vue";
 import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCounter.vue";
-import SPendingOrders from "./visualisation/SPendingOrders.vue";
 import STopLikes from "./visualisation/STopLikes.vue";
 import STopInterest from "./visualisation/STopInterest.vue";
 import OrderHistory from "@/pages/common/visualisation/OrderHistory";
+import PendingOrders from "@/pages/common/visualisation/PendingOrders";
+
 export default {
   name: "SHomePage",
   data() {
     return {
       orderHistory: [],
+      pendingOrders: [],
     };
   },
   components: {
     SListingCategoryChart,
     SApprovedTransactionsCounter,
     SPendingTransactionsCounter,
-    SPendingOrders,
     STopInterest,
     STopLikes,
     OrderHistory,
+    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -67,23 +69,45 @@ export default {
   },
 
   async mounted() {
-    const transactions = (await getTransactionsBySeller(store.getters.getProfileState?.id, false))
-        .filter((ele) => {
-          return ele.isApproved === true
-        });
-    this.orderHistory = await Promise.all(transactions.map(async(transaction) => {
-          const listing = await getListing(transaction.listingId);
-          const user = await getDisplayName(transaction.buyerId);
-          return {
-            id: transaction.id,
-            item: listing.name,
-            quantity: listing.quantity,
-            user: user,
-            unit: listing.unit,
-            date : transaction.completedAt,
-          };
-    }));
-  }
+    const transactions = (
+      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    });
+    this.orderHistory = await Promise.all(
+      transactions.map(async (transaction) => {
+        const listing = await getListing(transaction.listingId);
+        const user = await getDisplayName(transaction.buyerId);
+        return {
+          id: transaction.id,
+          item: listing.name,
+          quantity: listing.quantity,
+          user: user,
+          unit: listing.unit,
+          date: transaction.completedAt,
+        };
+      })
+    );
+    const pendings = (
+      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === false;
+    });
+    this.pendingOrders = await Promise.all(
+      pendings.map(async (pending) => {
+        const pendingListing = await getListing(pending.listingId);
+        const pendingUser = await getDisplayName(pending.buyerId);
+        return {
+          id: pending.id,
+          item: pendingListing.name,
+          quantity: pendingListing.quantity,
+          user: pendingUser,
+          unit: pendingListing.unit,
+          date: pending.createdAt,
+        };
+      })
+    );
+  },
 };
 </script>
 
