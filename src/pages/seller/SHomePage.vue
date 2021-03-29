@@ -1,5 +1,6 @@
 <template>
   <div class="content">
+    Seller Home Page
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">

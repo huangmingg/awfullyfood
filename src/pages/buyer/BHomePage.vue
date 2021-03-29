@@ -13,7 +13,7 @@
         </div>
       </li>
       <li class="orderList">
-        <b-order-history></b-order-history>
+        <OrderHistory :orders="orderHistory" :role="'Buyer'"/>
       </li>
       <li class="orderList">
         <b-pending-orders></b-pending-orders>
@@ -26,30 +26,56 @@
 </template>
 
 <script>
-import { getUserProfile } from "@/services/user.service";
+import { getUserProfile, getDisplayName } from "@/services/user.service";
+import { getTransactionsByBuyer } from "@/services/transaction.service";
+import { getListing } from "@/services/list.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import BCategoryChart from "./visualisation/BCategoryChart.vue";
 import BApprovedTransactionsCounter from "./visualisation/BApprovedTransactionsCounter.vue";
 import BPendingTransactionsCounter from "./visualisation/BPendingTransactionsCounter.vue";
-import BOrderHistory from "./visualisation/BOrderHistory.vue";
 import BPendingOrders from "./visualisation/BPendingOrders.vue";
+import OrderHistory from "@/pages/common/visualisation/OrderHistory";
 
 
 export default {
   name: "BHomePage",
+  data() {
+    return {
+      orderHistory: [],
+    };
+  },
   components: {
     BCategoryChart,
     BApprovedTransactionsCounter,
     BPendingTransactionsCounter,
-    BOrderHistory,
     BPendingOrders,
+    OrderHistory
   },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
   },
+
+  async mounted() {
+    const transactions = (await getTransactionsByBuyer(store.getters.getProfileState?.id, false))
+        .filter((ele) => {
+          return ele.isApproved === true
+        });
+    this.orderHistory = await Promise.all(transactions.map(async(transaction) => {
+          const listing = await getListing(transaction.listingId);
+          const user = await getDisplayName(transaction.buyerId);
+          return {
+            id: transaction.id,
+            item: listing.name,
+            quantity: listing.quantity,
+            user: user,
+            unit: listing.unit,
+            date : transaction.completedAt,
+          };
+    }));
+  }
 };
 </script>
 
