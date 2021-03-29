@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import database from '../../../firebase.js'
 import { getApprovedTransactionsBySeller } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
@@ -20,21 +19,7 @@ export default {
       ApprovedTransactions: [],
     };
   },
-  methods: {
-    fetchItems: function () {
-      database.collection('transactions').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => {
-            //console.log(doc.data()["sellerId"])
-            //console.log(store.getters.getProfileState?.id)
-            if (doc.data()["isApproved"] && doc.data()["sellerId"] == store.getters.getProfileState?.id) {
-                this.noTransactions++;
-
-            }
-        })
-      })
-    },
-
-  },
+  methods: {},
   components: {},
 
   async created() {
@@ -44,9 +29,8 @@ export default {
     this.ApprovedTransactions = await getApprovedTransactionsBySeller(
       store.getters.getProfileState?.id
     );
-    console.log(this.ApprovedTransactions)
+    console.log(this.ApprovedTransactions);
     this.noTransactions = this.ApprovedTransactions.length;
-    
   },
 };
 </script>

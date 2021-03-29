@@ -6,32 +6,20 @@
 </template>
 
 <script>
-import database from '../../../firebase.js'
 import { getApprovedTransactionsByBuyer } from "@/services/transaction.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "ApprovedTransactionCounter",
+  name: "BApprovedTransactionCounter",
   data() {
     return {
       noTransactions: 0,
       ApprovedTransactions: [],
     };
   },
-  methods: {
-    fetchItems: function () {
-      database.collection('transactions').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => {
-            if (doc.data()["isApproved"] && doc.data()["buyerId"] == store.getters.getProfileState?.id) {
-                this.noTransactions++;
-            }
-        })
-      })
-    },
-
-  },
+  methods: {},
   components: {},
 
   async created() {
