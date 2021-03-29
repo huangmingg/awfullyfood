@@ -33,7 +33,7 @@ export default {
   methods: {
     route: function (event) {
       var userId = event.target.getAttribute("id");
-      this.$router.push({ path: `/buyer/browse/${userId}` });
+      this.$router.push({ path: `/seller/list/${userId}` });
     },
   },
   components: {},
