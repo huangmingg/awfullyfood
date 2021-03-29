@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <h1>{{ noTransactions }}</h1>
-    
+
     <h5>Number of Pending Orders</h5>
   </div>
 </template>
@@ -13,7 +13,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Pending Transaction Counter",
+  name: "PendingTransactionCounter",
   data() {
     return {
       noTransactions: 0,

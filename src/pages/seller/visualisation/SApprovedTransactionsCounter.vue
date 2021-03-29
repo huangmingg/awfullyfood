@@ -12,7 +12,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Approved Transaction Counter",
+  name: "ApprovedTransactionCounter",
   data() {
     return {
       noTransactions: 0,
@@ -21,12 +21,12 @@ export default {
   methods: {
     fetchItems: function () {
       database.collection('transactions').get().then(querySnapShot => {
-        querySnapShot.forEach(doc => { 
+        querySnapShot.forEach(doc => {
             //console.log(doc.data()["sellerId"])
             //console.log(store.getters.getProfileState?.id)
             if (doc.data()["isApproved"] && doc.data()["sellerId"] == store.getters.getProfileState?.id) {
                 this.noTransactions++;
-            
+
             }
         })
       })

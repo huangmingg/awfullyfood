@@ -21,7 +21,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Top Interests",
+  name: "TopInterests",
   data() {
     return {
       sellerListings: [],
@@ -31,7 +31,7 @@ export default {
   methods: {
     route: function(event) {
         var userId = event.target.getAttribute("id")
-        this.$router.push({ path: `/seller/list/${userId}` }) 
+        this.$router.push({ path: `/seller/list/${userId}` })
 
     }
   },
