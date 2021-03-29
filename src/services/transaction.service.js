@@ -194,7 +194,7 @@ export {
     getApprovedTransactionsByBuyer,
     getPendingTransactionsByBuyer,
     getApprovedTransactionsBySeller,
-    getPendingTransactionsBySeller
+    getPendingTransactionsBySeller,
     approveTransaction,
     testUpdateQuantity,
 }
