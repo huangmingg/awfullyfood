@@ -72,6 +72,7 @@ const getDisplayName = async function(userId) {
     return res?.name;
 }
 
+
 export {
     isUserRegistered,
     getUserProfile,
@@ -80,6 +81,6 @@ export {
     getDisplayPhoto,
     updateDisplayPhoto,
     deleteDisplayPhoto,
-    getDisplayName
+    getDisplayName,
 }
 

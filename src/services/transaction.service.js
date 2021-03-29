@@ -163,6 +163,27 @@ const getTransactionsByListing = async (listingId) => {
         });
 }
 
+const approveTransaction = async (transactionId) => {
+    return database.collection("transactions").doc(transactionId).update({isApproved:true})
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
+
+const testUpdateQuantity = async (transactionId) => {
+    return database.collection("transactions").doc(transactionId).update({quantity:10})
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
 
 
 export {
@@ -174,4 +195,6 @@ export {
     getPendingTransactionsByBuyer,
     getApprovedTransactionsBySeller,
     getPendingTransactionsBySeller
+    approveTransaction,
+    testUpdateQuantity,
 }
