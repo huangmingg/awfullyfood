@@ -1,7 +1,6 @@
 <template>
   <div class="content">
-    <h5 v-if="role == 'Seller'">Sales History</h5>
-    <h5 v-else>Order History</h5>
+    <h5>Pending Orders</h5>
     <hr/>
     <b-list-group>
       <b-list-group-item
@@ -12,15 +11,15 @@
         >
         <transition name="fade">
           <div v-if="role == 'Seller'">
-            You sold {{ order.quantity }} {{ order.unit }} of
-            {{ order.item }} to {{ order.user }}!
-            <br />Order completed at {{ order.date.toDate().toLocaleDateString() }}.
+            You have a pending order of {{ order.quantity }} {{ order.unit }} of
+            {{ order.item }} for {{ order.user }}!
+            <br />Order created at {{ order.date.toDate().toLocaleDateString() }}.
             <hr />
           </div>
           <div v-else>
-            You saved {{ order.quantity }} {{ order.unit }} of
-            {{ order.item }} from being wasted from {{ order.user }}!
-            <br />Order completed at {{ order.date.toDate().toLocaleDateString() }}.
+            You have a pending order of {{ order.quantity }} {{ order.unit }} of
+            {{ order.item }} from {{ order.user }}!
+            <br />Order created at {{ order.date.toDate().toLocaleDateString() }}.
             <hr />
           </div>
         </transition>
@@ -32,7 +31,7 @@
 <script>
 
 export default {
-  name: "OrderHistory",
+  name: "PendingOrders",
   props: ['orders', 'role'],
 };
 </script>

@@ -13,10 +13,10 @@
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Buyer'"/>
+        <OrderHistory :orders="orderHistory" :role="'Buyer'" />
       </li>
       <li class="orderList">
-        <b-pending-orders></b-pending-orders>
+        <PendingOrders :orders="pendingOrders" :role="'Buyer'" />
       </li>
       <li>
         <b-category-chart></b-category-chart>
@@ -34,23 +34,23 @@ import { store } from "@/stores";
 import BCategoryChart from "./visualisation/BCategoryChart.vue";
 import BApprovedTransactionsCounter from "./visualisation/BApprovedTransactionsCounter.vue";
 import BPendingTransactionsCounter from "./visualisation/BPendingTransactionsCounter.vue";
-import BPendingOrders from "./visualisation/BPendingOrders.vue";
 import OrderHistory from "@/pages/common/visualisation/OrderHistory";
-
+import PendingOrders from "@/pages/common/visualisation/PendingOrders";
 
 export default {
   name: "BHomePage",
   data() {
     return {
       orderHistory: [],
+      pendingOrders: [],
     };
   },
   components: {
     BCategoryChart,
     BApprovedTransactionsCounter,
     BPendingTransactionsCounter,
-    BPendingOrders,
-    OrderHistory
+    OrderHistory,
+    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -59,23 +59,46 @@ export default {
   },
 
   async mounted() {
-    const transactions = (await getTransactionsByBuyer(store.getters.getProfileState?.id, false))
-        .filter((ele) => {
-          return ele.isApproved === true
-        });
-    this.orderHistory = await Promise.all(transactions.map(async(transaction) => {
-          const listing = await getListing(transaction.listingId);
-          const user = await getDisplayName(transaction.buyerId);
-          return {
-            id: transaction.id,
-            item: listing.name,
-            quantity: listing.quantity,
-            user: user,
-            unit: listing.unit,
-            date : transaction.completedAt,
-          };
-    }));
-  }
+    const transactions = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    });
+    this.orderHistory = await Promise.all(
+      transactions.map(async (transaction) => {
+        const listing = await getListing(transaction.listingId);
+        const user = await getDisplayName(transaction.sellerId);
+        return {
+          id: transaction.id,
+          item: listing.name,
+          quantity: listing.quantity,
+          user: user,
+          unit: listing.unit,
+          date: transaction.completedAt,
+        };
+      })
+    );
+
+    const pendings = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === false;
+    });
+    this.pendingOrders = await Promise.all(
+      pendings.map(async (pending) => {
+        const pendingListing = await getListing(pending.listingId);
+        const pendingUser = await getDisplayName(pending.sellerId);
+        return {
+          id: pending.id,
+          item: pendingListing.name,
+          quantity: pendingListing.quantity,
+          user: pendingUser,
+          unit: pendingListing.unit,
+          date: pending.createdAt,
+        };
+      })
+    );
+  },
 };
 </script>
 
@@ -107,6 +130,6 @@ li {
 }
 
 .orderList {
-  overflow:auto;
+  overflow: auto;
 }
 </style>
