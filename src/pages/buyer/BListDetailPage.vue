@@ -31,11 +31,8 @@
 
         <div class="float-right">
           <span>
-            <b-button id="bookmarkBtn">
-              <BIconHeartFill
-                variant="white"
-                v-on:click="changeBMClass()"
-              ></BIconHeartFill>
+            <b-button id="bookmarkBtn" v-on:click="changeBMClass()">
+              <BIconHeartFill variant="white"></BIconHeartFill>
             </b-button>
           </span>
           <span>
@@ -72,7 +69,6 @@ export default {
       location: "", //missing
       additionalNotes: "",
       bookmarkAllClasses: ["btn btn-danger", "btn btn-secondary"],
-      bookmarkClass: "",
     };
   },
 
@@ -87,6 +83,7 @@ export default {
     back: function () {
       router.back();
     },
+    
     //update to db
     interested: function () {
       alert("Seller is notified! Seller will contact you soon!");
@@ -122,22 +119,24 @@ export default {
         this.location = "unknown (missing)";
         this.additionalNotes = "NA (missing)";
         this.checkBookmark(x.bookmark);
-        //error, cant get seller name
-        getDisplayName(x.sellerId).then((y) => {
-          this.seller = y;
-          console.log(y);
-        });
+        getDisplayName(x.sellerId).then((y) => (this.seller = y));
       });
     },
     //need to update the database (toggling the bookmark buttons)
-    changeBMClass: function() {
+    changeBMClass: function () {
       const name = document.getElementById("bookmarkBtn").className;
-      if (name==this.bookmarkAllClasses[0]) { //un-bookmark
-        document.getElementById("bookmarkBtn").className = this.bookmarkAllClasses[1]
-      } else {  //bookmark
-        document.getElementById("bookmarkBtn").className = this.bookmarkAllClasses[0]
+      if (name == this.bookmarkAllClasses[0]) {
+        //un-bookmark
+        document.getElementById(
+          "bookmarkBtn"
+        ).className = this.bookmarkAllClasses[1];
+      } else {
+        //bookmark
+        document.getElementById(
+          "bookmarkBtn"
+        ).className = this.bookmarkAllClasses[0];
       }
-    }
+    },
   },
 };
 </script>
