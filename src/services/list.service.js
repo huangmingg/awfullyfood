@@ -1,7 +1,7 @@
 import { store } from "@/stores";
 import { database } from "@/firebase";
 
-const getListings = async () => {
+const getListings = async (saveState = true) => {
     return database.collection("listings").get()
         .then(async(res) => {
             const output =  res.docs.map(doc => {
@@ -10,7 +10,7 @@ const getListings = async () => {
                     'id': doc.id,
                 };
             });
-            await store.dispatch('updateList', output);
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -19,7 +19,7 @@ const getListings = async () => {
         });
 }
 
-const getListingBySeller = async (sellerId) => {
+const getListingBySeller = async (sellerId, saveState = true) => {
     return database.collection("listings")
         .where("sellerId", "==", sellerId)
         .get()
@@ -30,7 +30,7 @@ const getListingBySeller = async (sellerId) => {
                     'id': doc.id,
                 };
             });
-            await store.dispatch('updateList', output);
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -49,7 +49,7 @@ const getListing = async (listingId) => {
         .catch((error) => {
             console.log(error);
             return {};
-        })
+        });
 }
 
 const createListing = async (payload) => {
@@ -57,11 +57,22 @@ const createListing = async (payload) => {
 }
 
 const updateListing = async (listingId, payload) => {
-    console.log(listingId, payload)
+    return database.collection("listings").doc(listingId).update(payload)
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
 }
 
 const deleteListing = async (listingId) => {
     console.log(listingId)
+}
+
+const uploadListingPhotos = async(listingId, photos) => {
+    console.log(listingId, photos)
 }
 
 export {
@@ -70,6 +81,7 @@ export {
     getListing,
     createListing,
     updateListing,
-    deleteListing
+    deleteListing,
+    uploadListingPhotos,
 }
 
