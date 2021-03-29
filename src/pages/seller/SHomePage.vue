@@ -1,6 +1,5 @@
 <template>
   <div class="content">
-    Seller Home Page
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
@@ -13,7 +12,7 @@
         </div>
       </li>
       <li class="orderList">
-        <s-order-history></s-order-history>
+        <OrderHistory :orders="orderHistory" :role="'Seller'"/>
       </li>
       <li class="orderList">
         <s-pending-orders></s-pending-orders>
@@ -32,33 +31,58 @@
 </template>
 
 <script>
-import { getUserProfile } from "@/services/user.service";
+import { getUserProfile, getDisplayName } from "@/services/user.service";
+import { getTransactionsBySeller } from "@/services/transaction.service";
+import { getListing } from "@/services/list.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import SListingCategoryChart from "./visualisation/SListingCategoryChart.vue";
 import SApprovedTransactionsCounter from "./visualisation/SApprovedTransactionsCounter.vue";
 import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCounter.vue";
-import SOrderHistory from "./visualisation/SOrderHistory.vue";
 import SPendingOrders from "./visualisation/SPendingOrders.vue";
 import STopLikes from "./visualisation/STopLikes.vue";
 import STopInterest from "./visualisation/STopInterest.vue";
-
+import OrderHistory from "@/pages/common/visualisation/OrderHistory";
 export default {
   name: "SHomePage",
+  data() {
+    return {
+      orderHistory: [],
+    };
+  },
   components: {
     SListingCategoryChart,
     SApprovedTransactionsCounter,
     SPendingTransactionsCounter,
-    SOrderHistory,
     SPendingOrders,
-    STopLikes,
     STopInterest,
+    STopLikes,
+    OrderHistory,
   },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
   },
+
+  async mounted() {
+    const transactions = (await getTransactionsBySeller(store.getters.getProfileState?.id, false))
+        .filter((ele) => {
+          return ele.isApproved === true
+        });
+    this.orderHistory = await Promise.all(transactions.map(async(transaction) => {
+          const listing = await getListing(transaction.listingId);
+          const user = await getDisplayName(transaction.buyerId);
+          return {
+            id: transaction.id,
+            item: listing.name,
+            quantity: listing.quantity,
+            user: user,
+            unit: listing.unit,
+            date : transaction.completedAt,
+          };
+    }));
+  }
 };
 </script>
 

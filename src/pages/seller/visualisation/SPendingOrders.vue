@@ -24,7 +24,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "Pending Orders",
+  name: "SPendingOrders",
   data() {
     return {
       orderHistory: [],
