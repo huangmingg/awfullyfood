@@ -1,21 +1,24 @@
 <template>
   <div class="content">
+    Seller Home Page
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <s-approved-transactions-counter></s-approved-transactions-counter>
+          <h1>{{ orderHistoryCounter }}</h1>
+          <h5>Number of Completed Orders</h5>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <s-pending-transactions-counter></s-pending-transactions-counter>
+          <h1>{{ pendingOrdersCounter }}</h1>
+          <h5>Number of Pending Orders</h5>
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Seller'"/>
+        <OrderHistory :orders="orderHistory" :role="'Seller'" />
       </li>
       <li class="orderList">
-        <s-pending-orders></s-pending-orders>
+        <PendingOrders :orders="pendingOrders" :role="'Seller'" />
       </li>
       <li>
         <s-listing-category-chart></s-listing-category-chart>
@@ -37,27 +40,27 @@ import { getListing } from "@/services/list.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import SListingCategoryChart from "./visualisation/SListingCategoryChart.vue";
-import SApprovedTransactionsCounter from "./visualisation/SApprovedTransactionsCounter.vue";
-import SPendingTransactionsCounter from "./visualisation/SPendingTransactionsCounter.vue";
-import SPendingOrders from "./visualisation/SPendingOrders.vue";
 import STopLikes from "./visualisation/STopLikes.vue";
 import STopInterest from "./visualisation/STopInterest.vue";
 import OrderHistory from "@/pages/common/visualisation/OrderHistory";
+import PendingOrders from "@/pages/common/visualisation/PendingOrders";
+
 export default {
   name: "SHomePage",
   data() {
     return {
       orderHistory: [],
+      pendingOrders: [],
+      orderHistoryCounter: 0,
+      pendingOrdersCounter: 0,
     };
   },
   components: {
     SListingCategoryChart,
-    SApprovedTransactionsCounter,
-    SPendingTransactionsCounter,
-    SPendingOrders,
     STopInterest,
     STopLikes,
     OrderHistory,
+    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -66,23 +69,47 @@ export default {
   },
 
   async mounted() {
-    const transactions = (await getTransactionsBySeller(store.getters.getProfileState?.id, false))
-        .filter((ele) => {
-          return ele.isApproved === true
-        });
-    this.orderHistory = await Promise.all(transactions.map(async(transaction) => {
-          const listing = await getListing(transaction.listingId);
-          const user = await getDisplayName(transaction.buyerId);
-          return {
-            id: transaction.id,
-            item: listing.name,
-            quantity: listing.quantity,
-            user: user,
-            unit: listing.unit,
-            date : transaction.completedAt,
-          };
-    }));
-  }
+    const transactions = (
+      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    });
+    this.orderHistory = await Promise.all(
+      transactions.map(async (transaction) => {
+        const listing = await getListing(transaction.listingId);
+        const user = await getDisplayName(transaction.buyerId);
+        return {
+          id: transaction.id,
+          item: listing.name,
+          quantity: listing.quantity,
+          user: user,
+          unit: listing.unit,
+          date: transaction.completedAt,
+        };
+      })
+    );
+    const pendings = (
+      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === false;
+    });
+    this.pendingOrders = await Promise.all(
+      pendings.map(async (pending) => {
+        const pendingListing = await getListing(pending.listingId);
+        const pendingUser = await getDisplayName(pending.buyerId);
+        return {
+          id: pending.id,
+          item: pendingListing.name,
+          quantity: pendingListing.quantity,
+          user: pendingUser,
+          unit: pendingListing.unit,
+          date: pending.createdAt,
+        };
+      })
+    );
+    this.orderHistoryCounter = this.orderHistory.length;
+    this.pendingOrdersCounter = this.pendingOrders.length;
+  },
 };
 </script>
 
@@ -110,7 +137,8 @@ li {
   align-content: center;
   justify-content: center;
   align-items: center;
-  margin-top: 180px;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
 .orderList {

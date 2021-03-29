@@ -14,14 +14,13 @@
 </template>
 
 <script>
-//import database from "../../../firebase.js";
 import { getListingBySeller } from "@/services/list.service";
 import { getUserProfile } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "TopInterests",
+  name: "STopInterests",
   data() {
     return {
       sellerListings: [],
@@ -45,7 +44,6 @@ export default {
       store.getters.getProfileState?.id
     )
     await this.sellerListings.sort((a,b) => (b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0));
-    //await this.sleep(300).then(this.forceUpdate);
   },
 };
 </script>

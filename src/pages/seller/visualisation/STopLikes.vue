@@ -23,7 +23,7 @@ import { authService } from "@/firebase";
 import { store } from "@/stores";
 
 export default {
-  name: "TopLikes",
+  name: "STopLikes",
   data() {
     return {
       sellerListings: [],
@@ -33,15 +33,10 @@ export default {
   methods: {
     route: function (event) {
       var userId = event.target.getAttribute("id");
-      this.$router.push({ path: `/buyer/browse/${userId}` });
+      this.$router.push({ path: `/seller/list/${userId}` });
     },
   },
   components: {},
-  //   computed: {
-  //       orderedByLikes: function () {
-  //           return this._.orderBy(this.sellerListings, 'likes')
-  //       }
-  //   },
 
   async created() {
     if (!store.getters.getProfileState) {
@@ -53,7 +48,6 @@ export default {
     await this.sellerListings.sort((a, b) =>
       b.likes > a.likes ? 1 : a.likes > b.likes ? -1 : 0
     );
-    //await this.sleep(300).then(this.forceUpdate);
   },
 };
 </script>
