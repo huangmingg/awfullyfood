@@ -52,7 +52,9 @@ export default {
       },
       signInFlow: "popup",
       signInOptions: [
-        auth.GoogleAuthProvider.PROVIDER_ID,
+          auth.GoogleAuthProvider.PROVIDER_ID,
+          auth.FacebookAuthProvider.PROVIDER_ID,
+          auth.EmailAuthProvider.PROVIDER_ID,
       ]
     };
     ui.start("#firebase-auth-container", uiConfig);
