@@ -8,6 +8,7 @@
           v-for="(order) in orders"
           v-bind:key="order.id"
           class="flex-column align-items-start list-item"
+          id = "listgroup"
         >
         <transition name="fade">
           <div v-if="role == 'Seller'">
@@ -38,4 +39,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#listgroup {
+  border: 10px;
+}
+
 </style>
