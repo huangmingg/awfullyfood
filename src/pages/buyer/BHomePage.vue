@@ -4,19 +4,21 @@
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <b-approved-transactions-counter></b-approved-transactions-counter>
+          <h1>{{ orderHistoryCounter }}</h1>
+          <h5>Number of Completed Orders</h5>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <b-pending-transactions-counter></b-pending-transactions-counter>
+          <h1>{{ pendingOrdersCounter }}</h1>
+          <h5>Number of Pending Orders</h5>
         </div>
       </li>
       <li class="orderList">
-        <b-order-history></b-order-history>
+        <OrderHistory :orders="orderHistory" :role="'Buyer'" />
       </li>
       <li class="orderList">
-        <b-pending-orders></b-pending-orders>
+        <PendingOrders :orders="pendingOrders" :role="'Buyer'" />
       </li>
       <li>
         <b-category-chart></b-category-chart>
@@ -26,29 +28,79 @@
 </template>
 
 <script>
-import { getUserProfile } from "@/services/user.service";
+import { getUserProfile, getDisplayName } from "@/services/user.service";
+import { getTransactionsByBuyer } from "@/services/transaction.service";
+import { getListing } from "@/services/list.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import BCategoryChart from "./visualisation/BCategoryChart.vue";
-import BApprovedTransactionsCounter from "./visualisation/BApprovedTransactionsCounter.vue";
-import BPendingTransactionsCounter from "./visualisation/BPendingTransactionsCounter.vue";
-import BOrderHistory from "./visualisation/BOrderHistory.vue";
-import BPendingOrders from "./visualisation/BPendingOrders.vue";
-
+import OrderHistory from "@/pages/common/visualisation/OrderHistory";
+import PendingOrders from "@/pages/common/visualisation/PendingOrders";
 
 export default {
   name: "BHomePage",
+  data() {
+    return {
+      orderHistory: [],
+      pendingOrders: [],
+      orderHistoryCounter: 0,
+      pendingOrdersCounter: 0,
+    };
+  },
   components: {
     BCategoryChart,
-    BApprovedTransactionsCounter,
-    BPendingTransactionsCounter,
-    BOrderHistory,
-    BPendingOrders,
+    OrderHistory,
+    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
+  },
+
+  async mounted() {
+    const transactions = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    });
+    this.orderHistory = await Promise.all(
+      transactions.map(async (transaction) => {
+        const listing = await getListing(transaction.listingId);
+        const user = await getDisplayName(transaction.sellerId);
+        return {
+          id: transaction.id,
+          item: listing.name,
+          quantity: listing.quantity,
+          user: user,
+          unit: listing.unit,
+          date: transaction.completedAt,
+        };
+      })
+    );
+
+    const pendings = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id, false)
+    ).filter((ele) => {
+      return ele.isApproved === false;
+    });
+    this.pendingOrders = await Promise.all(
+      pendings.map(async (pending) => {
+        const pendingListing = await getListing(pending.listingId);
+        const pendingUser = await getDisplayName(pending.sellerId);
+        return {
+          id: pending.id,
+          item: pendingListing.name,
+          quantity: pendingListing.quantity,
+          user: pendingUser,
+          unit: pendingListing.unit,
+          date: pending.createdAt,
+        };
+      })
+    );
+
+    this.orderHistoryCounter = this.orderHistory.length;
+    this.pendingOrdersCounter = this.pendingOrders.length;
   },
 };
 </script>
@@ -77,10 +129,11 @@ li {
   align-content: center;
   justify-content: center;
   align-items: center;
-  margin-top: 180px;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
 .orderList {
-  overflow:auto;
+  overflow: auto;
 }
 </style>
