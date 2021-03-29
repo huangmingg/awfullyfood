@@ -39,7 +39,7 @@ const getTransactionsBySeller = async (sellerId, saveState = true) => {
         });
 }
 
-const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
+const getApprovedTransactionsBySeller = async (sellerId) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
         .where("isApproved", "==", true)
@@ -51,7 +51,6 @@ const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
                     'id': doc.id,
                 };
             });
-            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -60,7 +59,7 @@ const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
         });
 }
 
-const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
+const getPendingTransactionsBySeller = async (sellerId) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
         .where("isApproved", "==", false)
@@ -72,7 +71,6 @@ const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
                     'id': doc.id,
                 };
             });
-            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -102,7 +100,7 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
         });
 }
 
-const getApprovedTransactionsByBuyer = async (buyerId, saveState = true) => {
+const getApprovedTransactionsByBuyer = async (buyerId) => {
     return database.collection("transactions")
         .where("buyerId", "==", buyerId)
         .where("isApproved", "==", true)
@@ -114,7 +112,6 @@ const getApprovedTransactionsByBuyer = async (buyerId, saveState = true) => {
                     'id': doc.id,
                 };
             });
-            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -123,7 +120,7 @@ const getApprovedTransactionsByBuyer = async (buyerId, saveState = true) => {
         });
 }
 
-const getPendingTransactionsByBuyer = async (buyerId, saveState = true) => {
+const getPendingTransactionsByBuyer = async (buyerId) => {
     return database.collection("transactions")
         .where("buyerId", "==", buyerId)
         .where("isApproved", "==", false)
@@ -135,7 +132,6 @@ const getPendingTransactionsByBuyer = async (buyerId, saveState = true) => {
                     'id': doc.id,
                 };
             });
-            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
