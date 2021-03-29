@@ -1,17 +1,24 @@
 <template>
-  <b-container class="login-container">
-    <b-row>
-      <b-col>
-        <div id="firebase-auth-container">
-        </div>
-      </b-col>
-    </b-row>
+  <b-container style="margin-top: 10%;">
+        <b-card img-right :img-src="require(`@/assets/images/login_page.jpeg`)">
+          <b-card-title>
+            AwfullyFood
+          </b-card-title>
+          <hr/>
+          <b-card-text class="mb-5">
+            Select Your Preferred Login Method
+          </b-card-text>
+          <div id="firebase-auth-container">
+          </div>
+        </b-card>
   </b-container>
 </template>
 <script>
 
 import { auth, authService } from "@/firebase";
 import { router } from "@/routes";
+
+
 const firebaseui = require('firebaseui');
 import "firebaseui/dist/firebaseui.css";
 import { isUserRegistered, getUserProfile } from "@/services/user.service";
@@ -53,7 +60,6 @@ export default {
       signInFlow: "popup",
       signInOptions: [
           auth.GoogleAuthProvider.PROVIDER_ID,
-          auth.FacebookAuthProvider.PROVIDER_ID,
           auth.EmailAuthProvider.PROVIDER_ID,
       ]
     };
@@ -65,12 +71,12 @@ export default {
 <style scoped>
 
 .login-container {
-  background-color: #3ca2b9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20%;
-  width:20%;
+  /*background-color: #3ca2b9;*/
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+  margin-top: 10%;
+  /*width:20%;*/
 }
 
 
