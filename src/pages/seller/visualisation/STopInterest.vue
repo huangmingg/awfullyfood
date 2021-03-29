@@ -44,7 +44,6 @@ export default {
       store.getters.getProfileState?.id
     )
     await this.sellerListings.sort((a,b) => (b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0));
-    //await this.sleep(300).then(this.forceUpdate);
   },
 };
 </script>

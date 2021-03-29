@@ -4,12 +4,14 @@
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <b-approved-transactions-counter></b-approved-transactions-counter>
+          <h1>{{ orderHistoryCounter }}</h1>
+          <h5>Number of Completed Orders</h5>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <b-pending-transactions-counter></b-pending-transactions-counter>
+          <h1>{{ pendingOrdersCounter }}</h1>
+          <h5>Number of Pending Orders</h5>
         </div>
       </li>
       <li class="orderList">
@@ -32,8 +34,6 @@ import { getListing } from "@/services/list.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
 import BCategoryChart from "./visualisation/BCategoryChart.vue";
-import BApprovedTransactionsCounter from "./visualisation/BApprovedTransactionsCounter.vue";
-import BPendingTransactionsCounter from "./visualisation/BPendingTransactionsCounter.vue";
 import OrderHistory from "@/pages/common/visualisation/OrderHistory";
 import PendingOrders from "@/pages/common/visualisation/PendingOrders";
 
@@ -43,12 +43,12 @@ export default {
     return {
       orderHistory: [],
       pendingOrders: [],
+      orderHistoryCounter: 0,
+      pendingOrdersCounter: 0,
     };
   },
   components: {
     BCategoryChart,
-    BApprovedTransactionsCounter,
-    BPendingTransactionsCounter,
     OrderHistory,
     PendingOrders,
   },
@@ -98,6 +98,9 @@ export default {
         };
       })
     );
+
+    this.orderHistoryCounter = this.orderHistory.length;
+    this.pendingOrdersCounter = this.pendingOrders.length;
   },
 };
 </script>
@@ -126,7 +129,8 @@ li {
   align-content: center;
   justify-content: center;
   align-items: center;
-  margin-top: 180px;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
 .orderList {
