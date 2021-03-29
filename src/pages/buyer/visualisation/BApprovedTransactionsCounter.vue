@@ -24,11 +24,8 @@ export default {
     fetchItems: function () {
       database.collection('transactions').get().then(querySnapShot => {
         querySnapShot.forEach(doc => {
-            //console.log(doc.data()["sellerId"])
-            //console.log(store.getters.getProfileState?.id)
             if (doc.data()["isApproved"] && doc.data()["buyerId"] == store.getters.getProfileState?.id) {
                 this.noTransactions++;
-
             }
         })
       })
