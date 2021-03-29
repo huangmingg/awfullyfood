@@ -12,63 +12,52 @@
           <b-img @click="clickImage()" width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
           <input accept="image/*" v-on:change="onFileChange()" type="file"/>
           <b-col>
-            <b-form-group id="input-group-1" label="Unique ID" label-for="input-1">
+            <b-card-text>
+              <span class="mr-2 font-weight-bolder">
+                {{ form.role }}
+              </span>
+              <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
+            </b-card-text>
+
+            <b-form-group id="input-group-1" label="Email:" label-for="input-1">
               <b-form-input
                   disabled
                   id="input-1"
-                  v-model="form.id"
-                  type="text"
-              ></b-form-input>
-            </b-form-group>
-
-            <b-form-group id="input-group-2" label="Email:" label-for="input-2">
-              <b-form-input
-                  disabled
-                  id="input-2"
                   v-model="form.email"
                   required
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Display Name:" label-for="input-3">
+            <b-form-group id="input-group-2" label="Display Name:" label-for="input-2">
               <b-form-input
                   disabled
-                  id="input-3"
+                  id="input-2"
                   v-model="form.name"
                   type="text"
                   required
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Phone Number:" label-for="input-4">
+            <b-form-group id="input-group-3" label="Phone Number:" label-for="input-3">
               <b-form-input
                   disabled
-                  id="input-4"
+                  id="input-3"
                   v-model="form.phoneNumber"
                   type="number"
                   required
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group id="input-group-5" label="Address:" label-for="input-5">
+            <b-form-group id="input-group-4" label="Address:" label-for="input-4">
               <b-form-input
                   disabled
-                  id="input-5"
+                  id="input-4"
                   v-model="form.address"
                   type="text"
                   required
               ></b-form-input>
             </b-form-group>
 
-            <b-form-group id="input-group-6" label="Role:" label-for="input-5">
-              <b-form-input
-                  disabled
-                  id="input-5"
-                  v-model="form.role"
-                  type="text"
-                  required
-              ></b-form-input>
-            </b-form-group>
           </b-col>
         </b-row>
       </b-form>
@@ -93,7 +82,7 @@ export default {
   data() {
     return {
       edit: false,
-      editableFields: ["input-3", "input-4", "input-5"],
+      editableFields: ["input-2", "input-3", "input-4"],
       file: '',
       imageInput: '',
       averageRating: 0,
@@ -120,7 +109,7 @@ export default {
   async mounted() {
     this.form = { ...store.getters.getProfileState };
     this.photo = await getDisplayPhoto(this.form?.id);
-    this.reviews = await getReviews(this.form?.id, this.form?.role);
+    this.reviews = await getReviews(store.getters.getProfileState.id, this.form?.role);
     this.averageRating = getAggregatedRating(this.reviews);
   },
 
@@ -136,7 +125,7 @@ export default {
       }
       this.toggleEdit(false);
       await updateUser(this.form.id, this.form);
-      await getUserProfile(this.form.id);
+      await getUserProfile(authService.currentUser.uid);
     },
 
     toggleEdit: function(isEdit) {
@@ -176,4 +165,5 @@ export default {
 input[type="file"] {
   display: none;
 }
+
 </style>

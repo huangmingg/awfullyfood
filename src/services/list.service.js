@@ -40,7 +40,16 @@ const getListingBySeller = async (sellerId) => {
 }
 
 const getListing = async (listingId) => {
-    console.log(listingId)
+    return database.collection("listings")
+        .doc(listingId)
+        .get()
+        .then((res) => {
+            return res.data();
+        })
+        .catch((error) => {
+            console.log(error);
+            return {};
+        })
 }
 
 const createListing = async (payload) => {
