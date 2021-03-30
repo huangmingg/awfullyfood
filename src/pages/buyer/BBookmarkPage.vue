@@ -30,7 +30,6 @@ export default {
   },
   methods: {
     route: function(event) {
-        //var userId = event.target.getAttribute("id")
         this.$router.push({ path: `/buyer/list/${event}` })
     }
   },
@@ -57,7 +56,6 @@ export default {
         };
       })
     );
-    console.log(this.bookmarks);
   },
 };
 </script>
