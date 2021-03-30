@@ -6,8 +6,8 @@
         Item: {{listing.item}} <br>
         Quantity: {{listing.quantity}} {{listing.unit}} <br>
         Seller: {{listing.user}} <br><br>
-        <b-button v-bind:id="listing.id" v-on:click="route(listing.listingId)">View Listing</b-button>
-
+        <b-button v-bind:id="listing.id" v-on:click="route(listing.listingId)">View Listing</b-button>  <br><br>
+        <b-button v-bind:id="listing.id" v-on:click="removeBookmark(listing.listingId)">Remove Bookmark</b-button>
       </li>
     </ul>
   </div>
@@ -17,7 +17,7 @@
 import { getUserProfile, getDisplayName } from "@/services/user.service";
 import { authService } from "@/firebase";
 import { store } from "@/stores";
-import { getBookmarks } from "@/services/bookmark.service";
+import { getBookmarks, toggleBookmark } from "@/services/bookmark.service";
 import { getListing } from "@/services/list.service";
 
 export default {
@@ -30,6 +30,11 @@ export default {
   methods: {
     route: function(event) {
         this.$router.push({ path: `/buyer/list/${event}` })
+    },
+    removeBookmark: async function(listingId) {
+      await toggleBookmark(listingId, store.getters.getProfileState?.id)
+      alert("Bookmark Removed")
+      location.reload() 
     }
   },
   async created() {
