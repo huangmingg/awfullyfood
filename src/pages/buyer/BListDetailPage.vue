@@ -53,6 +53,7 @@ import { getListing } from "@/services/list.service";
 import { BIconHeartFill } from "bootstrap-vue";
 import { store } from "@/stores";
 import { authService } from "@/firebase";
+import {toggleBookmark} from "@/services/bookmark.service"
 
 export default {
   components: { BIconHeartFill },
@@ -92,7 +93,7 @@ export default {
       const userId = store.getters.getProfileState.id;
       var changed = false;
       for (const bm of bookmarkLst) {
-        if (bm.userID === userId) {
+        if (bm.userId === userId) {
           document.getElementById(
             "bookmarkBtn"
           ).className = this.bookmarkAllClasses[0];
@@ -118,7 +119,7 @@ export default {
         this.itemDescription = x.description;
         this.location = "unknown (missing)";
         this.additionalNotes = "NA (missing)";
-        this.checkBookmark(x.bookmark);
+        this.checkBookmark(x.bookmarks);
         getDisplayName(x.sellerId).then((y) => (this.seller = y));
       });
     },
@@ -136,6 +137,9 @@ export default {
           "bookmarkBtn"
         ).className = this.bookmarkAllClasses[0];
       }
+
+      //listing id, user id
+      toggleBookmark(this.$route.params.id, store.getters.getProfileState.id);
     },
   },
 };

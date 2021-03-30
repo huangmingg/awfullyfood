@@ -49,7 +49,7 @@
         </b-card-text>
         <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
         <span style="color: red">
-          {{list.bookmark.length}}
+          {{list.bookmarks.length}}
         </span>
           
         <b-button variant="info" v-on:click="navigate(list.id)" class="float-right">
