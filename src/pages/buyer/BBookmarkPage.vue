@@ -3,7 +3,6 @@
     Bookmark Page
     <ul class="listContainer">
       <li v-for="listing in bookmarks" v-bind:key="listing.id">
-        
         Item: {{listing.item}} <br>
         Quantity: {{listing.quantity}} {{listing.unit}} <br>
         Seller: {{listing.user}} <br><br>
@@ -80,15 +79,4 @@ li {
   max-height: 500px;
 }
 
-.numberCard {
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-  margin-top: 100px;
-  margin-bottom: 100px;
-}
-
-.orderList {
-  overflow: auto;
-}
 </style>
