@@ -53,7 +53,7 @@ import { getListing } from "@/services/list.service";
 import { BIconHeartFill } from "bootstrap-vue";
 import { store } from "@/stores";
 import { authService } from "@/firebase";
-import {toggleBookmark} from "@/services/bookmark.service"
+import { toggleBookmark } from "@/services/bookmark.service"
 
 export default {
   components: { BIconHeartFill },
