@@ -45,6 +45,12 @@
           {{ list.description }}
           <br />
           ${{ list.price }} per {{ list.unit }}
+          <small>
+            <br />
+            Created Date: {{ list.createdAt.toDate().toLocaleDateString() }}
+            <br />
+            Expiry Date: {{ list.expiredAt.toDate().toLocaleDateString() }}
+          </small>
         </b-card-text>
         <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
         <span style="color: red">
@@ -209,7 +215,7 @@ input {
 }
 
 .list-item:hover {
-  background-color:rgb(243, 250, 251);
+  background-color: rgb(243, 250, 251);
   background-image: none;
   cursor: pointer;
 }
