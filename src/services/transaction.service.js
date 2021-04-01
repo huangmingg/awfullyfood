@@ -170,8 +170,11 @@ const approveTransaction = async (transactionId) => {
         });
 }
 
-const testUpdateQuantity = async (transactionId) => {
-    return database.collection("transactions").doc(transactionId).update({quantity:10})
+
+const updateBuyerReview = async (transactionId,num,review) => {
+    return database.collection("transactions").doc(transactionId).update({
+          buyerReview: [{'rating':num, 'description': review}] //how to update server timestamp   
+        })
         .then(() => {
             return true;
         })
@@ -181,6 +184,18 @@ const testUpdateQuantity = async (transactionId) => {
         });
 }
 
+const updateSellerReview = async (transactionId,num,review) => {
+    return database.collection("transactions").doc(transactionId).update({
+          sellerReview: {'rating':num, 'description': review} //how to update server timestamp   
+        })
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
 
 export {
     getTransactions,
@@ -192,5 +207,7 @@ export {
     getApprovedTransactionsBySeller,
     getPendingTransactionsBySeller,
     approveTransaction,
-    testUpdateQuantity,
+    updateBuyerReview,
+    updateSellerReview,
+
 }
