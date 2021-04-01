@@ -1,6 +1,9 @@
 <template>
   <div>
     <b-button v-on:click="back()" variant="info"> Back </b-button>
+
+    <hr class="dropdown-divider" />
+
     <div class="row">
       <div class="column">
         <img v-bind:src="itemImg" />
@@ -23,6 +26,7 @@
         </div>
         <div>Category: {{ itemCategory }}</div>
         <div>Price: {{ itemPrice }}</div>
+        <div>Quantity: {{ itemQty }}</div>
         <div>Description: {{ itemDescription }}</div>
         <div>Location: {{ location }}</div>
         <div>Additional Notes: {{ additionalNotes }}</div>
@@ -64,6 +68,7 @@ export default {
       itemName: "",
       itemCategory: "",
       itemPrice: "", //price and units
+      itemQty: 0,
       itemRating: 0,
       seller: "", //get seller name
       itemDescription: "",
@@ -115,6 +120,7 @@ export default {
         this.itemName = x.name;
         this.itemCategory = x.category;
         this.itemPrice = "$" + x.price + " per " + x.unit;
+        this.itemQty = x.quantity;
         this.itemRating = 2.5; //currently no rating component in listing
         this.itemDescription = x.description;
         this.location = "unknown (missing)";

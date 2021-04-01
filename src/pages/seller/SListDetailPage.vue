@@ -1,10 +1,12 @@
 <template>
   <div>
     <b-button v-on:click="back()" variant="info">Back </b-button>
+    <hr class="dropdown-divider" />
+    
     <b-container fluid class="p-4 bg-light">
       <b-row>
         <b-btn-group class="ml-auto" >
-          <b-button v-show="!edit" variant="outline-info" v-on:click="editList()">Edit Listing</b-button>
+          <b-button v-show="!edit" variant="info" v-on:click="editList()">Edit Listing</b-button>
           <b-button v-show="edit" variant="info" v-on:click="saveList()">Save Listing</b-button>
         </b-btn-group>
       </b-row>
@@ -103,8 +105,8 @@
 
 <script>
 import { router } from "@/routes";
-import { getListing } from "@/services/list.service";
-import { getDisplayPhoto, updateDisplayPhoto } from "@/services/user.service";
+import { getListing, updateListing } from "@/services/list.service";
+import { getListingPhoto, updateListingPhoto } from "@/services/user.service";
 
 export default {
   name: "SListPage",
@@ -157,8 +159,9 @@ export default {
     onFileChange: async function() {
       const input = document.querySelector('[type="file"]');
       if (input.files) {
-        await updateDisplayPhoto(this.form.id, input.files[0]);
-        this.photo = await getDisplayPhoto(this.form.id);
+        const listingId = this.$route.params.id;
+        await updateListingPhoto(listingId, input.files[0]);
+        this.photo = await getListingPhoto(listingId);
       }
     },
 
@@ -170,11 +173,20 @@ export default {
     saveList: function() {
       console.log("save");
       if (!this.validateForm()) {
-        alert("Something went wrong, please check the input and try again");
+        alert("Something went wrong, please check the inputs and try again");
         return;
       }
+      this.editableFields.forEach((field) => document.getElementById(field).style="")
       this.toggleEdit(false);
       //update db
+      var change = {
+        name: this.form.name,
+        price: this.form.price,
+        quantity: this.form.quantity,
+        unit: this.form.unit,
+        description: this.form.description
+      }
+      updateListing(this.$route.params.id, change)
     },
 
     toggleEdit: function(isEdit) {
@@ -185,11 +197,43 @@ export default {
     },
 
     validateForm: function() {
-      if (this.form.name == "" || this.form.price < 0 || this.form.price == "" 
-      || this.form.unit == "" || this.form.quantity <= 0 || this.form.quantity == "" || this.form.description == "") {
-        return false;
+      var error=false;
+      if (this.form.name == "") {
+        document.getElementById("input-1").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-1").style.borderColor=""
       }
+      if (this.form.price < 0 || this.form.price == "" ) {
+        document.getElementById("input-3").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-3").style.borderColor=""
+      }
+      if (this.form.unit == "") {
+        document.getElementById("input-4").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-4").style.borderColor=""
+      }
+      if (this.form.quantity <= 0 || this.form.quantity == "" ) {
+        document.getElementById("input-5").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-5").style.borderColor=""
+      }
+      if (this.form.description == "") {
+        document.getElementById("input-6").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-6").style.borderColor=""
+      }
+
+      if (error) {
+        return false
+      } else {
       return true;
+      }
     },
   },
 }
