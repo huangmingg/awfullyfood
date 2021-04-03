@@ -1,22 +1,38 @@
 <template>
   <div class="content">
     Bookmark Page
-    <ul class="listContainer">
-      <li v-for="listing in bookmarks" v-bind:key="listing.id">
-        Item: {{ listing.item }} <br />
-        Quantity: {{ listing.quantity }} {{ listing.unit }} <br />
-        Seller: {{ listing.user }} <br /><br />
-        <b-button v-bind:id="listing.id" v-on:click="route(listing.listingId)"
-          >View Listing</b-button
-        >
-        <br /><br />
-        <b-button
-          v-bind:id="listing.id"
-          v-on:click="removeBookmark(listing.listingId)"
-          >Remove Bookmark</b-button
-        >
-      </li>
-    </ul>
+
+    <b-card-group deck>
+      <b-card
+        v-for="list in bookmarks"
+        v-bind:key="list.id"
+        :title="list.item"
+        img-alt="Image"
+        img-top
+        img-height="200"
+        img-width="150"
+        style="max-width: 20rem"
+        class="mb-2 list-item"
+        border-variant="info"
+        v-on:click="route(list.id)"
+      >
+        <b-card-text>
+          ${{ list.price }} per {{ list.unit }} <br />
+          Quantity: {{ list.quantity }} {{ list.unit }}
+          <small>
+            <br />
+            Seller: {{ list.user }}
+            <br />
+            <br />
+            <b-button
+              v-bind:id="list.id"
+              v-on:click="removeBookmark(list.listingId)"
+              >Remove Bookmark</b-button
+            >
+          </small>
+        </b-card-text>
+      </b-card>
+    </b-card-group>
   </div>
 </template>
 
@@ -64,6 +80,7 @@ export default {
           item: listing.name,
           quantity: listing.quantity,
           unit: listing.unit,
+          price: listing.price,
         };
       })
     );
@@ -89,5 +106,15 @@ li {
   margin: 10px;
   border: 1px solid #e6e6e6;
   max-height: 500px;
+}
+
+input {
+  display: inline-block;
+}
+
+.list-item:hover {
+  background-color: rgb(243, 250, 251);
+  background-image: none;
+  cursor: pointer;
 }
 </style>
