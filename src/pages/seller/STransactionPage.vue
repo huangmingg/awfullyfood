@@ -10,7 +10,6 @@
         {{ list.name }}<br>
         >> {{ list.description }}
         
-         
         <b-badge variant="primary" pill> {{ list.interests.length }} </b-badge>
       </b-list-group-item>
 
