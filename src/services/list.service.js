@@ -1,5 +1,6 @@
 import { store } from "@/stores";
 import { database } from "@/firebase";
+import { downloadFile, uploadFile } from "@/services/storage.service";
 
 const getListings = async (saveState = true) => {
     return database.collection("listings").get()
@@ -71,9 +72,15 @@ const deleteListing = async (listingId) => {
     console.log(listingId)
 }
 
-const uploadListingPhotos = async(listingId, photos) => {
-    console.log(listingId, photos)
+const updateListingPhoto = async(listingId, file) => {
+    return uploadFile(file, `listings/${listingId}`);
 }
+
+const getListingPhoto = async (listingId) => {
+    const res = await downloadFile(`lists/${listingId}`);
+    return res ? res : downloadFile('lists/dummy.png');
+}
+
 
 export {
     getListings,
@@ -82,6 +89,7 @@ export {
     createListing,
     updateListing,
     deleteListing,
-    uploadListingPhotos,
+    updateListingPhoto,
+    getListingPhoto,
 }
 
