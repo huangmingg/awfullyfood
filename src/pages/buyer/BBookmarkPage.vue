@@ -24,23 +24,20 @@
             Seller: {{ list.user }}
             <br />
             <br />
-            <b-button v-bind:id="list.id" v-on:click="route(list.listingId)"
-              >View Listing</b-button
-            >  
-
-            <b-button
-              v-bind:id="list.id"
-              v-on:click="removeBookmark(list.listingId)"
-              >Remove Bookmark</b-button
-            >
           </small>
+
+          <b-button
+            v-bind:id="list.id"
+            v-on:click="removeBookmark(list.listingId)"
+            >Remove Bookmark</b-button
+          >
         </b-card-text>
       </b-card>
     </b-card-group>
 
-    <hr>
+    <hr />
 
-        <b-card-group deck>
+    <b-card-group deck>
       <b-card
         v-for="list in bookmarks"
         v-bind:key="list.id"
@@ -63,7 +60,7 @@
             <br />
             <b-button v-bind:id="list.id" v-on:click="route(list.listingId)"
               >View Listing</b-button
-            >  
+            >
 
             <b-button
               v-bind:id="list.id"
@@ -74,9 +71,6 @@
         </b-card-text>
       </b-card>
     </b-card-group>
-
-
-    
   </div>
 </template>
 
@@ -165,5 +159,4 @@ input {
   background-image: none;
   cursor: pointer;
 }
-
 </style>
