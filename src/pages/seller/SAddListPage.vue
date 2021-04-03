@@ -146,7 +146,7 @@ export default {
       router.back();
     },
     clickImage: function () {
-      this.edit ? document.querySelector('[type="file"]').click() : null;
+      document.querySelector('[type="file"]').click();
     },
 
     onFileChange: async function () {
@@ -154,7 +154,7 @@ export default {
       if (input.files) {
         const listingId = this.$route.params.id;
         await updateListingPhoto(listingId, input.files[0]);
-        this.photo = await getListingPhoto(listingId);
+        this.form.photo = await getListingPhoto(listingId);
       }
     },
     validate: function () {
@@ -213,7 +213,8 @@ export default {
       if (this.validate()) {
         const listing = {
           name: this.form.name,
-          price: this.form.price,
+          //always to 2dp
+          price: (Math.round(this.form.price * 100) / 100).toFixed(2),
           quantity: this.form.quantity,
           unit: this.form.unit,
           description: this.form.description,
