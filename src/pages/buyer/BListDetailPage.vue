@@ -28,6 +28,9 @@
         <div>Price: {{ itemPrice }}</div>
         <div>Quantity: {{ itemQty }}</div>
         <div>Description: {{ itemDescription }}</div>
+        <div>Created Date: {{ createdAt }}</div>
+        <div>Expiry Date: {{ expiredAt }}</div>
+        <!--location kiv-->
         <div>Location: {{ location }}</div>
         <div>Additional Notes: {{ additionalNotes }}</div>
 
@@ -75,6 +78,8 @@ export default {
       location: "", //missing
       additionalNotes: "",
       bookmarkAllClasses: ["btn btn-danger", "btn btn-secondary"],
+      expiredAt:"",
+      createdAt:""
     };
   },
 
@@ -125,6 +130,8 @@ export default {
         this.itemDescription = x.description;
         this.location = "unknown (missing)";
         this.additionalNotes = "NA (missing)";
+        this.expiredAt=x.expiredAt.toDate().toLocaleDateString();
+        this.createdAt=x.createdAt.toDate().toLocaleDateString();
         this.checkBookmark(x.bookmarks);
         getDisplayName(x.sellerId).then((y) => (this.seller = y));
       });
