@@ -3,11 +3,18 @@
     Bookmark Page
     <ul class="listContainer">
       <li v-for="listing in bookmarks" v-bind:key="listing.id">
-        Item: {{listing.item}} <br>
-        Quantity: {{listing.quantity}} {{listing.unit}} <br>
-        Seller: {{listing.user}} <br><br>
-        <b-button v-bind:id="listing.id" v-on:click="route(listing.listingId)">View Listing</b-button>  <br><br>
-        <b-button v-bind:id="listing.id" v-on:click="removeBookmark(listing.listingId)">Remove Bookmark</b-button>
+        Item: {{ listing.item }} <br />
+        Quantity: {{ listing.quantity }} {{ listing.unit }} <br />
+        Seller: {{ listing.user }} <br /><br />
+        <b-button v-bind:id="listing.id" v-on:click="route(listing.listingId)"
+          >View Listing</b-button
+        >
+        <br /><br />
+        <b-button
+          v-bind:id="listing.id"
+          v-on:click="removeBookmark(listing.listingId)"
+          >Remove Bookmark</b-button
+        >
       </li>
     </ul>
   </div>
@@ -28,14 +35,14 @@ export default {
     };
   },
   methods: {
-    route: function(event) {
-        this.$router.push({ path: `/buyer/list/${event}` })
+    route: function (event) {
+      this.$router.push({ path: `/buyer/browse/${event}` });
     },
-    removeBookmark: async function(listingId) {
-      await toggleBookmark(listingId, store.getters.getProfileState?.id)
-      alert("Bookmark Removed")
-      location.reload() 
-    }
+    removeBookmark: async function (listingId) {
+      await toggleBookmark(listingId, store.getters.getProfileState?.id);
+      alert("Bookmark Removed");
+      location.reload();
+    },
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -56,7 +63,7 @@ export default {
           user: user,
           item: listing.name,
           quantity: listing.quantity,
-          unit: listing.unit
+          unit: listing.unit,
         };
       })
     );
@@ -83,5 +90,4 @@ li {
   border: 1px solid #e6e6e6;
   max-height: 500px;
 }
-
 </style>
