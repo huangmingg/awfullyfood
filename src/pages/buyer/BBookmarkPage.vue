@@ -25,6 +25,7 @@
             <br />
             <br />
           </small>
+          <hr>
 
           <b-button
             v-bind:id="list.id"
@@ -58,6 +59,7 @@
             Seller: {{ list.user }}
             <br />
             <br />
+            <hr>
             <b-button v-bind:id="list.id" v-on:click="route(list.listingId)"
               >View Listing</b-button
             >
