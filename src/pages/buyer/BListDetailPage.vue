@@ -1,6 +1,9 @@
 <template>
   <div>
     <b-button v-on:click="back()" variant="info"> Back </b-button>
+
+    <hr class="dropdown-divider" />
+
     <div class="row">
       <div class="column">
         <img v-bind:src="itemImg" />
@@ -23,6 +26,7 @@
         </div>
         <div>Category: {{ itemCategory }}</div>
         <div>Price: {{ itemPrice }}</div>
+        <div>Quantity: {{ itemQty }}</div>
         <div>Description: {{ itemDescription }}</div>
         <div>Location: {{ location }}</div>
         <div>Additional Notes: {{ additionalNotes }}</div>
@@ -53,6 +57,7 @@ import { getListing } from "@/services/list.service";
 import { BIconHeartFill } from "bootstrap-vue";
 import { store } from "@/stores";
 import { authService } from "@/firebase";
+import { toggleBookmark } from "@/services/bookmark.service"
 
 export default {
   components: { BIconHeartFill },
@@ -63,6 +68,7 @@ export default {
       itemName: "",
       itemCategory: "",
       itemPrice: "", //price and units
+      itemQty: 0,
       itemRating: 0,
       seller: "", //get seller name
       itemDescription: "",
@@ -92,7 +98,7 @@ export default {
       const userId = store.getters.getProfileState.id;
       var changed = false;
       for (const bm of bookmarkLst) {
-        if (bm.userID === userId) {
+        if (bm.userId === userId) {
           document.getElementById(
             "bookmarkBtn"
           ).className = this.bookmarkAllClasses[0];
@@ -114,11 +120,12 @@ export default {
         this.itemName = x.name;
         this.itemCategory = x.category;
         this.itemPrice = "$" + x.price + " per " + x.unit;
+        this.itemQty = x.quantity;
         this.itemRating = 2.5; //currently no rating component in listing
         this.itemDescription = x.description;
         this.location = "unknown (missing)";
         this.additionalNotes = "NA (missing)";
-        this.checkBookmark(x.bookmark);
+        this.checkBookmark(x.bookmarks);
         getDisplayName(x.sellerId).then((y) => (this.seller = y));
       });
     },
@@ -136,6 +143,9 @@ export default {
           "bookmarkBtn"
         ).className = this.bookmarkAllClasses[0];
       }
+
+      //listing id, user id
+      toggleBookmark(this.$route.params.id, store.getters.getProfileState.id);
     },
   },
 };

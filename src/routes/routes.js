@@ -95,7 +95,7 @@ export const routes = [
                         component: SellerListPage,
                     },
                     {
-                        path: ':id',
+                        path: 'detail/:id',
                         component: SellerListDetailPage,
                         props: true
                     },
