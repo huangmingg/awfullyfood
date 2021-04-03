@@ -2,7 +2,7 @@
   <div>
     <b-button v-on:click="back()" variant="info">Back </b-button>
     <hr class="dropdown-divider" />
-    
+
     <b-container fluid class="p-4 bg-light">
       <b-row>
         <b-btn-group class="ml-auto" >
@@ -105,8 +105,7 @@
 
 <script>
 import { router } from "@/routes";
-import { getListing, updateListing } from "@/services/list.service";
-import { getListingPhoto, updateListingPhoto } from "@/services/user.service";
+import { getListing, updateListing, getListingPhoto, updateListingPhoto } from "@/services/list.service";
 
 export default {
   name: "SListPage",
@@ -146,7 +145,7 @@ export default {
         this.form.unit=x.unit;
         this.form.description=x.description;
         this.form.expiredAt=x.expiredAt.toDate().toLocaleDateString();
-        this.form.createdAt=x.createdAt.toDate().toLocaleDateString(); 
+        this.form.createdAt=x.createdAt.toDate().toLocaleDateString();
         this.form.category=x.category;
         this.form.photo=x.imageURL
       })
