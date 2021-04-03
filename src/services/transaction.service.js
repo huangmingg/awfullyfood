@@ -174,8 +174,10 @@ const approveTransaction = async (transactionId) => {
 
 
 const updateBuyerReview = async (transactionId,num,review) => {
+    
+    const nowDate = new Date(Date.now());
     return database.collection("transactions").doc(transactionId).update({
-          buyerReview: {'rating':num, 'description': review, 'updatedAt': new Date(Date.now())}//how to update server timestamp   
+          buyerReview: {'rating':num, 'description': review, 'updatedAt': nowDate.toLocaleDateString()}  
         })
         .then(() => {
             return true;
@@ -187,8 +189,9 @@ const updateBuyerReview = async (transactionId,num,review) => {
 }
 
 const updateSellerReview = async (transactionId,num,review) => {
+    const nowDate = new Date(Date.now());
     return database.collection("transactions").doc(transactionId).update({
-          sellerReview: {'rating':num, 'description': review, 'updatedAt': Date.now()} //how to update server timestamp   
+          sellerReview: {'rating':num, 'description': review, 'updatedAt': nowDate.toLocaleDateString()}    
         })
         .then(() => {
             return true;

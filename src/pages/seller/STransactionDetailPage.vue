@@ -103,7 +103,7 @@
             class="d-flex justify-content-between align-items-center" disabled>
             <h1 class="mb-1"><small>ID: {{ list.buyerId }}<br>
             Quantity: {{ list.quantity }}<br>
-            Approved at: {{ list.sellerReview.updatedAt }} how to change this to time hello</small>
+            Approved at: {{ list.sellerReview.updatedAt }}</small>
             </h1>
             
         </b-list-group-item>
