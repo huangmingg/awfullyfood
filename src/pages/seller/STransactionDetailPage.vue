@@ -7,11 +7,11 @@
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">Buyer Name: {{ list.buyerId }}
-        <br>
-        Quantity: {{ list.quantity }}
-        <br> 
-        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+        <h1 class="mb-1">Buyer Name: {{ list.buyerId }}<br>
+        Quantity: {{ list.quantity }}<br><br> 
+        <small>Status: {{ getStatus(list.isApproved) }}<br>
+
+        Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
         
@@ -37,14 +37,14 @@
             <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
           </b-modal>
           
-        <b-dropdown-item @click="showModal()" v-on:click="approve(list.id)">Approve</b-dropdown-item>
+        <b-dropdown-item @click="showModal()">Approve</b-dropdown-item>
 
           <b-modal id="modal-closing" ref="modal-review" 
           title="Submit Your Review"
           
           @show="resetModal"
           @hidden="resetModal"
-          @ok="handleOk"
+          @ok="handleOk($event,list.id)"
           no-close-on-backdrop >
             <template #modal-title>
               Submit Your Review
@@ -73,12 +73,12 @@
                   label="Review"
                   label-for="review-input"
                   invalid-feedback="Review is required and must have at least 10 characters"
-                  :state="text.length >= 10"
+                  :state="review.length >= 10"
                 >
                 <b-form-textarea
                   id="review-input"
-                  v-model="text"
-                  :state="text.length >= 10"
+                  v-model="review"
+                  :state="review.length >= 10"
                   required
                 ></b-form-textarea> 
                 </b-form-group>
@@ -102,7 +102,7 @@
 <script>
 
 import { getUserProfile } from "@/services/user.service";
-import { getTransactionsBySeller, approveTransaction, testUpdateQuantity } from "@/services/transaction.service";
+import { getTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -111,12 +111,10 @@ export default {
   data() {
     return {
       profile: {},
-      name: '',
-      nameState: null,
-      submittedNames: [],
-      text: '', //need to reset text if not its the same for all. ensure text is sent to right db.
-      textState: null,
-      value: 0, //need to send to db.
+      review: '', 
+      reviewState: null,
+      value: 0, 
+      submitCount: 0,
     }
   },
   computed: {
@@ -132,28 +130,32 @@ export default {
     checkFormValidity() {
       if (this.value > 0) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
-        this.textState = valid
+        this.reviewState = valid
         return valid
       }
     },
     resetModal() {
-      this.text = ''
-      this.textState = null
+      this.review = ''
+      this.reviewState = null
       this.value = 0
     },
-    handleOk(bvModalEvt) {
+    handleOk(bvModalEvt,id) {
       // Prevent modal from closing
       bvModalEvt.preventDefault()
       // Trigger submit handler
-      this.handleSubmit()
+      this.handleSubmit(id)
     },
-    handleSubmit() { 
+    handleSubmit(id) { 
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return
       }
-      // Push the name to submitted names 
-      this.submittedNames.push(this.text) //This shall be edited to be sent to firebase data. or not.
+      // Update Firebase Data
+      approveTransaction(id) 
+      updateSellerReview(id,this.value,this.review)
+
+      //Prevent resubmits
+
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-closing')
@@ -166,15 +168,16 @@ export default {
       this.profile = await getUserProfile(id, false);
       console.log(this.profile);
     },
-    approve:function(id) {
-      approveTransaction(id); 
-    },
-    submitThis:function(id) {
-      testUpdateQuantity(id);
-    },
     showModal(){
         this.$refs["modal-review"][0].show();
     },
+    getStatus:function(item) {
+      if (item) {
+        return 'Transaction is approved.'
+      } else {
+        return 'Transaction is not approved.'
+      }
+    }
   },
 }
 </script>
