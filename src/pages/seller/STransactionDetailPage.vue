@@ -70,13 +70,13 @@
                 <b-form-group
                   label="Review"
                   label-for="review-input"
-                  invalid-feedback="Review is required and must have at least 10 characters"
-                  :state="review.length >= 10"
+                  invalid-feedback="Review is required and must have at least 20 characters"
+                  :state="review.length >= 20"
                 >
                 <b-form-textarea
                   id="review-input"
                   v-model="review"
-                  :state="review.length >= 10"
+                  :state="review.length >= 20"
                   required
                 ></b-form-textarea> 
                 </b-form-group>
@@ -146,10 +146,12 @@ export default {
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0) { 
+      if (this.value > 0 && this.review.length > 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
+      } else {
+        alert('Please fill in your review.')
       }
     },
     resetModal() {
@@ -171,15 +173,13 @@ export default {
       // Update Firebase Data
       approveTransaction(id) 
       updateSellerReview(id,this.value,this.review)
-      //Prevent resubmits
 
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-closing') 
-        
-        //window.location.reload() //reload page if this is included then it doesnt go to approve part
+        location.reload()
       }
-      ) 
+      )   
     },
     back: function() {
       router.back();
