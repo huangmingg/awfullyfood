@@ -8,7 +8,7 @@
         v-bind:key="list.id" 
         class="d-flex justify-content-between list-group-item-action align-items-center" :disabled="isDisabled(list.isApproved)">
         <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
-        {{ list.listingId }} This should be the name.
+        {{ getProduct(list.listingId) }} This should be the name.
         <br>
         Quantity: {{ list.quantity }}
         <br> 
@@ -98,6 +98,7 @@
 
 <script>
 import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
+import { getListing } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -134,10 +135,12 @@ export default {
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0) { 
+      if (this.value > 0 && this.review.length >= 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
+      } else {
+        alert('Please fill in your review.')
       }
     },
     handleOk(bvModalEvt,id) {
@@ -181,6 +184,11 @@ export default {
       } else {
         return true
       }        
+    },
+    getProduct: async function(id) {
+      this.product = await getListing(id)
+      console.log(this.product)
+      return this.product.name
     },
   },
   
