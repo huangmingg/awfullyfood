@@ -143,7 +143,6 @@ export default {
   async created() {
     this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
     this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
-    
   },
   methods: {
     checkFormValidity() {
@@ -172,7 +171,6 @@ export default {
       // Update Firebase Data
       approveTransaction(id) 
       updateSellerReview(id,this.value,this.review)
-
       //Prevent resubmits
 
       // Hide the modal manually

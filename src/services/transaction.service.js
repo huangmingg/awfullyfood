@@ -199,6 +199,17 @@ const updateSellerReview = async (transactionId,num,review) => {
         });
 }
 
+const updateInterest = async (transactionId) => { //how to remove array elements with index
+    return database.collection("transactions").doc(transactionId).update({isApproved:true})
+        .then(() => {
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
+}
+
 export {
     getTransactions,
     getTransactionsByBuyer,
@@ -211,5 +222,6 @@ export {
     approveTransaction,
     updateBuyerReview,
     updateSellerReview,
+    updateInterest,
 
 }

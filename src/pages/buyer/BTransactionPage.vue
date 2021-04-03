@@ -9,7 +9,7 @@
         class="d-flex justify-content-between list-group-item-action align-items-center">
         <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}
         <br><br>
-        {{ list.listingId }}
+        {{ getProduct(list.listingId) }} this shld be listing NAME!!!
         <br>
         Quantity: {{ list.quantity }}
         <br> 
@@ -69,8 +69,27 @@
 
         
       </b-list-group-item>
-
   </b-list-group>
+  <br>
+  <div>
+    <div style="text-align:center">
+    <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Past Transactions</b-button>
+    </div>
+    <b-collapse id="collapse-1" class="mt-2">
+      <b-card>
+        <p class="card-text">Here should be after buyer reviewed
+          so should i have a field isReviewed? <br>
+          because if don't have then the buyer transactions<br>
+          is just going to be very full<br>
+          even if i disable the transaction after buy reviewed(WHICH I TRIED BUT FAILED)<br>
+          it will still be full<br><br>
+
+          and maybe clicking this can link to the listing PAGE to see what they
+          bought previously
+        </p>
+      </b-card>
+    </b-collapse>
+  </div>
 
   </div>
 </template>
@@ -79,12 +98,13 @@
 import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
+import { getListing } from "@/services/list.service";
 
 export default {
   name: "STransactionDetailPage",
   data() {
     return {
-      profile: {},
+      product: {},
       review: '', 
       reviewState: null,
       value: 0, 
@@ -147,7 +167,12 @@ export default {
         this.disabled = true
         return 'Transaction is not approved.'
       }
-    }
+    },
+    getProduct: async function(id) {
+      this.product = await getListing(id);
+      this.test = this.product.name
+      return this.test
+    },
   },
   
 }
