@@ -1,17 +1,15 @@
 <template>
   <div>
     
-    <h2>Transaction Details</h2>
-    <br>
+    <h2>Pending Transactions</h2>
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">Buyer Name: {{ list.buyerId }}<br>
-        Quantity: {{ list.quantity }}<br><br> 
-        <small>Status: {{ getStatus(list.isApproved) }}<br>
-
-        Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+        <h1 class="mb-1">ID: {{ list.buyerId }}<br>
+        
+        Quantity: {{ list.quantity }}<br>
+        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
         
@@ -90,8 +88,29 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-list-group-item>
-
   </b-list-group>
+
+    <br>
+    <div>
+      <div style="text-align:center">
+      <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Approved Transactions</b-button>
+      </div>
+      <b-collapse id="collapse-1" class="mt-2">
+      <h2>Approved Transactions</h2>
+      <b-list-group deck>
+          <b-list-group-item  v-for="list in secondListing"
+            v-bind:key="list.id"
+            class="d-flex justify-content-between align-items-center" disabled>
+            <h1 class="mb-1"><small>ID: {{ list.buyerId }}<br>
+            Quantity: {{ list.quantity }}<br>
+            Approved at: {{ list.sellerReview.updatedAt }} how to change this to time hello</small>
+            </h1>
+            
+        </b-list-group-item>
+      </b-list-group>
+      </b-collapse>
+    </div>
+  
 
     <br><br>
     
@@ -102,7 +121,7 @@
 <script>
 
 import { getUserProfile } from "@/services/user.service";
-import { getTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
+import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -115,16 +134,16 @@ export default {
       reviewState: null,
       value: 0, 
       submitCount: 0,
+      listing: {},
+      secondListing: {},
     }
   },
   computed: {
-    listing() {
-      return store.getters.getList;
-    },
   },
   async created() {
-    const res = await getTransactionsBySeller(store.getters.getProfileState?.id); //change to getTransactionsBySeller
-    console.log(res);
+    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
+    this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
+    
   },
   methods: {
     checkFormValidity() {
@@ -158,8 +177,11 @@ export default {
 
       // Hide the modal manually
       this.$nextTick(() => {
-        this.$bvModal.hide('modal-closing')
-      })
+        this.$bvModal.hide('modal-closing') 
+        
+        //window.location.reload() //reload page if this is included then it doesnt go to approve part
+      }
+      ) 
     },
     back: function() {
       router.back();
@@ -171,7 +193,7 @@ export default {
     showModal(){
         this.$refs["modal-review"][0].show();
     },
-    getStatus:function(item) {
+    getStatus:function(item) { //can be deleted
       if (item) {
         return 'Transaction is approved.'
       } else {

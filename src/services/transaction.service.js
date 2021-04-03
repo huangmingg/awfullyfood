@@ -39,7 +39,7 @@ const getTransactionsBySeller = async (sellerId, saveState = true) => {
         });
 }
 
-const getApprovedTransactionsBySeller = async (sellerId) => {
+const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
         .where("isApproved", "==", true)
@@ -51,6 +51,7 @@ const getApprovedTransactionsBySeller = async (sellerId) => {
                     'id': doc.id,
                 };
             });
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -59,7 +60,7 @@ const getApprovedTransactionsBySeller = async (sellerId) => {
         });
 }
 
-const getPendingTransactionsBySeller = async (sellerId) => {
+const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
         .where("isApproved", "==", false)
@@ -71,6 +72,7 @@ const getPendingTransactionsBySeller = async (sellerId) => {
                     'id': doc.id,
                 };
             });
+            saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
         .catch((error) => {
@@ -173,7 +175,7 @@ const approveTransaction = async (transactionId) => {
 
 const updateBuyerReview = async (transactionId,num,review) => {
     return database.collection("transactions").doc(transactionId).update({
-          buyerReview: [{'rating':num, 'description': review}] //how to update server timestamp   
+          buyerReview: {'rating':num, 'description': review, 'updatedAt': new Date(Date.now())}//how to update server timestamp   
         })
         .then(() => {
             return true;
@@ -186,7 +188,7 @@ const updateBuyerReview = async (transactionId,num,review) => {
 
 const updateSellerReview = async (transactionId,num,review) => {
     return database.collection("transactions").doc(transactionId).update({
-          sellerReview: {'rating':num, 'description': review} //how to update server timestamp   
+          sellerReview: {'rating':num, 'description': review, 'updatedAt': Date.now()} //how to update server timestamp   
         })
         .then(() => {
             return true;
