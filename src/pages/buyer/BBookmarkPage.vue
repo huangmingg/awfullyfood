@@ -14,7 +14,7 @@
         style="max-width: 20rem"
         class="mb-2 list-item"
         border-variant="info"
-        v-on:click="route(list.id)"
+        v-on:click="route(list.listingId)"
       >
         <b-card-text>
           ${{ list.price }} per {{ list.unit }} <br />
@@ -24,6 +24,46 @@
             Seller: {{ list.user }}
             <br />
             <br />
+          </small>
+          <hr>
+
+          <b-button
+            v-bind:id="list.id"
+            v-on:click="removeBookmark(list.listingId)"
+            >Remove Bookmark</b-button
+          >
+        </b-card-text>
+      </b-card>
+    </b-card-group>
+
+    <hr />
+
+    <b-card-group deck>
+      <b-card
+        v-for="list in bookmarks"
+        v-bind:key="list.id"
+        :title="list.item"
+        img-alt="Image"
+        img-top
+        img-height="200"
+        img-width="150"
+        style="max-width: 20rem"
+        class="mb-2 list-item"
+        border-variant="info"
+      >
+        <b-card-text>
+          ${{ list.price }} per {{ list.unit }} <br />
+          Quantity: {{ list.quantity }} {{ list.unit }}
+          <small>
+            <br />
+            Seller: {{ list.user }}
+            <br />
+            <br />
+            <hr>
+            <b-button v-bind:id="list.id" v-on:click="route(list.listingId)"
+              >View Listing</b-button
+            >
+
             <b-button
               v-bind:id="list.id"
               v-on:click="removeBookmark(list.listingId)"
@@ -106,6 +146,10 @@ li {
   margin: 10px;
   border: 1px solid #e6e6e6;
   max-height: 500px;
+}
+
+button {
+  margin-right: 4px;
 }
 
 input {
