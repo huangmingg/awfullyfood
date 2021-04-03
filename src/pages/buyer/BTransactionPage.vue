@@ -6,17 +6,16 @@
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id" 
-        class="d-flex justify-content-between list-group-item-action align-items-center">
-        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}
-        <br><br>
-        {{ getProduct(list.listingId) }} this shld be listing NAME!!!
+        class="d-flex justify-content-between list-group-item-action align-items-center" :disabled="isDisabled(list.isApproved)">
+        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
+        {{ list.listingId }} This should be the name.
         <br>
         Quantity: {{ list.quantity }}
         <br> 
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
-        <b-button variant="outline-info" class="ml-auto" @click="showModal()" :disabled="isDisabled">Review</b-button>
+        <b-button variant="outline-info" class="ml-auto" @click="showModal()">Review</b-button>
 
 
           <b-modal id="modal-closing" ref="modal-review" 
@@ -53,13 +52,13 @@
                 <b-form-group
                   label="Review"
                   label-for="review-input"
-                  invalid-feedback="Review is required and must have at least 10 characters"
-                  :state="review.length >= 10"
+                  invalid-feedback="Review is required and must have at least 20 characters"
+                  :state="review.length >= 20"
                 >
                 <b-form-textarea
                   id="review-input"
                   v-model="review"
-                  :state="review.length >= 10"
+                  :state="review.length >= 20"
                   required
                 ></b-form-textarea> 
                 </b-form-group>
@@ -76,18 +75,21 @@
     <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Past Transactions</b-button>
     </div>
     <b-collapse id="collapse-1" class="mt-2">
-      <b-card>
-        <p class="card-text">Here should be after buyer reviewed
-          so should i have a field isReviewed? <br>
-          because if don't have then the buyer transactions<br>
-          is just going to be very full<br>
-          even if i disable the transaction after buy reviewed(WHICH I TRIED BUT FAILED)<br>
-          it will still be full<br><br>
-
+          
+        <b-list-group deck>
+            <b-list-group-item  v-for="list in secondListing"
+              v-bind:key="list.id"
+              class="d-flex justify-content-between align-items-center" disabled>
+              <h1 class="mb-1"><small>Item: {{ list.listingId }}<br>
+              Quantity: {{ list.quantity }}<br>
+              Reviewed at: {{ list.buyerReview.updatedAt }}</small>
+              </h1>
+              
           and maybe clicking this can link to the listing PAGE to see what they
           bought previously
-        </p>
-      </b-card>
+          </b-list-group-item>
+        </b-list-group>
+
     </b-collapse>
   </div>
 
@@ -98,7 +100,6 @@
 import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
-import { getListing } from "@/services/list.service";
 
 export default {
   name: "STransactionDetailPage",
@@ -109,19 +110,27 @@ export default {
       reviewState: null,
       value: 0, 
       disabled: false,
+      secondListing: {},
     }
   },
   computed: {
     listing() {
       return store.getters.getList;
     },
-    isDisabled() {
-      return this.disabled;
-    }
   },
   async created() {
     const res = await getTransactionsByBuyer(store.getters.getProfileState?.id); 
     console.log(res)
+  },
+  async mounted() {
+    const transactions = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    }).filter((ele) => {
+      return ele.buyerReview.rating > 0;
+    })
+    this.secondListing = transactions;
   },
   methods: {
     checkFormValidity() {
@@ -161,17 +170,17 @@ export default {
     },
     getStatus:function(item) {
       if (item) {
-        this.disabled = false
         return 'Transaction is approved and you can leave a review for the seller.'
       } else {
-        this.disabled = true
         return 'Transaction is not approved.'
       }
     },
-    getProduct: async function(id) {
-      this.product = await getListing(id);
-      this.test = this.product.name
-      return this.test
+    isDisabled:function(item){
+      if (item) {
+        return false
+      } else {
+        return true
+      }        
     },
   },
   

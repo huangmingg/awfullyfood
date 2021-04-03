@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0 && this.review.length > 20) { 
+      if (this.value > 0 && this.review.length >= 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
@@ -177,7 +177,7 @@ export default {
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-closing') 
-        location.reload()
+        //location.reload() //can only updateReview and get into approve part after several REFRESHES
       }
       )   
     },
