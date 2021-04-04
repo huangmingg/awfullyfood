@@ -14,7 +14,7 @@
             {{ itemName }}
           </span>
           <span class="float-right">
-            <span id="sellerStyle"> <b>By:</b> {{ seller }} </span>
+            <span id="sellerStyle"> By: {{ seller }} </span>
             <span class="float-right">
               <b-form-rating
                 v-model="itemRating"

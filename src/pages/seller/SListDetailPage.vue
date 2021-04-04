@@ -6,6 +6,7 @@
     <b-container fluid class="p-4 bg-light">
       <b-row>
         <b-btn-group class="ml-auto" >
+          <b-button v-show="!edit" variant="danger" v-on:click="deleteList()">Delete Listing</b-button>
           <b-button v-show="!edit" variant="info" v-on:click="editList()">Edit Listing</b-button>
           <b-button v-show="edit" variant="info" v-on:click="saveList()">Save Listing</b-button>
         </b-btn-group>
@@ -113,7 +114,7 @@
 
 <script>
 import { router } from "@/routes";
-import { getListing, updateListing, getListingPhoto, updateListingPhoto } from "@/services/list.service";
+import { getListing, updateListing, getListingPhoto, updateListingPhoto, deleteListing } from "@/services/list.service";
 
 export default {
   name: "SListPage",
@@ -251,6 +252,10 @@ export default {
       return true;
       }
     },
+    deleteList: function() {
+      deleteListing(this.$route.params.id);
+      router.back();
+    }
   },
 }
 </script>

@@ -215,7 +215,7 @@ export default {
         document.getElementById("input-7").style.borderColor = "";
       }
 
-      if (this.form.expiredAt == "") {
+      if (this.form.expiredAt == "" || new Date(this.form.expiredAt) < new Date()) {
         document.getElementById("input-8").style.borderColor = "red";
         error = true;
       } else {
@@ -247,7 +247,7 @@ export default {
         };
         createListing(listing);
         alert("Listing created")
-        location.reload()
+        router.back();
       } else {
         alert("Something went wrong, please check the inputs and try again");
       }
