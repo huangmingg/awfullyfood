@@ -74,6 +74,15 @@
               ></b-textarea>
             </b-form-group>
 
+            <b-form-group id="input-group-9" label="Location:" label-for="input-9">
+              <b-textarea
+                  disabled
+                  id="input-9"
+                  v-model="form.location"
+                  required
+              ></b-textarea>
+            </b-form-group>
+
             <b-form-group id="input-group-7" label="Created Date:" label-for="input-7">
               <b-form-input
                   disabled
@@ -111,7 +120,7 @@ export default {
   data() {
     return {
       edit: false,
-      editableFields: ["input-1", "input-3", "input-4", "input-5", "input-6"],
+      editableFields: ["input-1", "input-3", "input-4", "input-5", "input-6", "input-9"],
       form: {
         name:"",
         price:0,
@@ -121,7 +130,8 @@ export default {
         expiredAt:"",
         createdAt:"",
         category:"",
-        photo:''
+        photo:'',
+        location:'',
       }
     }
   },
@@ -146,7 +156,8 @@ export default {
         this.form.expiredAt=x.expiredAt.toDate().toLocaleDateString();
         this.form.createdAt=x.createdAt.toDate().toLocaleDateString();
         this.form.category=x.category;
-        this.form.photo=x.imageURL
+        this.form.photo=x.imageURL;
+        this.form.location=x.location
       })
     },
 
@@ -182,7 +193,8 @@ export default {
         price: this.form.price,
         quantity: this.form.quantity,
         unit: this.form.unit,
-        description: this.form.description
+        description: this.form.description,
+        location: this.form.location
       }
       updateListing(this.$route.params.id, change)
     },
@@ -225,6 +237,12 @@ export default {
         error=true
       } else {
         document.getElementById("input-6").style.borderColor=""
+      }
+      if (this.form.location == "") {
+        document.getElementById("input-9").style.borderColor="red"
+        error=true
+      } else {
+        document.getElementById("input-9").style.borderColor=""
       }
 
       if (error) {

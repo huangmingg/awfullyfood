@@ -80,7 +80,7 @@
               label="Description:"
               label-for="input-6"
             >
-              <b-textarea
+            <b-textarea
                 id="input-6"
                 v-model="form.description"
                 required
@@ -89,11 +89,23 @@
 
             <b-form-group
               id="input-group-7"
-              label="Expiry Date:"
+              label="Location:"
               label-for="input-7"
             >
-              <b-form-input
+            <b-textarea
                 id="input-7"
+                v-model="form.location"
+                required
+              ></b-textarea>
+            </b-form-group>
+
+            <b-form-group
+              id="input-group-8"
+              label="Expiry Date:"
+              label-for="input-8"
+            >
+              <b-form-input
+                id="input-8"
                 v-model="form.expiredAt"
                 type="datetime-local"
                 required
@@ -131,6 +143,7 @@ export default {
         expiredAt: "",
         category: "",
         photo: "",
+        location:"",
       },
       options: ["Ugly", "Expiring"],
     };
@@ -195,11 +208,18 @@ export default {
         document.getElementById("input-6").style.borderColor = "";
       }
 
-      if (this.form.expiredAt == "") {
+      if (this.form.location == "") {
         document.getElementById("input-7").style.borderColor = "red";
         error = true;
       } else {
         document.getElementById("input-7").style.borderColor = "";
+      }
+
+      if (this.form.expiredAt == "") {
+        document.getElementById("input-8").style.borderColor = "red";
+        error = true;
+      } else {
+        document.getElementById("input-8").style.borderColor = "";
       }
 
       if (error) {

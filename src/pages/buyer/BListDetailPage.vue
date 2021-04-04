@@ -14,7 +14,7 @@
             {{ itemName }}
           </span>
           <span class="float-right">
-            <span id="sellerStyle"> By: {{ seller }} </span>
+            <span id="sellerStyle"> <b>By:</b> {{ seller }} </span>
             <span class="float-right">
               <b-form-rating
                 v-model="itemRating"
@@ -24,15 +24,13 @@
             </span>
           </span>
         </div>
-        <div>Category: {{ itemCategory }}</div>
-        <div>Price: {{ itemPrice }}</div>
-        <div>Quantity: {{ itemQty }}</div>
-        <div>Description: {{ itemDescription }}</div>
-        <div>Created Date: {{ createdAt }}</div>
-        <div>Expiry Date: {{ expiredAt }}</div>
-        <!--location kiv-->
-        <div>Location: {{ location }}</div>
-        <div>Additional Notes: {{ additionalNotes }}</div>
+        <div><b>Category:</b> {{ itemCategory }}</div>
+        <div><b>Price:</b> {{ itemPrice }}</div>
+        <div><b>Quantity:</b> {{ itemQty }}</div>
+        <div><b>Description:</b> {{ itemDescription }}</div>
+        <div><b>Location:</b> {{ location }}</div>
+        <div><b>Created Date:</b> {{ createdAt }}</div>
+        <div><b>Expiry Date:</b> {{ expiredAt }}</div>
 
         <br />
 
@@ -76,7 +74,6 @@ export default {
       seller: "", //get seller name
       itemDescription: "",
       location: "", //missing
-      additionalNotes: "",
       bookmarkAllClasses: ["btn btn-danger", "btn btn-secondary"],
       expiredAt:"",
       createdAt:""
@@ -128,8 +125,7 @@ export default {
         this.itemQty = x.quantity;
         this.itemRating = 2.5; //currently no rating component in listing
         this.itemDescription = x.description;
-        this.location = "unknown (missing)";
-        this.additionalNotes = "NA (missing)";
+        this.location = x.location;
         this.expiredAt=x.expiredAt.toDate().toLocaleDateString();
         this.createdAt=x.createdAt.toDate().toLocaleDateString();
         this.checkBookmark(x.bookmarks);
