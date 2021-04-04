@@ -4,11 +4,11 @@
     <h2>Available Transactions</h2>
     <br>
      <b-list-group deck>
-      <b-list-group-item  v-for="list in listing"
+      <b-list-group-item  v-for="list in thirdListing"
         v-bind:key="list.id" 
         class="d-flex justify-content-between list-group-item-action align-items-center" :disabled="isDisabled(list.isApproved)">
         <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
-        {{ getProduct(list.listingId) }} This should be the name.
+        {{ getProduct(list.listingId) }} -> This should be the name.
         <br>
         Quantity: {{ list.quantity }}
         <br> 
@@ -79,14 +79,13 @@
         <b-list-group deck>
             <b-list-group-item  v-for="list in secondListing"
               v-bind:key="list.id"
-              class="d-flex justify-content-between align-items-center" disabled>
+              class="d-flex list-group-item-action justify-content-between align-items-center">
               <h1 class="mb-1"><small>Item: {{ list.listingId }}<br>
               Quantity: {{ list.quantity }}<br>
               Reviewed at: {{ list.buyerReview.updatedAt }}</small>
               </h1>
+               <b-button v-b-toggle.collapse-1  variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
               
-          and maybe clicking this can link to the listing PAGE to see what they
-          bought previously
           </b-list-group-item>
         </b-list-group>
 
@@ -112,6 +111,7 @@ export default {
       value: 0, 
       disabled: false,
       secondListing: {},
+      thirdListing: {},
     }
   },
   computed: {
@@ -132,10 +132,16 @@ export default {
       return ele.buyerReview.rating > 0;
     })
     this.secondListing = transactions;
+    const transactions2 = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id)
+    ).filter((ele) => {
+      return ele.buyerReview.rating == 0;
+    })
+    this.thirdListing = transactions2;
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0 && this.review.length >= 20) { 
+    if (this.value > 0 && this.review.length >= 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
@@ -189,6 +195,9 @@ export default {
       this.product = await getListing(id)
       console.log(this.product)
       return this.product.name
+    },
+    navigate: function (listId) {
+      router.push(`browse/${listId}`);
     },
   },
   
