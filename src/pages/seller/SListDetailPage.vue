@@ -66,13 +66,12 @@
             </b-form-group>
 
             <b-form-group id="input-group-6" label="Description:" label-for="input-6">
-              <b-form-input
+              <b-textarea
                   disabled
                   id="input-6"
                   v-model="form.description"
-                  type="text"
                   required
-              ></b-form-input>
+              ></b-textarea>
             </b-form-group>
 
             <b-form-group id="input-group-7" label="Created Date:" label-for="input-7">

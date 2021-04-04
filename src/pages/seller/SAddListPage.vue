@@ -80,12 +80,11 @@
               label="Description:"
               label-for="input-6"
             >
-              <b-form-input
+              <b-textarea
                 id="input-6"
                 v-model="form.description"
-                type="text"
                 required
-              ></b-form-input>
+              ></b-textarea>
             </b-form-group>
 
             <b-form-group
