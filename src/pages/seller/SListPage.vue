@@ -80,6 +80,9 @@
             >Expiry Date:
             {{ list.expiredAt.toDate().toLocaleDateString() }}</small
           >
+          <div v-show="checkExpire(list.expiredAt)" style="color: red"> 
+              Expired!
+            </div>
         </b-card-text>
         <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
         <span style="color: red">
@@ -195,6 +198,9 @@ export default {
     search: function () {
       this.searchItem = document.getElementById("searchEntry").value;
     },
+    checkExpire(expire) {
+      return expire.toDate().toLocaleDateString() < new Date().toLocaleDateString()
+    }
   },
 };
 </script>
