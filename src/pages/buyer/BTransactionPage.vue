@@ -80,7 +80,7 @@
             <b-list-group-item  v-for="list in secondListing"
               v-bind:key="list.id"
               class="d-flex list-group-item-action justify-content-between align-items-center">
-              <h1 class="mb-1"><small>Item: {{ list.listingId }}<br>
+              <h1 class="mb-1"><small>Item: {{ list.listingId }} This should be name too.<br>
               Quantity: {{ list.quantity }}<br>
               Reviewed at: {{ list.buyerReview.updatedAt }}</small>
               </h1>
