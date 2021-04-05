@@ -1,17 +1,15 @@
 <template>
   <div>
     
-    <h2>Transaction Details</h2>
-    <br>
+    <h2>Pending Transactions</h2>
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">Buyer Name: {{ list.buyerId }}<br>
-        Quantity: {{ list.quantity }}<br><br> 
-        <small>Status: {{ getStatus(list.isApproved) }}<br>
-
-        Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+        <h1 class="mb-1">ID: {{ list.buyerId }}<br>
+        
+        Quantity: {{ list.quantity }}<br>
+        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
         
         
@@ -72,13 +70,13 @@
                 <b-form-group
                   label="Review"
                   label-for="review-input"
-                  invalid-feedback="Review is required and must have at least 10 characters"
-                  :state="review.length >= 10"
+                  invalid-feedback="Review is required and must have at least 20 characters"
+                  :state="review.length >= 20"
                 >
                 <b-form-textarea
                   id="review-input"
                   v-model="review"
-                  :state="review.length >= 10"
+                  :state="review.length >= 20"
                   required
                 ></b-form-textarea> 
                 </b-form-group>
@@ -90,8 +88,29 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-list-group-item>
-
   </b-list-group>
+
+    <br>
+    <div>
+      <div style="text-align:center">
+      <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Approved Transactions</b-button>
+      </div>
+      <b-collapse id="collapse-1" class="mt-2">
+      <h2>Approved Transactions</h2>
+      <b-list-group deck>
+          <b-list-group-item  v-for="list in secondListing"
+            v-bind:key="list.id"
+            class="d-flex justify-content-between align-items-center" disabled>
+            <h1 class="mb-1"><small>ID: {{ list.buyerId }}<br>
+            Quantity: {{ list.quantity }}<br>
+            Approved at: {{ list.sellerReview.updatedAt }}</small>
+            </h1>
+            
+        </b-list-group-item>
+      </b-list-group>
+      </b-collapse>
+    </div>
+  
 
     <br><br>
     
@@ -102,7 +121,7 @@
 <script>
 
 import { getUserProfile } from "@/services/user.service";
-import { getTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
+import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -115,23 +134,24 @@ export default {
       reviewState: null,
       value: 0, 
       submitCount: 0,
+      listing: {},
+      secondListing: {},
     }
   },
   computed: {
-    listing() {
-      return store.getters.getList;
-    },
   },
   async created() {
-    const res = await getTransactionsBySeller(store.getters.getProfileState?.id); //change to getTransactionsBySeller
-    console.log(res);
+    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
+    this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0) { 
+      if (this.value > 0 && this.review.length >= 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
+      } else {
+        alert('Please fill in your review.')
       }
     },
     resetModal() {
@@ -154,12 +174,12 @@ export default {
       approveTransaction(id) 
       updateSellerReview(id,this.value,this.review)
 
-      //Prevent resubmits
-
       // Hide the modal manually
       this.$nextTick(() => {
-        this.$bvModal.hide('modal-closing')
-      })
+        this.$bvModal.hide('modal-closing') 
+        //location.reload() //can only updateReview and get into approve part after several REFRESHES
+      }
+      )   
     },
     back: function() {
       router.back();
@@ -171,7 +191,7 @@ export default {
     showModal(){
         this.$refs["modal-review"][0].show();
     },
-    getStatus:function(item) {
+    getStatus:function(item) { //can be deleted
       if (item) {
         return 'Transaction is approved.'
       } else {

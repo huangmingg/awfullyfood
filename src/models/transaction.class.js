@@ -8,7 +8,6 @@ export class TransactionCreate {
         this.sellerReview = transaction.sellerReview ? transaction.sellerReview : {};
         this.isApproved = transaction.isApproved ? transaction.isApproved : false;
         this.createdAt = transaction.createdAt;
-        this.completedAt = transaction.completedAt;
         this.deletedAt = transaction.deletedAt;
     }
 }
@@ -24,8 +23,8 @@ export class TransactionRead extends TransactionCreate {
 export class TransactionUpdate {
     constructor(obj) {
         const getData = data => ({
-            ...data.buyerReview && { expiredAt: data.expiredAt },
-            ...data.sellerReview && { expiredAt: data.expiredAt },
+            ...data.buyerReview && { buyerReview: data.buyerReview },
+            ...data.sellerReview && { sellerReview: data.sellerReview },
             ...data.isApproved && { isApproved: data.isApproved },
             ...data.completedAt && { completedAt: data.completedAt },
             ...data.deletedAt && { deletedAt: data.deletedAt },

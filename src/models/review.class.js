@@ -1,6 +1,7 @@
 export class Review {
-    constructor(rating, description) {
+    constructor(rating, description,updatedAt) {
         this.rating = rating;
         this.description = description;
+        this.updatedAt = updatedAt;
     }
 }
