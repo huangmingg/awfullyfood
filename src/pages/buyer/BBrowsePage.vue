@@ -58,22 +58,22 @@
 </template>
 
 <script>
-import { getListings } from "@/services/list.service";
-import { store } from "@/stores";
-import { router } from "@/routes";
-import BrowseModal from "@/components/BrowseModal";
-import SortModal from "@/components/SortModal";
-import { BIconHeartFill } from "bootstrap-vue";
-import { convertTimestamp } from "@/services/utils.service";
-import { getUserProfile } from "@/services/user.service";
-import { authService } from "@/firebase";
+import { getListings } from '@/services/list.service';
+import { store } from '@/stores';
+import { router } from '@/routes';
+import BrowseModal from '@/components/BrowseModal';
+import SortModal from '@/components/SortModal';
+import { BIconHeartFill } from 'bootstrap-vue';
+import { convertTimestamp } from '@/services/utils.service';
+import { getUserProfile } from '@/services/user.service';
+import { authService } from '@/firebase';
 
 export default {
-  name: "BBrowsePage",
+  name: 'BBrowsePage',
   components: { BrowseModal, SortModal, BIconHeartFill },
   data() {
     return {
-      content: "",
+      content: '',
     };
   },
   computed: {
@@ -83,12 +83,12 @@ export default {
   },
 
   watch: {
-    content: function (newQuery) {
+    content(newQuery) {
       this.content = newQuery;
       this.sanitizeQuery();
-      store.dispatch('setFilter', {...store.getters.getFilter, nameSubstring: this.content});
+      store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
       store.dispatch('filterList');
-    }
+    },
   },
 
   async created() {
@@ -106,15 +106,15 @@ export default {
   },
 
   methods: {
-    navigate: function (listId) {
+    navigate(listId) {
       router.push(`browse/${listId}`);
     },
 
-    convertTimestamp: function (timestamp) {
+    convertTimestamp(timestamp) {
       return convertTimestamp(timestamp);
     },
 
-    sanitizeQuery: function () {
+    sanitizeQuery() {
       this.content = this.content.trim();
     },
 
@@ -126,7 +126,7 @@ export default {
     sortListing(order) {
       store.dispatch('setOrder', order);
       store.dispatch('orderList');
-    }
+    },
 
   },
 };

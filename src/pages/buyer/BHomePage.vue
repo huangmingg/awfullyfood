@@ -28,17 +28,17 @@
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from "@/services/user.service";
-import { getTransactionsByBuyer } from "@/services/transaction.service";
-import { getListing } from "@/services/list.service";
-import { authService } from "@/firebase";
-import { store } from "@/stores";
-import BCategoryChart from "./visualisation/BCategoryChart.vue";
-import OrderHistory from "@/pages/common/visualisation/OrderHistory";
-import PendingOrders from "@/pages/common/visualisation/PendingOrders";
+import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getTransactionsByBuyer } from '@/services/transaction.service';
+import { getListing } from '@/services/list.service';
+import { authService } from '@/firebase';
+import { store } from '@/stores';
+import OrderHistory from '@/pages/common/visualisation/OrderHistory';
+import PendingOrders from '@/pages/common/visualisation/PendingOrders';
+import BCategoryChart from './visualisation/BCategoryChart.vue';
 
 export default {
-  name: "BHomePage",
+  name: 'BHomePage',
   data() {
     return {
       orderHistory: [],
@@ -72,7 +72,7 @@ export default {
           id: transaction.id,
           item: listing.name,
           quantity: listing.quantity,
-          user: user,
+          user,
           unit: listing.unit,
           date: transaction.completedAt,
         };

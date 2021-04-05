@@ -54,32 +54,32 @@
 </template>
 
 <script>
-import { router } from "@/routes";
-import { getDisplayName, getUserProfile } from "@/services/user.service";
-import { getListing } from "@/services/list.service";
-import { BIconHeartFill } from "bootstrap-vue";
-import { store } from "@/stores";
-import { authService } from "@/firebase";
-import { toggleBookmark } from "@/services/bookmark.service"
+import { router } from '@/routes';
+import { getDisplayName, getUserProfile } from '@/services/user.service';
+import { getListing } from '@/services/list.service';
+import { BIconHeartFill } from 'bootstrap-vue';
+import { store } from '@/stores';
+import { authService } from '@/firebase';
+import { toggleBookmark } from '@/services/bookmark.service';
 
 export default {
   components: { BIconHeartFill },
-  name: "BListDetailPage",
+  name: 'BListDetailPage',
   data() {
     return {
-      itemImg: "",
-      itemName: "",
-      itemCategory: "",
-      itemPrice: "", //price and units
+      itemImg: '',
+      itemName: '',
+      itemCategory: '',
+      itemPrice: '', // price and units
       itemQty: 0,
       itemRating: 0,
-      seller: "", //get seller name
-      itemDescription: "",
-      location: "", //missing
-      additionalNotes: "",
-      bookmarkAllClasses: ["btn btn-danger", "btn btn-secondary"],
-      expiredAt:"",
-      createdAt:""
+      seller: '', // get seller name
+      itemDescription: '',
+      location: '', // missing
+      additionalNotes: '',
+      bookmarkAllClasses: ['btn btn-danger', 'btn btn-secondary'],
+      expiredAt: '',
+      createdAt: '',
     };
   },
 
@@ -91,21 +91,21 @@ export default {
     this.retrieveInfo(listingId);
   },
   methods: {
-    back: function () {
+    back() {
       router.back();
     },
-    
-    //update to db
-    interested: function () {
-      alert("Seller is notified! Seller will contact you soon!");
+
+    // update to db
+    interested() {
+      alert('Seller is notified! Seller will contact you soon!');
     },
-    checkBookmark: function (bookmarkLst) {
+    checkBookmark(bookmarkLst) {
       const userId = store.getters.getProfileState.id;
-      var changed = false;
+      let changed = false;
       for (const bm of bookmarkLst) {
         if (bm.userId === userId) {
           document.getElementById(
-            "bookmarkBtn"
+            'bookmarkBtn'
           ).className = this.bookmarkAllClasses[0];
           changed = true;
           break;
@@ -113,45 +113,45 @@ export default {
       }
       if (!changed) {
         document.getElementById(
-          "bookmarkBtn"
+          'bookmarkBtn'
         ).className = this.bookmarkAllClasses[1];
       }
     },
 
-    retrieveInfo: function (listingId) {
-      const itemDetails = getListing(listingId); //retrieve details from database
+    retrieveInfo(listingId) {
+      const itemDetails = getListing(listingId); // retrieve details from database
       itemDetails.then((x) => {
         this.itemImg = x.imageURL;
         this.itemName = x.name;
         this.itemCategory = x.category;
-        this.itemPrice = "$" + x.price + " per " + x.unit;
+        this.itemPrice = `$${x.price} per ${x.unit}`;
         this.itemQty = x.quantity;
-        this.itemRating = 2.5; //currently no rating component in listing
+        this.itemRating = 2.5; // currently no rating component in listing
         this.itemDescription = x.description;
-        this.location = "unknown (missing)";
-        this.additionalNotes = "NA (missing)";
-        this.expiredAt=x.expiredAt.toDate().toLocaleDateString();
-        this.createdAt=x.createdAt.toDate().toLocaleDateString();
+        this.location = 'unknown (missing)';
+        this.additionalNotes = 'NA (missing)';
+        this.expiredAt = x.expiredAt.toDate().toLocaleDateString();
+        this.createdAt = x.createdAt.toDate().toLocaleDateString();
         this.checkBookmark(x.bookmarks);
         getDisplayName(x.sellerId).then((y) => (this.seller = y));
       });
     },
-    //need to update the database (toggling the bookmark buttons)
-    changeBMClass: function () {
-      const name = document.getElementById("bookmarkBtn").className;
+    // need to update the database (toggling the bookmark buttons)
+    changeBMClass() {
+      const name = document.getElementById('bookmarkBtn').className;
       if (name == this.bookmarkAllClasses[0]) {
-        //un-bookmark
+        // un-bookmark
         document.getElementById(
-          "bookmarkBtn"
+          'bookmarkBtn'
         ).className = this.bookmarkAllClasses[1];
       } else {
-        //bookmark
+        // bookmark
         document.getElementById(
-          "bookmarkBtn"
+          'bookmarkBtn'
         ).className = this.bookmarkAllClasses[0];
       }
 
-      //listing id, user id
+      // listing id, user id
       toggleBookmark(this.$route.params.id, store.getters.getProfileState.id);
     },
   },

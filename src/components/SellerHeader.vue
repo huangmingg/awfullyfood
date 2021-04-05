@@ -8,8 +8,8 @@
 
 <script>
 export default {
-  name: "SellerHeader.vue"
-}
+  name: 'SellerHeader.vue',
+};
 </script>
 
 <style scoped>

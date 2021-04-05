@@ -70,19 +70,21 @@
 
 <script>
 
-import { store } from "@/stores";
-import { getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser } from "@/services/user.service";
-import { authService } from "@/firebase";
-import { getAggregatedRating, getReviews } from "@/services/review.service";
-import Review from "@/components/Review";
+import { store } from '@/stores';
+import {
+  getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser,
+} from '@/services/user.service';
+import { authService } from '@/firebase';
+import { getAggregatedRating, getReviews } from '@/services/review.service';
+import Review from '@/components/Review';
 
 export default {
-  name: "EditProfilePage",
+  name: 'EditProfilePage',
   components: { Review },
   data() {
     return {
       edit: false,
-      editableFields: ["input-2", "input-3", "input-4"],
+      editableFields: ['input-2', 'input-3', 'input-4'],
       file: '',
       imageInput: '',
       averageRating: 0,
@@ -96,7 +98,7 @@ export default {
         address: '',
         role: '',
       },
-    }
+    };
   },
 
   async created() {
@@ -114,13 +116,13 @@ export default {
   },
 
   methods: {
-    editProfile: function() {
+    editProfile() {
       this.toggleEdit(true);
     },
 
-    saveProfile: async function() {
+    async saveProfile() {
       if (!this.validateForm()) {
-        alert("Something went wrong, please check the input and try again");
+        alert('Something went wrong, please check the input and try again');
         return;
       }
       this.toggleEdit(false);
@@ -128,31 +130,31 @@ export default {
       await getUserProfile(authService.currentUser.uid);
     },
 
-    toggleEdit: function(isEdit) {
+    toggleEdit(isEdit) {
       this.edit = isEdit;
       this.editableFields.forEach((field) => {
         document.getElementById(field).disabled = !isEdit;
       });
     },
 
-    validateForm: function() {
-      return true
+    validateForm() {
+      return true;
     },
 
-    clickImage: function() {
+    clickImage() {
       this.edit ? document.querySelector('[type="file"]').click() : null;
     },
 
-    onFileChange: async function() {
+    async onFileChange() {
       const input = document.querySelector('[type="file"]');
       if (input.files) {
         await updateDisplayPhoto(this.form.id, input.files[0]);
         this.photo = await getDisplayPhoto(this.form.id);
       }
-    }
+    },
 
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

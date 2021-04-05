@@ -34,19 +34,19 @@
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from "@/services/user.service";
-import { getTransactionsBySeller } from "@/services/transaction.service";
-import { getListing } from "@/services/list.service";
-import { authService } from "@/firebase";
-import { store } from "@/stores";
-import SListingCategoryChart from "./visualisation/SListingCategoryChart.vue";
-import STopLikes from "./visualisation/STopLikes.vue";
-import STopInterest from "./visualisation/STopInterest.vue";
-import OrderHistory from "@/pages/common/visualisation/OrderHistory";
-import PendingOrders from "@/pages/common/visualisation/PendingOrders";
+import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getTransactionsBySeller } from '@/services/transaction.service';
+import { getListing } from '@/services/list.service';
+import { authService } from '@/firebase';
+import { store } from '@/stores';
+import OrderHistory from '@/pages/common/visualisation/OrderHistory';
+import PendingOrders from '@/pages/common/visualisation/PendingOrders';
+import SListingCategoryChart from './visualisation/SListingCategoryChart.vue';
+import STopLikes from './visualisation/STopLikes.vue';
+import STopInterest from './visualisation/STopInterest.vue';
 
 export default {
-  name: "SHomePage",
+  name: 'SHomePage',
   data() {
     return {
       orderHistory: [],
@@ -82,7 +82,7 @@ export default {
           id: transaction.id,
           item: listing.name,
           quantity: listing.quantity,
-          user: user,
+          user,
           unit: listing.unit,
           date: transaction.completedAt,
         };

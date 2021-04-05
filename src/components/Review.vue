@@ -26,9 +26,9 @@
 <script>
 
 export default {
-  name: "Review.vue",
-  props: ["reviews"],
-}
+  name: 'Review.vue',
+  props: ['reviews'],
+};
 </script>
 
 <style scoped>

@@ -9,7 +9,7 @@
         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
         {{ list.name }}<br>
         >> {{ list.description }}
-        
+
       </b-list-group-item>
 
   </b-list-group>
@@ -20,29 +20,29 @@
 </template>
 
 <script>
-import { getListingBySeller } from "@/services/list.service";
-import { store } from "@/stores";
-import { router } from "@/routes";
+import { getListingBySeller } from '@/services/list.service';
+import { store } from '@/stores';
+import { router } from '@/routes';
 
 export default {
-  name: "STransactionPage",
+  name: 'STransactionPage',
   computed: {
     listing() {
       return store.getters.getList;
     },
   },
-  
+
   async created() {
     const res = await getListingBySeller(store.getters.getProfileState?.id);
     console.log(res);
   },
-  
+
   methods: {
-    navigate: function (transactionId) {
+    navigate(transactionId) {
       router.push(`transaction/${transactionId}`);
     },
   },
-}
+};
 </script>
 
 <style scoped>

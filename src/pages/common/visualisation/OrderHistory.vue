@@ -32,7 +32,7 @@
 <script>
 
 export default {
-  name: "OrderHistory",
+  name: 'OrderHistory',
   props: ['orders', 'role'],
 };
 </script>

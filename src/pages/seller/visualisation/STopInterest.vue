@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import { getListingBySeller } from "@/services/list.service";
-import { getUserProfile } from "@/services/user.service";
-import { authService } from "@/firebase";
-import { store } from "@/stores";
+import { getListingBySeller } from '@/services/list.service';
+import { getUserProfile } from '@/services/user.service';
+import { authService } from '@/firebase';
+import { store } from '@/stores';
 
 export default {
-  name: "STopInterests",
+  name: 'STopInterests',
   data() {
     return {
       sellerListings: [],
@@ -28,11 +28,11 @@ export default {
     };
   },
   methods: {
-    route: function(event) {
-        var userId = event.target.getAttribute("id")
-        this.$router.push({ path: `/seller/list/${userId}` })
+    route(event) {
+      const userId = event.target.getAttribute('id');
+      this.$router.push({ path: `/seller/list/${userId}` });
 
-    }
+    },
   },
   components: {},
 
@@ -42,8 +42,8 @@ export default {
     }
     this.sellerListings = await getListingBySeller(
       store.getters.getProfileState?.id
-    )
-    await this.sellerListings.sort((a,b) => (b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0));
+    );
+    await this.sellerListings.sort((a, b) => ((b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0)));
   },
 };
 </script>

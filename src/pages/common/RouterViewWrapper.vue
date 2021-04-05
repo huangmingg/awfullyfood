@@ -4,8 +4,8 @@
 
 <script>
 export default {
-name: "RouterViewWrapper"
-}
+  name: 'RouterViewWrapper',
+};
 </script>
 
 <style scoped>

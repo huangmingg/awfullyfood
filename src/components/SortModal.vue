@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "SortModal.vue",
+  name: 'SortModal.vue',
   data() {
     return {
       show: false,
@@ -33,21 +33,21 @@ export default {
         { text: 'Created: Asc', value: [['createdAt', 'seconds'], 1] },
         { text: 'Created: Desc', value: [['createdAt', 'seconds'], -1] },
         { text: 'Expiry: Asc', value: [['expiredAt', 'seconds'], 1] },
-        { text: 'Expiry: Desc', value: [['expiredAt', 'seconds'], -1] }
-        ]
+        { text: 'Expiry: Desc', value: [['expiredAt', 'seconds'], -1] },
+      ],
     };
   },
   methods: {
-    onSubmit: function() {
+    onSubmit() {
       this.show = false;
-      this.$emit('sortListing', this.form.sort)
+      this.$emit('sortListing', this.form.sort);
     },
 
-    onReset: function() {
+    onReset() {
       this.form = { sort: [['expiredAt', 'seconds'], 1] };
     },
-  }
-}
+  },
+};
 
 </script>
 

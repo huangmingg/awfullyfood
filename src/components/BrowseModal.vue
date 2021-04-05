@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: "BrowseModal.vue",
+  name: 'BrowseModal.vue',
   data() {
     return {
       show: false,
@@ -43,35 +43,35 @@ export default {
         { text: 'Past 24 Hours', value: 86400 },
         { text: 'Past Week', value: 7 * 86400 },
         { text: 'Past 2 Weeks', value: 14 * 86400 },
-        { text: 'Past Month', value: 30 * 86400 }
-        ]
+        { text: 'Past Month', value: 30 * 86400 },
+      ],
     };
   },
   methods: {
-    onSubmit: function() {
+    onSubmit() {
       this.show = false;
       this.filterListing();
     },
 
-    onReset: function() {
+    onReset() {
       this.form = { category: ['Ugly', 'Expiring'], datePosted: 0 };
     },
 
-    filterListing: function() {
-      const res = this.sanitizeForm()
+    filterListing() {
+      const res = this.sanitizeForm();
       this.$emit('filterListing', res);
     },
 
-    sanitizeForm: function() {
+    sanitizeForm() {
       const output = {};
       if (this.form.datePosted) {
         output.datePosted = this.form.datePosted;
       }
       output.itemCategory = this.form.category;
       return output;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

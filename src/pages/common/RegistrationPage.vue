@@ -59,14 +59,14 @@
 </template>
 
 <script>
-import { registerUser} from "@/services/user.service";
-import { router } from "@/routes";
-import { getUserProfile } from "@/services/user.service";
-import { authService } from "@/firebase";
+import { registerUser, getUserProfile } from '@/services/user.service';
+import { router } from '@/routes';
+
+import { authService } from '@/firebase';
 
 export default {
-  name: "RegistrationPage",
-  props: ["authResult"],
+  name: 'RegistrationPage',
+  props: ['authResult'],
   data() {
     return {
       userId: '',
@@ -78,15 +78,15 @@ export default {
         role: 'Buyer',
       },
       roles: ['Buyer', 'Seller'],
-      show: true
-    }
+      show: true,
+    };
   },
   methods: {
     async onSubmit(event) {
       event.preventDefault();
       const res = await registerUser(this.userId, this.form);
       if (!res) {
-        alert("Something went wrong, please try again!")
+        alert('Something went wrong, please try again!');
       } else {
         this.form.role === 'Buyer' ? await router.push('/buyer') : await router.push('/seller');
       }
@@ -100,7 +100,7 @@ export default {
         this.form.name = this.authResult.user.displayName;
         this.form.phoneNumber = this.authResult.user.phoneNumber;
       }
-    }
+    },
   },
 
   async created() {
@@ -114,9 +114,9 @@ export default {
   },
 
   mounted() {
-    this.initProps()
-  }
-}
+    this.initProps();
+  },
+};
 </script>
 
 <style scoped>

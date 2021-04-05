@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import SListingCategoryChart from "./SListingCategoryChart.js";
+import SListingCategoryChart from './SListingCategoryChart.js';
+
 export default {
   components: {
     SListingCategoryChart,

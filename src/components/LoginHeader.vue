@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "LoginHeader.vue"
-}
+  name: 'LoginHeader.vue',
+};
 </script>
 
 <style scoped>

@@ -9,8 +9,8 @@
 
 <script>
 export default {
-  name: "BuyerHeader.vue"
-}
+  name: 'BuyerHeader.vue',
+};
 </script>
 
 <style scoped>

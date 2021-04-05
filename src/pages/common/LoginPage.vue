@@ -15,13 +15,13 @@
 </template>
 <script>
 
-import { auth, authService } from "@/firebase";
-import { router } from "@/routes";
+import { auth, authService } from '@/firebase';
+import { router } from '@/routes';
+import 'firebaseui/dist/firebaseui.css';
+import { isUserRegistered, getUserProfile } from '@/services/user.service';
 
 
 const firebaseui = require('firebaseui');
-import "firebaseui/dist/firebaseui.css";
-import { isUserRegistered, getUserProfile } from "@/services/user.service";
 
 export default {
   name: 'Login',
@@ -32,7 +32,7 @@ export default {
     }
     const uiConfig = {
       callbacks: {
-        signInSuccessWithAuthResult: function (authResult) {
+        signInSuccessWithAuthResult(authResult) {
           const successResponse = async () => {
             const userId = authResult.user.uid;
             const userRegistered = await isUserRegistered(userId);
@@ -41,31 +41,31 @@ export default {
             } else {
               const profile = await getUserProfile(userId);
               switch (profile?.role) {
-                case 'Buyer':
-                  console.log("pushing to home");
-                  await router.push('/buyer');
-                  break;
-                case 'Seller':
-                  await router.push('/seller');
-                  break;
-                default:
-                  await router.push({ name: 'register', params: { authResult } });
-                  break;
+              case 'Buyer':
+                console.log('pushing to home');
+                await router.push('/buyer');
+                break;
+              case 'Seller':
+                await router.push('/seller');
+                break;
+              default:
+                await router.push({ name: 'register', params: { authResult } });
+                break;
               }
             }
-          }
-          successResponse()
+          };
+          successResponse();
         },
       },
-      signInFlow: "popup",
+      signInFlow: 'popup',
       signInOptions: [
-          auth.GoogleAuthProvider.PROVIDER_ID,
-          auth.EmailAuthProvider.PROVIDER_ID,
-      ]
+        auth.GoogleAuthProvider.PROVIDER_ID,
+        auth.EmailAuthProvider.PROVIDER_ID,
+      ],
     };
-    ui.start("#firebase-auth-container", uiConfig);
-  }
-}
+    ui.start('#firebase-auth-container', uiConfig);
+  },
+};
 </script>
 
 <style scoped>

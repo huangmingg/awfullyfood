@@ -26,15 +26,17 @@
 
 <script>
 // import { signOut } from "@/services/auth.service";
-import { store } from "@/stores";
-import BuyerHeader from "@/components/BuyerHeader";
-import SellerHeader from "@/components/SellerHeader";
-import ProfileHeader from "@/components/ProfileHeader";
-import LoginHeader from "@/components/LoginHeader";
+import { store } from '@/stores';
+import BuyerHeader from '@/components/BuyerHeader';
+import SellerHeader from '@/components/SellerHeader';
+import ProfileHeader from '@/components/ProfileHeader';
+import LoginHeader from '@/components/LoginHeader';
 
 export default {
-  name: "Navigation",
-  components: { BuyerHeader, SellerHeader, ProfileHeader, LoginHeader },
+  name: 'Navigation',
+  components: {
+    BuyerHeader, SellerHeader, ProfileHeader, LoginHeader,
+  },
   methods: {
     // signOut: function() {
     //   signOut();
@@ -44,11 +46,11 @@ export default {
     // name () {
     //   return store.getters.getProfileState?.name;
     // },
-    role () {
+    role() {
       return store.getters.getProfileState?.role;
-    }
+    },
   },
-}
+};
 </script>
 
 <style scoped>

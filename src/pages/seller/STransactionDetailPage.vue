@@ -1,18 +1,18 @@
 <template>
   <div>
-    
+
     <h2>Pending Transactions</h2>
      <b-list-group deck>
       <b-list-group-item  v-for="list in listing"
         v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
         <h1 class="mb-1">ID: {{ list.buyerId }}<br>
-        
+
         Quantity: {{ list.quantity }}<br>
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
-        
-        
+
+
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
           <template #button-content>
@@ -30,16 +30,16 @@
                Name: {{ profile.name }}<br>
                Contact No: {{ profile.phoneNumber }} <br>
                Email: {{ profile.email }}
-               </h1> 
+               </h1>
             </div>
             <b-button class="mt-3" block @click="$bvModal.hide('bv-modal-example')">Close Me</b-button>
           </b-modal>
-          
+
         <b-dropdown-item @click="showModal()">Approve</b-dropdown-item>
 
-          <b-modal id="modal-closing" ref="modal-review" 
+          <b-modal id="modal-closing" ref="modal-review"
           title="Submit Your Review"
-          
+
           @show="resetModal"
           @hidden="resetModal"
           @ok="handleOk($event,list.id)"
@@ -58,15 +58,15 @@
                 invalid-feedback="Please rate your experience"
                 :state="value > 0"
               >
-              <b-form-rating id="rating-inline" 
-              inline value="1" 
-              v-model="value" 
-              :state="value > 0" 
+              <b-form-rating id="rating-inline"
+              inline value="1"
+              v-model="value"
+              :state="value > 0"
               no-border
               required></b-form-rating>
               </b-form-group>
               </div>
-            
+
                 <b-form-group
                   label="Review"
                   label-for="review-input"
@@ -78,9 +78,9 @@
                   v-model="review"
                   :state="review.length >= 20"
                   required
-                ></b-form-textarea> 
+                ></b-form-textarea>
                 </b-form-group>
-              </form>          
+              </form>
             </div>
             </b-modal>
 
@@ -105,101 +105,102 @@
             Quantity: {{ list.quantity }}<br>
             Approved at: {{ list.sellerReview.updatedAt }}</small>
             </h1>
-            
+
         </b-list-group-item>
       </b-list-group>
       </b-collapse>
     </div>
-  
+
 
     <br><br>
-    
+
     <b-button v-on:click="back()">Back </b-button>
   </div>
 </template>
 
 <script>
 
-import { getUserProfile } from "@/services/user.service";
-import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction, updateSellerReview } from "@/services/transaction.service";
-import { store } from "@/stores";
-import { router } from "@/routes";
+import { getUserProfile } from '@/services/user.service';
+import {
+  getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction, updateSellerReview,
+} from '@/services/transaction.service';
+import { store } from '@/stores';
+import { router } from '@/routes';
 
 export default {
-  name: "STransactionDetailPage",
+  name: 'STransactionDetailPage',
   data() {
     return {
       profile: {},
-      review: '', 
+      review: '',
       reviewState: null,
-      value: 0, 
+      value: 0,
       submitCount: 0,
       listing: {},
       secondListing: {},
-    }
+    };
   },
   computed: {
   },
   async created() {
-    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
+    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id);
     this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
   },
   methods: {
     checkFormValidity() {
-      if (this.value > 0 && this.review.length >= 20) { 
-        const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
-        this.reviewState = valid
-        return valid
-      } else {
-        alert('Please fill in your review.')
+      if (this.value > 0 && this.review.length >= 20) {
+        const valid = this.$refs.form[0].checkValidity(); // its an array due to for loop above. so add [0]
+        this.reviewState = valid;
+        return valid;
       }
+      alert('Please fill in your review.');
+
     },
     resetModal() {
-      this.review = ''
-      this.reviewState = null
-      this.value = 0
+      this.review = '';
+      this.reviewState = null;
+      this.value = 0;
     },
-    handleOk(bvModalEvt,id) {
+    handleOk(bvModalEvt, id) {
       // Prevent modal from closing
-      bvModalEvt.preventDefault()
+      bvModalEvt.preventDefault();
       // Trigger submit handler
-      this.handleSubmit(id)
+      this.handleSubmit(id);
     },
-    handleSubmit(id) { 
+    handleSubmit(id) {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
-        return
+        return;
       }
       // Update Firebase Data
-      approveTransaction(id) 
-      updateSellerReview(id,this.value,this.review)
+      approveTransaction(id);
+      updateSellerReview(id, this.value, this.review);
 
       // Hide the modal manually
       this.$nextTick(() => {
-        this.$bvModal.hide('modal-closing') 
-        //location.reload() //can only updateReview and get into approve part after several REFRESHES
-      }
-      )   
+        this.$bvModal.hide('modal-closing');
+        // location.reload() //can only updateReview and get into approve part after several REFRESHES
+      });
     },
-    back: function() {
+    back() {
       router.back();
     },
-    contact: async function(id) {
+    async contact(id) {
       this.profile = await getUserProfile(id, false);
       console.log(this.profile);
     },
-    showModal(){
-        this.$refs["modal-review"][0].show();
+    showModal() {
+      this.$refs['modal-review'][0].show();
     },
-    getStatus:function(item) { //can be deleted
+    getStatus(item) { // can be deleted
       if (item) {
-        return 'Transaction is approved.'
-      } else {
-        return 'Transaction is not approved.'
+        return 'Transaction is approved.';
       }
-    }
+      return 'Transaction is not approved.';
+
+    },
   },
-}
+};
 </script>
 
 <style scoped>

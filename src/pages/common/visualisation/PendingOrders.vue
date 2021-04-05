@@ -31,7 +31,7 @@
 <script>
 
 export default {
-  name: "PendingOrders",
+  name: 'PendingOrders',
   props: ['orders', 'role'],
 };
 </script>

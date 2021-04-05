@@ -51,15 +51,15 @@
 
 <script>
 
-import { getUserProfile } from "@/services/user.service";
-import { getReviews, getAggregatedRating } from "@/services/review.service";
-import { getDisplayPhoto } from "@/services/user.service";
-import { isEmptyObject } from "@/services/utils.service";
-import { router } from "@/routes";
-import Review from "@/components/Review";
+import { getUserProfile, getDisplayPhoto } from '@/services/user.service';
+import { getReviews, getAggregatedRating } from '@/services/review.service';
+
+import { isEmptyObject } from '@/services/utils.service';
+import { router } from '@/routes';
+import Review from '@/components/Review';
 
 export default {
-  name: "ProfilePage",
+  name: 'ProfilePage',
   components: { Review },
   data() {
     return {
@@ -70,7 +70,7 @@ export default {
       photo: '',
       found: false,
       click: false,
-    }
+    };
   },
   async mounted() {
     this.userId = this.$route.query.userId;
@@ -78,15 +78,15 @@ export default {
   },
 
   watch: {
-    '$route.params': async function() {
+    '$route.params': async function () {
       await this.searchUser();
-    }
+    },
   },
 
   methods: {
-    searchUser: async function() {
+    async searchUser() {
       if (!this.userId) {
-        alert("Please key in user ID you wish to search...");
+        alert('Please key in user ID you wish to search...');
         return;
       }
 
@@ -104,7 +104,7 @@ export default {
       }
     },
 
-    submitParam: function() {
+    submitParam() {
       this.userId = this.sanitizeQuery(this.userId);
       const currentRoute = router.currentRoute.query.userId;
       if (currentRoute != this.userId) {
@@ -114,11 +114,11 @@ export default {
       }
     },
 
-    sanitizeQuery: function(userId) {
+    sanitizeQuery(userId) {
       return userId.trim();
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

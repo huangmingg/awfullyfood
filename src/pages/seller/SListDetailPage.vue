@@ -105,27 +105,29 @@
 </template>
 
 <script>
-import { router } from "@/routes";
-import { getListing, updateListing, getListingPhoto, updateListingPhoto } from "@/services/list.service";
+import { router } from '@/routes';
+import {
+  getListing, updateListing, getListingPhoto, updateListingPhoto,
+} from '@/services/list.service';
 
 export default {
-  name: "SListPage",
+  name: 'SListPage',
   data() {
     return {
       edit: false,
-      editableFields: ["input-1", "input-3", "input-4", "input-5", "input-6"],
+      editableFields: ['input-1', 'input-3', 'input-4', 'input-5', 'input-6'],
       form: {
-        name:"",
-        price:0,
-        quantity:0,
-        unit:"",
-        description:"",
-        expiredAt:"",
-        createdAt:"",
-        category:"",
-        photo:''
-      }
-    }
+        name: '',
+        price: 0,
+        quantity: 0,
+        unit: '',
+        description: '',
+        expiredAt: '',
+        createdAt: '',
+        category: '',
+        photo: '',
+      },
+    };
   },
   computed: {
   },
@@ -134,29 +136,29 @@ export default {
     this.retrieveInfo(listingId);
   },
   methods: {
-    back: function() {
+    back() {
       router.back();
     },
-    retrieveInfo: function(id) {
+    retrieveInfo(id) {
       const itemDetails = getListing(id);
       itemDetails.then((x) => {
-        this.form.name= x.name;
-        this.form.price=x.price;
-        this.form.quantity=x.quantity;
-        this.form.unit=x.unit;
-        this.form.description=x.description;
-        this.form.expiredAt=x.expiredAt.toDate().toLocaleDateString();
-        this.form.createdAt=x.createdAt.toDate().toLocaleDateString();
-        this.form.category=x.category;
-        this.form.photo=x.imageURL
-      })
+        this.form.name = x.name;
+        this.form.price = x.price;
+        this.form.quantity = x.quantity;
+        this.form.unit = x.unit;
+        this.form.description = x.description;
+        this.form.expiredAt = x.expiredAt.toDate().toLocaleDateString();
+        this.form.createdAt = x.createdAt.toDate().toLocaleDateString();
+        this.form.category = x.category;
+        this.form.photo = x.imageURL;
+      });
     },
 
-    clickImage: function() {
+    clickImage() {
       this.edit ? document.querySelector('[type="file"]').click() : null;
     },
 
-    onFileChange: async function() {
+    async onFileChange() {
       const input = document.querySelector('[type="file"]');
       if (input.files) {
         const listingId = this.$route.params.id;
@@ -165,78 +167,78 @@ export default {
       }
     },
 
-    editList: function() {
-      console.log("edit")
+    editList() {
+      console.log('edit');
       this.toggleEdit(true);
     },
 
-    saveList: function() {
-      console.log("save");
+    saveList() {
+      console.log('save');
       if (!this.validateForm()) {
-        alert("Something went wrong, please check the inputs and try again");
+        alert('Something went wrong, please check the inputs and try again');
         return;
       }
-      this.editableFields.forEach((field) => document.getElementById(field).style="")
+      this.editableFields.forEach((field) => document.getElementById(field).style = '');
       this.toggleEdit(false);
-      //update db
-      var change = {
+      // update db
+      const change = {
         name: this.form.name,
         price: this.form.price,
         quantity: this.form.quantity,
         unit: this.form.unit,
-        description: this.form.description
-      }
-      updateListing(this.$route.params.id, change)
+        description: this.form.description,
+      };
+      updateListing(this.$route.params.id, change);
     },
 
-    toggleEdit: function(isEdit) {
+    toggleEdit(isEdit) {
       this.edit = isEdit;
       this.editableFields.forEach((field) => {
         document.getElementById(field).disabled = !isEdit;
       });
     },
 
-    validateForm: function() {
-      var error=false;
-      if (this.form.name == "") {
-        document.getElementById("input-1").style.borderColor="red"
-        error=true
+    validateForm() {
+      let error = false;
+      if (this.form.name == '') {
+        document.getElementById('input-1').style.borderColor = 'red';
+        error = true;
       } else {
-        document.getElementById("input-1").style.borderColor=""
+        document.getElementById('input-1').style.borderColor = '';
       }
-      if (this.form.price < 0 || this.form.price == "" ) {
-        document.getElementById("input-3").style.borderColor="red"
-        error=true
+      if (this.form.price < 0 || this.form.price == '') {
+        document.getElementById('input-3').style.borderColor = 'red';
+        error = true;
       } else {
-        document.getElementById("input-3").style.borderColor=""
+        document.getElementById('input-3').style.borderColor = '';
       }
-      if (this.form.unit == "") {
-        document.getElementById("input-4").style.borderColor="red"
-        error=true
+      if (this.form.unit == '') {
+        document.getElementById('input-4').style.borderColor = 'red';
+        error = true;
       } else {
-        document.getElementById("input-4").style.borderColor=""
+        document.getElementById('input-4').style.borderColor = '';
       }
-      if (this.form.quantity <= 0 || this.form.quantity == "" ) {
-        document.getElementById("input-5").style.borderColor="red"
-        error=true
+      if (this.form.quantity <= 0 || this.form.quantity == '') {
+        document.getElementById('input-5').style.borderColor = 'red';
+        error = true;
       } else {
-        document.getElementById("input-5").style.borderColor=""
+        document.getElementById('input-5').style.borderColor = '';
       }
-      if (this.form.description == "") {
-        document.getElementById("input-6").style.borderColor="red"
-        error=true
+      if (this.form.description == '') {
+        document.getElementById('input-6').style.borderColor = 'red';
+        error = true;
       } else {
-        document.getElementById("input-6").style.borderColor=""
+        document.getElementById('input-6').style.borderColor = '';
       }
 
       if (error) {
-        return false
-      } else {
-      return true;
+        return false;
       }
+      return true;
+
     },
   },
-}
+};
 </script>
 
 <style scoped>

@@ -87,20 +87,20 @@
 </template>
 
 <script>
-import { store } from "@/stores";
-import { getListingBySeller } from "@/services/list.service";
-import { router } from "@/routes";
-import SortModal from "@/components/SortModal";
-import { getUserProfile } from "@/services/user.service";
-import { authService } from "@/firebase";
-import { convertTimestamp } from "@/services/utils.service";
+import { store } from '@/stores';
+import { getListingBySeller } from '@/services/list.service';
+import { router } from '@/routes';
+import SortModal from '@/components/SortModal';
+import { getUserProfile } from '@/services/user.service';
+import { authService } from '@/firebase';
+import { convertTimestamp } from '@/services/utils.service';
 
 export default {
-  name: "SListDetailPage",
+  name: 'SListDetailPage',
   components: { SortModal },
   data() {
     return {
-      content: "",
+      content: '',
     };
   },
   computed: {
@@ -121,35 +121,35 @@ export default {
   },
 
   watch: {
-    content: function (newQuery) {
+    content(newQuery) {
       this.content = newQuery;
       this.sanitizeQuery();
-      store.dispatch('setFilter', {...store.getters.getFilter, nameSubstring: this.content});
+      store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
       store.dispatch('filterList');
-    }
+    },
   },
 
   methods: {
-    edit: function (listId) {
+    edit(listId) {
       router.push(`list/detail/${listId}`);
     },
 
-    sanitizeQuery: function () {
+    sanitizeQuery() {
       this.content = this.content.trim();
     },
-    
-    convertTimestamp: function (timestamp) {
+
+    convertTimestamp(timestamp) {
       return convertTimestamp(timestamp);
     },
 
-    addListing: function () {
-      router.push("list/add");
+    addListing() {
+      router.push('list/add');
     },
 
     sortListing(order) {
       store.dispatch('setOrder', order);
       store.dispatch('orderList');
-    }
+    },
   },
 };
 </script>

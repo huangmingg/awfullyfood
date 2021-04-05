@@ -1,86 +1,86 @@
-import { filterList, orderList } from "@/services/list.service";
+import { filterList, orderList } from '@/services/list.service';
 
 export default {
-    state: {
-        list: [],
-        filteredList: [],
-        defaultFilter: {
-            itemCategory: ['Ugly', 'Expiring']
-        },
-        defaultOrder: [['expiredAt', 'seconds'], 1],
-        order: [],
-        filter: {},
+  state: {
+    list: [],
+    filteredList: [],
+    defaultFilter: {
+      itemCategory: ['Ugly', 'Expiring'],
     },
-    getters: {
-        getList: (state) => {
-            return state.list;
-        },
-
-        getFilteredList: (state) => {
-            return state.filteredList;
-        },
-
-        getFilter: (state) => {
-            return state.filter;
-        },
-
+    defaultOrder: [['expiredAt', 'seconds'], 1],
+    order: [],
+    filter: {},
+  },
+  getters: {
+    getList: (state) => {
+      return state.list;
     },
-    mutations: {
-        updateList (state, list) {
-            state.list = list;
-        },
 
-        filterList (state) {
-            state.filteredList = filterList(state.list, state.filter);
-        },
-
-        orderList (state) {
-            state.filteredList = orderList(state.filteredList, state.order);
-        },
-
-        setFilter (state, filter) {
-            state.filter = filter;
-        },
-
-        setOrder (state, order) {
-            state.order = order;
-        },
-
-        resetFilter (state) {
-            state.filter = state.defaultFilter;
-        },
-
-        resetOrder (state) {
-            state.order = state.defaultOrder;
-        }
+    getFilteredList: (state) => {
+      return state.filteredList;
     },
-    actions: {
-        updateList (context, list) {
-            context.commit('updateList', list);
-        },
 
-        setFilter (context, filter) {
-            context.commit('setFilter', filter);
-        },
+    getFilter: (state) => {
+      return state.filter;
+    },
 
-        setOrder (context, order) {
-            context.commit('setOrder', order);
-        },
+  },
+  mutations: {
+    updateList(state, list) {
+      state.list = list;
+    },
 
-        filterList (context) {
-            context.commit('filterList');
-        },
+    filterList(state) {
+      state.filteredList = filterList(state.list, state.filter);
+    },
 
-        orderList (context) {
-            context.commit('orderList');
-        },
+    orderList(state) {
+      state.filteredList = orderList(state.filteredList, state.order);
+    },
 
-        resetFilter (context) {
-            context.commit('resetFilter');
-        },
+    setFilter(state, filter) {
+      state.filter = filter;
+    },
 
-        resetOrder (context) {
-            context.commit('resetOrder');
-        }
-    }
-}
+    setOrder(state, order) {
+      state.order = order;
+    },
+
+    resetFilter(state) {
+      state.filter = state.defaultFilter;
+    },
+
+    resetOrder(state) {
+      state.order = state.defaultOrder;
+    },
+  },
+  actions: {
+    updateList(context, list) {
+      context.commit('updateList', list);
+    },
+
+    setFilter(context, filter) {
+      context.commit('setFilter', filter);
+    },
+
+    setOrder(context, order) {
+      context.commit('setOrder', order);
+    },
+
+    filterList(context) {
+      context.commit('filterList');
+    },
+
+    orderList(context) {
+      context.commit('orderList');
+    },
+
+    resetFilter(context) {
+      context.commit('resetFilter');
+    },
+
+    resetOrder(context) {
+      context.commit('resetOrder');
+    },
+  },
+};

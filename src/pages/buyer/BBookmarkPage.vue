@@ -77,26 +77,26 @@
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from "@/services/user.service";
-import { authService } from "@/firebase";
-import { store } from "@/stores";
-import { getBookmarks, toggleBookmark } from "@/services/bookmark.service";
-import { getListing } from "@/services/list.service";
+import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { authService } from '@/firebase';
+import { store } from '@/stores';
+import { getBookmarks, toggleBookmark } from '@/services/bookmark.service';
+import { getListing } from '@/services/list.service';
 
 export default {
-  name: "BBookmarkPage",
+  name: 'BBookmarkPage',
   data() {
     return {
       bookmarks: [],
     };
   },
   methods: {
-    route: function (event) {
+    route(event) {
       this.$router.push({ path: `/buyer/browse/${event}` });
     },
-    removeBookmark: async function (listingId) {
+    async removeBookmark(listingId) {
       await toggleBookmark(listingId, store.getters.getProfileState?.id);
-      alert("Bookmark Removed");
+      alert('Bookmark Removed');
       location.reload();
     },
   },
@@ -116,7 +116,7 @@ export default {
         const user = await getDisplayName(listing.sellerId);
         return {
           listingId: bookmarkedListing,
-          user: user,
+          user,
           item: listing.name,
           quantity: listing.quantity,
           unit: listing.unit,

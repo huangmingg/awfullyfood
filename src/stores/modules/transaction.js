@@ -1,21 +1,21 @@
 export default {
-    state: {
-        transaction: [],
+  state: {
+    transaction: [],
+  },
+  getters: {
+    getTransaction: (state) => {
+      return state.transaction;
     },
-    getters: {
-        getTransaction: state => {
-            return state.transaction;
-        },
+  },
+  mutations: {
+    updateTransaction(state, transaction) {
+      state.transaction = transaction;
     },
-    mutations: {
-        updateTransaction (state, transaction) {
-            state.transaction = transaction;
-        }
 
+  },
+  actions: {
+    updateTransaction(context, transaction) {
+      context.commit('updateTransaction', transaction);
     },
-    actions: {
-        updateTransaction (context, transaction) {
-            context.commit('updateTransaction', transaction);
-        },
-    }
-}
+  },
+};

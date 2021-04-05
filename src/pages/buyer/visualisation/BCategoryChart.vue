@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import BCategoryChart from "./BCategoryChart.js";
+import BCategoryChart from './BCategoryChart.js';
+
 export default {
   components: {
     BCategoryChart,

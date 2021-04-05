@@ -11,22 +11,22 @@
 </template>
 
 <script>
-import {signOut} from "@/services/auth.service";
-import {store} from "@/stores";
+import { signOut } from '@/services/auth.service';
+import { store } from '@/stores';
 
 export default {
-  name: "ProfileHeader.vue",
+  name: 'ProfileHeader.vue',
   methods: {
-    signOut: function() {
+    signOut() {
       signOut();
-    }
+    },
   },
   computed: {
     name() {
       return store.getters.getProfileState?.name;
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
