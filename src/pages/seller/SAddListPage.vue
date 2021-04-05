@@ -1,13 +1,22 @@
 <template>
   <div>
-    <b-button v-on:click="back()" variant="info">Back </b-button>
-    <hr class="dropdown-divider" />
-    <p class="headerFont">Create a new listing</p>
-    <b-container fluid class="p-4 bg-light">
+    <b-button
+      variant="info"
+      @click="back()"
+    >
+      Back
+    </b-button>
+    <hr class="dropdown-divider">
+    <p class="headerFont">
+      Create a new listing
+    </p>
+    <b-container
+      fluid
+      class="p-4 bg-light"
+    >
       <b-form>
         <b-row>
           <b-img
-            @click="clickImage()"
             width="400"
             height="400"
             class="border-info product-photo"
@@ -15,8 +24,13 @@
             fluid
             :src="form.photo"
             alt="Product Photo"
+            @click="clickImage()"
           />
-          <input accept="image/*" v-on:change="onFileChange()" type="file" />
+          <input
+            accept="image/*"
+            type="file"
+            @change="onFileChange()"
+          >
           <b-col>
             <b-form-group
               id="input-group-1"
@@ -28,7 +42,7 @@
                 v-model="form.name"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -41,25 +55,33 @@
                 v-model="form.category"
                 :options="options"
                 required
-              ></b-form-radio-group>
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Price:" label-for="input-3">
+            <b-form-group
+              id="input-group-3"
+              label="Price:"
+              label-for="input-3"
+            >
               <b-form-input
                 id="input-3"
                 v-model="form.price"
                 type="number"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
+            <b-form-group
+              id="input-group-4"
+              label="Unit:"
+              label-for="input-4"
+            >
               <b-form-input
                 id="input-4"
                 v-model="form.unit"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -72,7 +94,7 @@
                 v-model="form.quantity"
                 type="number"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -85,7 +107,7 @@
                 v-model="form.description"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -98,12 +120,16 @@
                 v-model="form.expiredAt"
                 type="datetime-local"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <b-button class="float-right" v-on:click="create()" variant="info"
-              >Create</b-button
+            <b-button
+              class="float-right"
+              variant="info"
+              @click="create()"
             >
+              Create
+            </b-button>
           </b-col>
         </b-row>
       </b-form>
@@ -112,28 +138,27 @@
 </template>
 
 <script>
-import { router } from "@/routes";
-import { getListingPhoto, updateListingPhoto } from "@/services/user.service";
-import { createListing } from "@/services/list.service";
-import { store } from "@/stores";
-import { authService } from "@/firebase";
-import { getUserProfile } from "@/services/user.service";
+import { router } from '@/routes';
+import { createListing, getListingPhoto, updateListingPhoto } from '@/services/list.service';
+import { store } from '@/stores';
+import { authService } from '@/firebase';
+import { getUserProfile } from '@/services/user.service';
 
 export default {
-  name: "SAddListPage.vue",
+  name: 'SAddListPageVue',
   data() {
     return {
       form: {
-        name: "",
-        price: "",
-        quantity: "",
-        unit: "",
-        description: "",
-        expiredAt: "",
-        category: "",
-        photo: "",
+        name: '',
+        price: '',
+        quantity: '',
+        unit: '',
+        description: '',
+        expiredAt: '',
+        category: '',
+        photo: '',
       },
-      options: ["Ugly", "Expiring"],
+      options: ['Ugly', 'Expiring'],
     };
   },
   async created() {
@@ -142,14 +167,14 @@ export default {
     }
   },
   methods: {
-    back: function () {
+    back() {
       router.back();
     },
-    clickImage: function () {
+    clickImage() {
       document.querySelector('[type="file"]').click();
     },
 
-    onFileChange: async function () {
+    async onFileChange() {
       const input = document.querySelector('[type="file"]');
       if (input.files) {
         const listingId = this.$route.params.id;
@@ -157,63 +182,63 @@ export default {
         this.form.photo = await getListingPhoto(listingId);
       }
     },
-    validate: function () {
-      var error = false;
-      if (this.form.name == "") {
-        document.getElementById("input-1").style.borderColor = "red";
+    validate() {
+      let error = false;
+      if (this.form.name == '') {
+        document.getElementById('input-1').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-1").style.borderColor = "";
+        document.getElementById('input-1').style.borderColor = '';
       }
-      if (this.form.category == "") {
-        document.getElementById("input-2").style.color = "red";
+      if (this.form.category == '') {
+        document.getElementById('input-2').style.color = 'red';
         error = true;
       } else {
-        document.getElementById("input-2").style.color = "";
+        document.getElementById('input-2').style.color = '';
       }
-      if (this.form.price < 0 || this.form.price == "") {
-        document.getElementById("input-3").style.borderColor = "red";
+      if (this.form.price < 0 || this.form.price == '') {
+        document.getElementById('input-3').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-3").style.borderColor = "";
+        document.getElementById('input-3').style.borderColor = '';
       }
-      if (this.form.unit == "") {
-        document.getElementById("input-4").style.borderColor = "red";
+      if (this.form.unit == '') {
+        document.getElementById('input-4').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-4").style.borderColor = "";
+        document.getElementById('input-4').style.borderColor = '';
       }
-      if (this.form.quantity <= 0 || this.form.quantity == "") {
-        document.getElementById("input-5").style.borderColor = "red";
+      if (this.form.quantity <= 0 || this.form.quantity == '') {
+        document.getElementById('input-5').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-5").style.borderColor = "";
+        document.getElementById('input-5').style.borderColor = '';
       }
-      if (this.form.description == "") {
-        document.getElementById("input-6").style.borderColor = "red";
+      if (this.form.description == '') {
+        document.getElementById('input-6').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-6").style.borderColor = "";
+        document.getElementById('input-6').style.borderColor = '';
       }
 
-      if (this.form.expiredAt == "") {
-        document.getElementById("input-7").style.borderColor = "red";
+      if (this.form.expiredAt == '') {
+        document.getElementById('input-7').style.borderColor = 'red';
         error = true;
       } else {
-        document.getElementById("input-7").style.borderColor = "";
+        document.getElementById('input-7').style.borderColor = '';
       }
 
       if (error) {
         return false;
-      } else {
-        return true;
       }
+      return true;
+
     },
-    create: function () {
+    create() {
       if (this.validate()) {
         const listing = {
           name: this.form.name,
-          //always to 2dp
+          // always to 2dp
           price: (Math.round(this.form.price * 100) / 100).toFixed(2),
           quantity: this.form.quantity,
           unit: this.form.unit,
@@ -221,16 +246,16 @@ export default {
           expiredAt: new Date(this.form.expiredAt),
           category: this.form.category,
           createdAt: new Date(),
-          status: "Available",
+          status: 'Available',
           interests: [],
           bookmarks: [],
           sellerId: store.getters.getProfileState.id,
         };
         createListing(listing);
-        alert("Listing created")
-        location.reload()
+        alert('Listing created');
+        location.reload();
       } else {
-        alert("Something went wrong, please check the inputs and try again");
+        alert('Something went wrong, please check the inputs and try again');
       }
     },
   },

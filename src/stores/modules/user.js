@@ -1,32 +1,35 @@
 export default {
-    state: {
-        profile: {},
+  state: {
+    profile: {},
+  },
+  getters: {
+    getRole: (state) => {
+      return state.profile?.role;
     },
-    getters: {
-        getRole: state => {
-            return state.profile?.role;
-        },
-        getName: state => {
-            return state.profile?.name;
-        },
-        getProfileState: state => {
-            return state.profile;
-        },
+    getName: (state) => {
+      return state.profile?.name;
     },
-    mutations: {
-        updateProfile (state, profile) {
-            state.profile = profile;
-        }
-
+    getProfileState: (state) => {
+      return state.profile;
     },
-    actions: {
-        updateProfile (context, profile) {
-            context.commit('updateProfile', profile);
-        },
+    getProfileId: (state) => {
+      return state.profile?.id;
+    },
+  },
+  mutations: {
+    updateProfile(state, profile) {
+      state.profile = profile;
+    },
 
-        clearProfile (context) {
-            context.commit('updateProfile', {});
-        }
+  },
+  actions: {
+    updateProfile(context, profile) {
+      context.commit('updateProfile', profile);
+    },
 
-    }
-}
+    clearProfile(context) {
+      context.commit('updateProfile', {});
+    },
+
+  },
+};

@@ -15,30 +15,41 @@
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Buyer'" />
+        <OrderHistory
+          :orders="orderHistory"
+          :role="'Buyer'"
+        />
       </li>
       <li class="orderList">
-        <PendingOrders :orders="pendingOrders" :role="'Buyer'" />
+        <PendingOrders
+          :orders="pendingOrders"
+          :role="'Buyer'"
+        />
       </li>
       <li>
-        <b-category-chart></b-category-chart>
+        <b-category-chart />
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from "@/services/user.service";
-import { getTransactionsByBuyer } from "@/services/transaction.service";
-import { getListing } from "@/services/list.service";
-import { authService } from "@/firebase";
-import { store } from "@/stores";
-import BCategoryChart from "./visualisation/BCategoryChart.vue";
-import OrderHistory from "@/pages/common/visualisation/OrderHistory";
-import PendingOrders from "@/pages/common/visualisation/PendingOrders";
+import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getTransactionsByBuyer } from '@/services/transaction.service';
+import { getListing } from '@/services/list.service';
+import { authService } from '@/firebase';
+import { store } from '@/stores';
+import OrderHistory from '@/pages/common/visualisation/OrderHistory';
+import PendingOrders from '@/pages/common/visualisation/PendingOrders';
+import BCategoryChart from './visualisation/BCategoryChart.vue';
 
 export default {
-  name: "BHomePage",
+  name: 'BHomePage',
+  components: {
+    BCategoryChart,
+    OrderHistory,
+    PendingOrders,
+  },
   data() {
     return {
       orderHistory: [],
@@ -46,11 +57,6 @@ export default {
       orderHistoryCounter: 0,
       pendingOrdersCounter: 0,
     };
-  },
-  components: {
-    BCategoryChart,
-    OrderHistory,
-    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -72,7 +78,7 @@ export default {
           id: transaction.id,
           item: listing.name,
           quantity: listing.quantity,
-          user: user,
+          user,
           unit: listing.unit,
           date: transaction.completedAt,
         };
