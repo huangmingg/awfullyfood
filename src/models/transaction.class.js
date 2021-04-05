@@ -1,18 +1,38 @@
-import Review from "@/models/review.class"
+import {ListingCreate} from "@/models/listing.class";
 
-class Transaction {
-    constructor(obj) {
-        this.id = obj.id;
-        this.buyerId = obj.buyerId;
-        this.sellerId = obj.sellerId;
-        this.listingId = obj.listingId;
-        this.quantity = obj.quantity;
-        this.isApproved = obj.isApproved;
-        this.createdAt = obj.createdAt;
-        this.completedAt = obj.completedAt;
-        this.buyerReview = new Review(obj.buyerReview);
-        this.sellerReview = new Review(obj.sellerReview);
+export class TransactionCreate {
+    constructor(transaction) {
+        this.listingId = transaction.listingId;
+        this.buyerId = transaction.buyerId;
+        this.sellerId = transaction.sellerId;
+        this.quantity = transaction.quantity;
+        this.buyerReview = {};
+        this.sellerReview = {};
+        this.isApproved = false;
+        this.createdAt = transaction.createdAt;
+        this.completedAt = transaction.completedAt;
+        this.deletedAt = transaction.deletedAt;
     }
 }
 
-module.exports = Transaction;
+export class TransactionRead extends TransactionCreate {
+    constructor(transaction, id) {
+        super(transaction);
+        this.id = id;
+    }
+}
+
+export class TransactionUpdate {
+    constructor(obj) {
+        const getData = data => ({
+            ...data.buyerReview && { expiredAt: data.expiredAt },
+            ...data.sellerReview && { expiredAt: data.expiredAt },
+            ...data.isApproved && { isApproved: data.isApproved },
+            ...data.completedAt && { completedAt: data.completedAt },
+            ...data.deletedAt && { deletedAt: data.deletedAt },
+        });
+        for (const [key, value] of Object.entries(getData(obj))) {
+            this[key] = value;
+        }
+    }
+}
