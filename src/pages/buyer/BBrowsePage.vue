@@ -65,6 +65,8 @@ import BrowseModal from "@/components/BrowseModal";
 import SortModal from "@/components/SortModal";
 import { BIconHeartFill } from "bootstrap-vue";
 import { convertTimestamp } from "@/services/utils.service";
+import { getUserProfile } from "@/services/user.service";
+import { authService } from "@/firebase";
 
 export default {
   name: "BBrowsePage",
@@ -90,6 +92,9 @@ export default {
   },
 
   async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
     const loader = this.$loading.show({ color: 'teal' });
     await getListings();
     await store.dispatch('resetFilter');
@@ -114,13 +119,13 @@ export default {
     },
 
     filterListing(form) {
-      store.dispatch('setFilter', form)
+      store.dispatch('setFilter', form);
       store.dispatch('filterList');
     },
 
     sortListing(order) {
-      store.dispatch('setOrder', order)
-      store.dispatch('orderList')
+      store.dispatch('setOrder', order);
+      store.dispatch('orderList');
     }
 
   },
