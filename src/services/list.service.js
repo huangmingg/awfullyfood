@@ -116,6 +116,7 @@ const filterList = (list, filters) => {
     const sellerId = filters.sellerId;
     const itemCategory = filters.itemCategory;
     const datePosted = filters.datePosted;
+    const nameSubstring = filters.nameSubstring;
 
     list = _filterListByPropertyInArray(list, "buyerId", buyerId);
     list = _filterListByPropertyInArray(list, "sellerId", sellerId);
@@ -126,8 +127,15 @@ const filterList = (list, filters) => {
         list = list.filter((ele) => {
             const result = Math.abs(ele.createdAt.seconds - (Date.now() / 1000));
             return result <= +datePosted;
-        })
+        });
     }
+
+    if (nameSubstring) {
+        list = list.filter((ele) => {
+            return ele.name.substr(0, nameSubstring.length).toUpperCase() === nameSubstring.toUpperCase();
+        });
+    }
+
     return list;
 }
 
