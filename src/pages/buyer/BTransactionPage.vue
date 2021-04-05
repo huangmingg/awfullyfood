@@ -6,17 +6,20 @@
      <b-list-group deck>
       <b-list-group-item  v-for="list in thirdListing"
         v-bind:key="list.id" 
-        class="d-flex justify-content-between list-group-item-action align-items-center" :disabled="isDisabled(list.isApproved)">
+        class="d-flex justify-content-between list-group-item-action align-items-center" >
         <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
-        {{ getProduct(list.listingId) }} -> This should be the name.
+        {{ list.productName }} -> This should be the name.
         <br>
         Quantity: {{ list.quantity }}
         <br> 
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
-        <b-button variant="outline-info" class="ml-auto" @click="showModal()">Review</b-button>
-
+        <b-button-group>
+        <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
+        
+        <b-button variant="outline-info" class="ml-auto" @click="showModal()" :disabled="isDisabled(list.isApproved)">Review</b-button>
+        </b-button-group>
 
           <b-modal id="modal-closing" ref="modal-review" 
           title="Submit Your Review"
@@ -84,7 +87,7 @@
               Quantity: {{ list.quantity }}<br>
               Reviewed at: {{ list.buyerReview.updatedAt }}</small>
               </h1>
-               <b-button v-b-toggle.collapse-1  variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
+               <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
               
           </b-list-group-item>
         </b-list-group>
@@ -112,6 +115,7 @@ export default {
       disabled: false,
       secondListing: {},
       thirdListing: {},
+      test: '',
     }
   },
   computed: {
@@ -129,15 +133,16 @@ export default {
     ).filter((ele) => {
       return ele.isApproved === true;
     }).filter((ele) => {
-      return ele.buyerReview.rating > 0;
+      return ele.buyerReview.size != 0;
     })
     this.secondListing = transactions;
     const transactions2 = (
       await getTransactionsByBuyer(store.getters.getProfileState?.id)
     ).filter((ele) => {
-      return ele.buyerReview.rating == 0;
+      return Object.entries(ele.buyerReview).length === 0;
     })
     this.thirdListing = transactions2;
+
   },
   methods: {
     checkFormValidity() {
