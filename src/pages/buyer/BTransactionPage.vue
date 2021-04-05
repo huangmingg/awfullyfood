@@ -7,8 +7,9 @@
       <b-list-group-item  v-for="list in thirdListing"
         v-bind:key="list.id" 
         class="d-flex justify-content-between list-group-item-action align-items-center" >
-        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
-        {{ list.productName }} -> This should be the name.
+        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br><br>
+
+        Item: {{ list.listName }}
         <br>
         Quantity: {{ list.quantity }}
         <br> 
@@ -83,7 +84,7 @@
             <b-list-group-item  v-for="list in secondListing"
               v-bind:key="list.id"
               class="d-flex list-group-item-action justify-content-between align-items-center">
-              <h1 class="mb-1"><small>Item: {{ list.listingId }} This should be name too.<br>
+              <h1 class="mb-1"><small>Item: {{ list.listName }}<br>
               Quantity: {{ list.quantity }}<br>
               Reviewed at: {{ list.buyerReview.updatedAt }}</small>
               </h1>
@@ -182,7 +183,7 @@ export default {
     showModal(){
         this.$refs["modal-review"][0].show();
     },
-    getStatus:function(item) {
+    getStatus: function(item) {
       if (item) {
         return 'Transaction is approved and you can leave a review for the seller.'
       } else {
