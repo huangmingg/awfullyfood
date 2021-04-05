@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
     "bootstrap": "^4.6.0",
@@ -27,6 +27,12 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {
@@ -36,12 +42,104 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "eslint:recommended",
+      "airbnb-base"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-labels": 0,
+      "no-await-in-loop": 0,
+      "padded-blocks": 0,
+      "prefer-destructuring": 0,
+      "no-void": 0,
+      "operator-linebreak": 0,
+      "no-multiple-empty-lines": 0,
+      "comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "ignore"
+        }
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "vars": "all",
+          "args": "none",
+          "ignoreRestSiblings": false
+        }
+      ],
+      "no-bitwise": 0,
+      "class-methods-use-this": 0,
+      "no-cond-assign": [
+        "error",
+        "except-parens"
+      ],
+      "no-param-reassign": [
+        "error",
+        {
+          "props": false
+        }
+      ],
+      "no-lonely-if": 0,
+      "no-continue": 0,
+      "indent": [
+        "error",
+        2
+      ],
+      "arrow-body-style": 0,
+      "no-unused-expressions": [
+        "error",
+        {
+          "allowShortCircuit": false,
+          "allowTernary": true,
+          "allowTaggedTemplates": true
+        }
+      ],
+      "max-len": [
+        "error",
+        140,
+        {
+          "ignoreTemplateLiterals": true
+        }
+      ],
+      "quotes": [
+        "error",
+        "single",
+        {
+          "allowTemplateLiterals": true
+        }
+      ],
+      "max-classes-per-file": 0,
+      "no-use-before-define": [
+        "error",
+        {
+          "functions": false
+        }
+      ],
+      "no-plusplus": [
+        "error",
+        {
+          "allowForLoopAfterthoughts": true
+        }
+      ],
+      "no-mixed-operators": [
+        "error",
+        {
+          "groups": [
+            [
+              "+",
+              "-"
+            ]
+          ]
+        }
+      ]
+    }
   },
   "browserslist": [
     "> 1%",
