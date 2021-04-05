@@ -3,10 +3,10 @@
     
     <h2>Pending Transactions</h2>
      <b-list-group deck>
-      <b-list-group-item  v-for="list in listing"
+      <b-list-group-item  v-for="list in pendingListings"
         v-bind:key="list.id"
         class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">ID: {{ list.buyerId }}<br>
+        <h1 class="mb-1">Buyer ID: {{ list.buyerId }}<br>
         
         Quantity: {{ list.quantity }}<br>
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
@@ -98,7 +98,7 @@
       <b-collapse id="collapse-1" class="mt-2">
       <h2>Approved Transactions</h2>
       <b-list-group deck>
-          <b-list-group-item  v-for="list in secondListing"
+          <b-list-group-item  v-for="list in approvedListings"
             v-bind:key="list.id"
             class="d-flex justify-content-between align-items-center" disabled>
             <h1 class="mb-1"><small>ID: {{ list.buyerId }}<br>
@@ -133,16 +133,15 @@ export default {
       review: '', 
       reviewState: null,
       value: 0, 
-      submitCount: 0,
-      listing: {},
-      secondListing: {},
+      pendingListings: {},
+      approvedListings: {},
     }
   },
   computed: {
   },
   async created() {
-    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
-    this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
+    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
+    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
   },
   methods: {
     checkFormValidity() {
@@ -191,13 +190,6 @@ export default {
     showModal(){
         this.$refs["modal-review"][0].show();
     },
-    getStatus:function(item) { //can be deleted
-      if (item) {
-        return 'Transaction is approved.'
-      } else {
-        return 'Transaction is not approved.'
-      }
-    }
   },
 }
 </script>

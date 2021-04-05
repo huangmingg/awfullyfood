@@ -4,7 +4,7 @@
     <h2>Available Transactions</h2>
     <br>
      <b-list-group deck>
-      <b-list-group-item  v-for="list in thirdListing"
+      <b-list-group-item  v-for="list in unreviewedListings"
         v-bind:key="list.id" 
         class="d-flex justify-content-between list-group-item-action align-items-center" >
         <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br><br>
@@ -81,7 +81,7 @@
     <b-collapse id="collapse-1" class="mt-2">
           
         <b-list-group deck>
-            <b-list-group-item  v-for="list in secondListing"
+            <b-list-group-item  v-for="list in reviewedListings"
               v-bind:key="list.id"
               class="d-flex list-group-item-action justify-content-between align-items-center">
               <h1 class="mb-1"><small>Item: {{ list.listName }}<br>
@@ -101,7 +101,6 @@
 
 <script>
 import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
-import { getListing } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -114,9 +113,8 @@ export default {
       reviewState: null,
       value: 0, 
       disabled: false,
-      secondListing: {},
-      thirdListing: {},
-      test: '',
+      reviewedListings: {},
+      unreviewedListings: {},
     }
   },
   computed: {
@@ -136,13 +134,13 @@ export default {
     }).filter((ele) => {
       return ele.buyerReview.size != 0;
     })
-    this.secondListing = transactions;
-    const transactions2 = (
+    this.reviewedListings = transactions;
+    const urtransaction = (
       await getTransactionsByBuyer(store.getters.getProfileState?.id)
     ).filter((ele) => {
       return Object.entries(ele.buyerReview).length === 0;
     })
-    this.thirdListing = transactions2;
+    this.unreviewedListings = urtransaction;
 
   },
   methods: {
@@ -196,11 +194,6 @@ export default {
       } else {
         return true
       }        
-    },
-    getProduct: async function(id) {
-      this.product = await getListing(id)
-      console.log(this.product)
-      return this.product.name
     },
     navigate: function (listId) {
       router.push(`browse/${listId}`);
