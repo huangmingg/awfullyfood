@@ -2,19 +2,17 @@
   <div>
     <h2>Available Transactions</h2>
     <br>
-    <b-list-group deck>
-      <b-list-group-item
-        v-for="list in thirdListing"
-        :key="list.id"
-        class="d-flex justify-content-between list-group-item-action align-items-center"
-      >
-        <h1 class="mb-1">
-          Status: {{ getStatus(list.isApproved) }}<br>
-          {{ list.productName }} -> This should be the name.
-          <br>
-          Quantity: {{ list.quantity }}
-          <br>
-          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+     <b-list-group deck>
+      <b-list-group-item  v-for="list in unreviewedListings"
+        v-bind:key="list.id" 
+        class="d-flex justify-content-between list-group-item-action align-items-center" >
+        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br><br>
+
+        Item: {{ list.listName }}
+        <br>
+        Quantity: {{ list.quantity }}
+        <br> 
+        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
         <b-button-group>
@@ -115,7 +113,7 @@
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
             <h1 class="mb-1">
-              <small>Item: {{ list.listingId }} This should be name too.<br>
+                <small>Item: {{ list.listName }}<br>
                 Quantity: {{ list.quantity }}<br>
                 Reviewed at: {{ list.buyerReview.updatedAt }}</small>
             </h1>
@@ -134,10 +132,9 @@
 </template>
 
 <script>
-import { getTransactionsByBuyer, updateBuyerReview } from '@/services/transaction.service';
-import { getListing } from '@/services/list.service';
-import { store } from '@/stores';
-import { router } from '@/routes';
+import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
+import { store } from "@/stores";
+import { router } from "@/routes";
 
 export default {
   name: 'STransactionDetailPage',
@@ -148,10 +145,9 @@ export default {
       reviewState: null,
       value: 0,
       disabled: false,
-      secondListing: {},
-      thirdListing: {},
-      test: '',
-    };
+      reviewedListings: {},
+      unreviewedListings: {},
+    }
   },
   computed: {
     listing() {
@@ -169,14 +165,14 @@ export default {
       return ele.isApproved === true;
     }).filter((ele) => {
       return ele.buyerReview.size != 0;
-    });
-    this.secondListing = transactions;
-    const transactions2 = (
+    })
+    this.reviewedListings = transactions;
+    const urtransaction = (
       await getTransactionsByBuyer(store.getters.getProfileState?.id)
     ).filter((ele) => {
       return Object.entries(ele.buyerReview).length === 0;
-    });
-    this.thirdListing = transactions2;
+    })
+    this.unreviewedListings = urtransaction;
 
   },
   methods: {
@@ -217,7 +213,7 @@ export default {
     showModal() {
       this.$refs['modal-review'][0].show();
     },
-    getStatus(item) {
+    getStatus: function(item) {
       if (item) {
         return 'Transaction is approved and you can leave a review for the seller.';
       }
@@ -231,12 +227,7 @@ export default {
       return true;
 
     },
-    async getProduct(id) {
-      this.product = await getListing(id);
-      console.log(this.product);
-      return this.product.name;
-    },
-    navigate(listId) {
+    navigate: function (listId) {
       router.push(`browse/${listId}`);
     },
   },

@@ -1,17 +1,14 @@
 <template>
   <div>
     <h2>Pending Transactions</h2>
-    <b-list-group deck>
-      <b-list-group-item
-        v-for="list in listing"
-        :key="list.id"
-        class="d-flex justify-content-between align-items-center"
-      >
-        <h1 class="mb-1">
-          ID: {{ list.buyerId }}<br>
-
-          Quantity: {{ list.quantity }}<br>
-          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+     <b-list-group deck>
+      <b-list-group-item  v-for="list in pendingListings"
+        v-bind:key="list.id"
+        class="d-flex justify-content-between align-items-center">
+        <h1 class="mb-1">Buyer ID: {{ list.buyerId }}<br>
+        
+        Quantity: {{ list.quantity }}<br>
+        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
 
@@ -137,7 +134,7 @@
         <h2>Approved Transactions</h2>
         <b-list-group deck>
           <b-list-group-item
-            v-for="list in secondListing"
+            v-for="list in approvedListings"
             :key="list.id"
             class="d-flex justify-content-between align-items-center"
             disabled
@@ -177,17 +174,16 @@ export default {
       profile: {},
       review: '',
       reviewState: null,
-      value: 0,
-      submitCount: 0,
-      listing: {},
-      secondListing: {},
-    };
+      value: 0, 
+      pendingListings: {},
+      approvedListings: {},
+    }
   },
   computed: {
   },
   async created() {
-    this.listing = await getPendingTransactionsBySeller(store.getters.getProfileState?.id);
-    this.secondListing = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
+    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
+    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
   },
   methods: {
     checkFormValidity() {
@@ -234,13 +230,6 @@ export default {
     },
     showModal() {
       this.$refs['modal-review'][0].show();
-    },
-    getStatus(item) { // can be deleted
-      if (item) {
-        return 'Transaction is approved.';
-      }
-      return 'Transaction is not approved.';
-
     },
   },
 };
