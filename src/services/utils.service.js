@@ -2,21 +2,39 @@ const isEmptyObject = function (obj) {
     return !obj || (Object.keys(obj).length === 0 && obj.constructor === Object) ? true : false;
 }
 
+// Converts the timestamp object from firestore to datestring
 const convertTimestamp = function (unixTimestamp) {
     return unixTimestamp ? new Date(unixTimestamp.seconds * 1000).toLocaleDateString() : "Date Not Found";
 }
 
+// Gets currentTimestamp in seconds
 const getCurrentTimestamp = function () {
     return (new Date().getTime() / 1000);
 }
 
-const dateDiff = function (a, b) {
-    console.log(a, b)
+const sleep = function (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const comparator = function (nestedKey, reverse) {
+    return function(a, b) {
+        let destA = a;
+        let destB = b;
+        nestedKey.forEach((key) => {
+            destA = destA[key];
+            destB = destB[key];
+        });
+        if (destA > destB) return (1 * +reverse);
+        else if (destB > destA) return (-1 * +reverse);
+        else return 0;
+    };
+}
+
 
 export {
     isEmptyObject,
     convertTimestamp,
-    dateDiff,
-    getCurrentTimestamp
+    getCurrentTimestamp,
+    sleep,
+    comparator
 }

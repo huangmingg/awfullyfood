@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-button-group>
-      <BrowseModal v-on:filterBy="filterContent" v-on:filterDate="dateFilter" />
-      <SortModal v-on:sortBy="sortContent" />
+      <BrowseModal v-on:filterListing="filterListing"/>
+      <SortModal v-on:sortListing="sortListing" />
     </b-button-group>
 
     <!--search button-->
@@ -10,25 +10,24 @@
       <div class="input-group">
         <input
           type="search"
-          class="form-control rounded"
-          placeholder="Search"
+          class="form-control rounded mr-1"
+          placeholder="Enter Listing Name"
           aria-label="Search"
           aria-describedby="search-addon"
           id="searchEntry"
           v-model.lazy="content"
         />
-        <button type="button" class="btn btn-info" v-on:click="search()">
+        <b-button type="button" class="btn btn-info" v-on:click="search()">
           Search
-        </button>
+        </b-button>
       </div>
     </span>
 
     <hr class="dropdown-divider" />
-
     <!--listing-->
     <b-card-group deck>
       <b-card
-        v-for="list in getDisplayList()"
+        v-for="list in listing"
         v-bind:key="list.id"
         :title="list.name"
         :img-src="list.photo"
@@ -53,7 +52,7 @@
           </small>
         </b-card-text>
         <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
-        <span style="color: red">
+        <span>
           {{ list.bookmarks.length }}
         </span>
       </b-card>
@@ -75,21 +74,29 @@ export default {
   components: { BrowseModal, SortModal, BIconHeartFill },
   data() {
     return {
+      loading: true,
       itemCategory: [],
       datePosted: "",
       searchItem: "",
       content: "",
-      sortCat: "", //sort category
+      sortCat: "",
     };
   },
   computed: {
     listing() {
-      return store.getters.getList; //get listings from store
+      return store.getters.getFilteredList;
     },
   },
 
-  created() {
-    getListings(); //store listings in store
+  async created() {
+    const loader = this.$loading.show({ color: 'teal' });
+    await getListings();
+    await store.dispatch('resetFilter');
+    await store.dispatch('filterList');
+
+    await store.dispatch('resetOrder');
+    await store.dispatch('orderList');
+    loader.hide();
   },
 
   methods: {
@@ -105,116 +112,16 @@ export default {
       this.searchItem = document.getElementById("searchEntry").value;
     },
 
-    findDiffInDate: function (a) {
-      const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-      //discard time and time-zone information
-      const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-      var today = new Date();
-      const utc2 = Date.UTC(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      );
-
-      return Math.floor((utc2 - utc1) / _MS_PER_DAY);
-    },
-    getDisplayList: function () {
-      var lst = this.listing;
-      //handle the cross in search bar
-      if (this.content == "") {
-        this.searchItem = "";
-      }
-
-      if (this.searchItem != "") {
-        lst = lst.filter((element) =>
-          element.name.toUpperCase().includes(this.searchItem.toUpperCase())
-        );
-      }
-
-      if (this.itemCategory.length != 0) {
-        if (this.itemCategory.length != 2) {
-          //only one category selected
-          //if both selected, return original lst
-          lst = lst.filter(
-            (element) => element.category == this.itemCategory[0]
-          );
-        }
-      }
-
-      if (this.datePosted != "") {
-        lst = this.filterByDate(lst, this.datePosted);
-      }
-
-      if (this.sortCat != "") {
-        lst = this.sorting(lst);
-      }
-      return lst;
+    filterListing(form) {
+      store.dispatch('setFilter', form)
+      store.dispatch('filterList');
     },
 
-    filterContent(value) {
-      this.itemCategory = value[0];
-      this.datePosted = value[1];
-    },
+    sortListing(order) {
+      store.dispatch('setOrder', order)
+      store.dispatch('orderList')
+    }
 
-    dateFilter(day) {
-      this.datePosted = day;
-    },
-
-    filterByDate(currList, daysToFilter) {
-      return currList.filter(
-        (element) =>
-          this.findDiffInDate(new Date(element.createdAt.seconds * 1000)) <=
-          daysToFilter
-      );
-    },
-    sortContent(value) {
-      this.sortCat = value;
-    },
-    sorting(list) {
-      var newList = this.deepCopy(list);
-      switch (this.sortCat) {
-        case "price_asc":
-          return newList.sort(this.priceComparator);
-        case "price_des":
-          return newList.sort(this.priceComparator).reverse();
-        case "likes_asc":
-          return newList.sort(this.likesComparator);
-        case "likes_des":
-          return newList.sort(this.likesComparator).reverse();
-        case "expiry_asc":
-          return newList.sort(this.expiryComparator);
-        case "expiry_des":
-          return newList.sort(this.expiryComparator).reverse();
-      }
-    },
-    priceComparator(a, b) {
-      //ascending
-      if (a.price > b.price) return 1;
-      else if (b.price > a.price) return -1;
-      else return 0;
-    },
-
-    likesComparator(a, b) {
-      //ascending
-      if (a.length > b.length) return 1;
-      else if (b.length > a.length) return -1;
-      else return 0;
-    },
-
-    expiryComparator(a, b) {
-      //ascending
-      if (a.expiredAt.seconds > b.expiredAt.seconds) return 1;
-      else if (b.expiredAt.seconds > a.expiredAt.seconds) return -1;
-      else return 0;
-    },
-
-    deepCopy(list) {
-      var newList = [];
-      list.forEach((element) => {
-        newList.push(element);
-      });
-      return newList;
-    },
   },
 };
 </script>
