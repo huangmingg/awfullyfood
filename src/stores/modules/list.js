@@ -19,6 +19,11 @@ export default {
         getFilteredList: (state) => {
             return state.filteredList;
         },
+
+        getFilter: (state) => {
+            return state.filter;
+        },
+
     },
     mutations: {
         updateList (state, list) {
