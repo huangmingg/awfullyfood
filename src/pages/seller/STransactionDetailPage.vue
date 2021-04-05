@@ -1,14 +1,17 @@
 <template>
   <div>
     <h2>Pending Transactions</h2>
-     <b-list-group deck>
-      <b-list-group-item  v-for="list in pendingListings"
-        v-bind:key="list.id"
-        class="d-flex justify-content-between align-items-center">
-        <h1 class="mb-1">Buyer ID: {{ list.buyerId }}<br>
+    <b-list-group deck>
+      <b-list-group-item
+        v-for="list in pendingListings"
+        :key="list.id"
+        class="d-flex justify-content-between align-items-center"
+      >
+        <h1 class="mb-1">
+          Buyer ID: {{ list.buyerId }}<br>
         
-        Quantity: {{ list.quantity }}<br>
-        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+          Quantity: {{ list.quantity }}<br>
+          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
 
