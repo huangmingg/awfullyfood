@@ -17,9 +17,6 @@
           id="searchEntry"
           v-model.lazy="content"
         />
-        <b-button type="button" class="btn btn-info" v-on:click="search()">
-          Search
-        </b-button>
       </div>
     </span>
 
@@ -110,16 +107,6 @@ export default {
 
     convertTimestamp: function (timestamp) {
       return convertTimestamp(timestamp);
-    },
-
-    search: function () {
-      this.sanitizeQuery();
-      if (this.content) {
-        store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
-        store.dispatch('filterList');
-      } else {
-        alert("Invalid search field!");
-      }
     },
 
     sanitizeQuery: function () {
