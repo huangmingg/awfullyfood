@@ -1,5 +1,3 @@
-import {ListingCreate} from "@/models/listing.class";
-
 export class TransactionCreate {
     constructor(transaction) {
         this.listingId = transaction.listingId;
