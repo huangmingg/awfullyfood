@@ -12,6 +12,9 @@ export default {
         getProfileState: state => {
             return state.profile;
         },
+        getProfileId: state => {
+            return state.profile?.id;
+        }
     },
     mutations: {
         updateProfile (state, profile) {
