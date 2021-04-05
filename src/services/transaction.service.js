@@ -59,17 +59,15 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
         });
 }
 
-const getTransactionsByListing = async (listingId) => {
+const getTransactionsByListing = async (listingId, saveState = false) => {
     return database.collection("transactions")
         .where("listingId", "==", listingId)
         .get()
         .then(async (res) => {
-            const output = res.docs.map(doc => {
-                return {
-                    ...doc.data(),
-                    'id': doc.id,
-                };
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
+            saveState ? await store.dispatch('updateTransaction', output) : null;
             return output;
         })
         .catch((error) => {
@@ -94,6 +92,4 @@ export {
     getTransactionsByBuyer,
     getTransactionsByListing,
     getTransactionsBySeller,
-    approveTransaction,
-
 }
