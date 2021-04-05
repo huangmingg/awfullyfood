@@ -43,6 +43,6 @@ export class ListingUpdate {
         });
         for (const [key, value] of Object.entries(getData(obj))) {
             this[key] = value;
-        };
+        }
     }
 }
