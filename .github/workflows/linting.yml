@@ -3,9 +3,24 @@ name: lint
 on: [push,pull_request]
 
 jobs:
-  build_and_deploy:
+  run-linters:
+    name: Run linters
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Lint check and audit check for vulnerabilities
-        run: npm ci && npm run lint && npm audit --audit-level=moderate --registry=https://registry.npmjs.org/
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      # ESLint and Prettier must be in `package.json`
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          eslint: true
