@@ -1,0 +1,14 @@
+name: Run lint
+
+on: [push,pull_request]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint check and audit check for vulnerabilities
+        run: |
+        npm ci
+        npm run lint
+        npm audit --audit-level=moderate --registry=https://registry.npmjs.org/
