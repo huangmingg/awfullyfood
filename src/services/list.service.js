@@ -2,7 +2,7 @@ import { store } from "@/stores";
 import { database } from "@/firebase";
 import { downloadFile, uploadFile } from "@/services/storage.service";
 import { ListingCreate, ListingRead, ListingUpdate } from "@/models/listing.class";
-import { getCurrentTimestamp } from "@/services/utils.service";
+import { getCurrentTimestamp, comparator } from "@/services/utils.service";
 
 const getListings = async (saveState = true) => {
     return database.collection("listings").get()
@@ -93,6 +93,46 @@ const getListingName = async (listingId) => {
     return res?.name
 }
 
+const orderList = (list, order) => {
+    return list.sort(comparator(order[0], order[1]));
+}
+
+const filterList = (list, filters) => {
+    const _filterListByPropertyInArray = (list, property, array) => {
+        if (array && Array.isArray(array)) {
+            if (array.length) {
+                return list.filter((ele) => {
+                    return array.includes(ele[property]);
+                });
+            } else {
+                return [];
+            }
+        } else {
+            return list;
+        }
+    }
+    const buyerId = filters.buyerId;
+    const listingId = filters.listingId;
+    const sellerId = filters.sellerId;
+    const itemCategory = filters.itemCategory;
+    const datePosted = filters.datePosted;
+
+    list = _filterListByPropertyInArray(list, "buyerId", buyerId);
+    list = _filterListByPropertyInArray(list, "sellerId", sellerId);
+    list = _filterListByPropertyInArray(list, "listingId", listingId);
+    list = _filterListByPropertyInArray(list, "category", itemCategory);
+
+    if (datePosted && +datePosted) {
+        list = list.filter((ele) => {
+            const result = Math.abs(ele.createdAt.seconds - (Date.now() / 1000));
+            return result <= +datePosted;
+        })
+    }
+    return list;
+}
+
+
+
 
 export {
     getListings,
@@ -103,6 +143,8 @@ export {
     deleteListing,
     updateListingPhoto,
     getListingPhoto,
-    getListingName
+    getListingName,
+    orderList,
+    filterList,
 }
 

@@ -4,9 +4,9 @@ export class TransactionCreate {
         this.buyerId = transaction.buyerId;
         this.sellerId = transaction.sellerId;
         this.quantity = transaction.quantity;
-        this.buyerReview = {};
-        this.sellerReview = {};
-        this.isApproved = false;
+        this.buyerReview = transaction.buyerReview? transaction.buyerReview : {};
+        this.sellerReview = transaction.sellerReview ? transaction.sellerReview : {};
+        this.isApproved = transaction.isApproved ? transaction.isApproved : false;
         this.createdAt = transaction.createdAt;
         this.deletedAt = transaction.deletedAt;
     }

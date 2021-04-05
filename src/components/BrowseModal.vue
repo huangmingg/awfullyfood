@@ -3,7 +3,7 @@
       <b-button variant="info" class="mr-2" v-b-modal.filter>Filter</b-button>
       <b-modal v-model="show" id="filter" centered title="Filters">
         <div class="modal-content">
-          <b-form class="modal-body" v-if="show">
+          <b-form class="modal-body">
             <b-form-group label="Item Category:">
               <b-form-checkbox-group
                   v-model="form.category"
@@ -34,35 +34,41 @@ export default {
     return {
       show: false,
       form: {
-        category: [],
-        datePosted: "",
+        category: ['Ugly', 'Expiring'],
+        datePosted: 0,
       },
       categories: ['Ugly', 'Expiring'],
       dateOptions: [
-        {text: 'Anytime', value: 0},
-        {text: 'Past 24 Hours', value: 1},
-        {text: 'Past Week', value: 7},
-        {text: 'Past 2 Weeks', value: 14},
-        {text: 'Past Month', value: 30}
+        { text: 'Anytime', value: 0 },
+        { text: 'Past 24 Hours', value: 86400 },
+        { text: 'Past Week', value: 7 * 86400 },
+        { text: 'Past 2 Weeks', value: 14 * 86400 },
+        { text: 'Past Month', value: 30 * 86400 }
         ]
     };
   },
   methods: {
     onSubmit: function() {
-      console.log("Submitting form")
       this.show = false;
-      console.log(this.form.datePosted)
-      this.$emit('filterBy', [this.form.category, this.form.datePosted])
+      this.filterListing();
     },
 
     onReset: function() {
-      console.log(this.form.datePosted)
-      this.form = {};
-      this.form.category=[];
-      this.form.datePosted="";
+      this.form = { category: ['Ugly', 'Expiring'], datePosted: 0 };
     },
-    filterDate: function() {
-      this.$emit('filterDate', this.form.datePosted)
+
+    filterListing: function() {
+      const res = this.sanitizeForm()
+      this.$emit('filterListing', res);
+    },
+
+    sanitizeForm: function() {
+      const output = {};
+      if (this.form.datePosted) {
+        output.datePosted = this.form.datePosted;
+      }
+      output.itemCategory = this.form.category;
+      return output;
     }
   }
 }
