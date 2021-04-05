@@ -14,9 +14,10 @@ export class TransactionCreate {
 }
 
 export class TransactionRead extends TransactionCreate {
-    constructor(transaction, id) {
+    constructor(transaction, id, listName) {
         super(transaction);
         this.id = id;
+        this.listName = listName
     }
 }
 
