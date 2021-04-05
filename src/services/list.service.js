@@ -88,6 +88,11 @@ const getListingPhoto = async (listingId) => {
     return res ? res : downloadFile('listings/dummy.png');
 }
 
+const getListingName = async (listingId) => {
+    const res = await getListing(listingId);
+    return res?.name
+}
+
 
 export {
     getListings,
@@ -98,5 +103,6 @@ export {
     deleteListing,
     updateListingPhoto,
     getListingPhoto,
+    getListingName
 }
 
