@@ -59,46 +59,6 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
         });
 }
 
-const getApprovedTransactionsByBuyer = async (buyerId) => {
-    return database.collection("transactions")
-        .where("buyerId", "==", buyerId)
-        .where("isApproved", "==", true)
-        .get()
-        .then(async (res) => {
-            const output = res.docs.map(doc => {
-                return {
-                    ...doc.data(),
-                    'id': doc.id,
-                };
-            });
-            return output;
-        })
-        .catch((error) => {
-            console.log(error);
-            return [];
-        });
-}
-
-const getPendingTransactionsByBuyer = async (buyerId) => {
-    return database.collection("transactions")
-        .where("buyerId", "==", buyerId)
-        .where("isApproved", "==", false)
-        .get()
-        .then(async (res) => {
-            const output = res.docs.map(doc => {
-                return {
-                    ...doc.data(),
-                    'id': doc.id,
-                };
-            });
-            return output;
-        })
-        .catch((error) => {
-            console.log(error);
-            return [];
-        });
-}
-
 const getTransactionsByListing = async (listingId) => {
     return database.collection("transactions")
         .where("listingId", "==", listingId)
@@ -134,8 +94,6 @@ export {
     getTransactionsByBuyer,
     getTransactionsByListing,
     getTransactionsBySeller,
-    getApprovedTransactionsByBuyer,
-    getPendingTransactionsByBuyer,
     approveTransaction,
 
 }
