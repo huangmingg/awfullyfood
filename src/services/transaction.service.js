@@ -3,13 +3,14 @@ import { store } from "@/stores";
 import { TransactionCreate, TransactionRead, TransactionUpdate } from "@/models/transaction.class";
 import { getCurrentTimestamp } from "@/services/utils.service";
 import { Review } from "@/models/review.class";
+import { getListingName } from "@/services/list.service";
 
 const getTransactions = async (saveState = true) => {
     return database.collection("transactions").get()
         .then(async (res) => {
-            const output = res.docs.map((doc) => {
-                return new TransactionRead(doc.data(), doc.id)
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
             saveState ? await store.dispatch('updateTransaction', output) : null;
             return output;
         })
@@ -24,9 +25,9 @@ const getTransactionsBySeller = async (sellerId, saveState = true) => {
         .where("sellerId", "==", sellerId)
         .get()
         .then(async (res) => {
-            const output = res.docs.map((doc) => {
-                return new TransactionRead(doc.data(), doc.id)
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
             saveState ? await store.dispatch('updateTransaction', output) : null;
             return output;
         })
@@ -41,9 +42,9 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
         .where("buyerId", "==", buyerId)
         .get()
         .then(async (res) => {
-            const output = res.docs.map((doc) => {
-                return new TransactionRead(doc.data(), doc.id)
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
             saveState ? await store.dispatch('updateTransaction', output) : null;
             return output;
         })
@@ -58,9 +59,9 @@ const getTransactionsByListing = async (listingId, saveState = false) => {
         .where("listingId", "==", listingId)
         .get()
         .then(async (res) => {
-            const output = res.docs.map((doc) => {
-                return new TransactionRead(doc.data(), doc.id)
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
             saveState ? await store.dispatch('updateTransaction', output) : null;
             return output;
         })
