@@ -20,9 +20,28 @@ const getTransactions = async (saveState = true) => {
         });
 }
 
-const getTransactionsBySeller = async (sellerId, saveState = true) => {
+const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
     return database.collection("transactions")
         .where("sellerId", "==", sellerId)
+        .where("isApproved", "==", false)
+        .get()
+        .then(async (res) => {
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId))
+            }));
+            saveState ? await store.dispatch('updateTransaction', output) : null;
+            return output;
+        })
+        .catch((error) => {
+            console.log(error);
+            return [];
+        });
+}
+
+const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
+    return database.collection("transactions")
+        .where("sellerId", "==", sellerId)
+        .where("isApproved", "==", true)
         .get()
         .then(async (res) => {
             const output = await Promise.all(res.docs.map(async(doc) => {
@@ -86,7 +105,7 @@ const createTransaction = async (payload) => {
 
 const updateTransaction = async (transactionId, payload) => {
     const transaction = new TransactionUpdate(payload);
-    return database.collection("transactions").doc(transactionId).update(transaction)
+    return database.collection("transactions").doc(transactionId).update({...transaction})
         .then(() => {
             return true;
         })
@@ -107,20 +126,23 @@ const approveTransaction = async (transactionId) => {
 }
 
 const updateBuyerReview = async (transactionId, rating, description) => {
-    const reviewPayload = new Review(rating, description);
-    return await updateTransaction(transactionId, { 'buyerReview': reviewPayload });
+    const nowDate = new Date(Date.now());
+    const reviewPayload = new Review(rating, description,nowDate.toLocaleDateString());
+    return await updateTransaction(transactionId, { 'buyerReview': {...reviewPayload} });
 }
 
 const updateSellerReview = async (transactionId, rating, description) => {
-    const reviewPayload = new Review(rating, description);
-    return await updateTransaction(transactionId, { 'sellerReview': reviewPayload });
+    const nowDate = new Date(Date.now());
+    const reviewPayload = new Review(rating, description,nowDate.toLocaleDateString());
+    return await updateTransaction(transactionId, { 'sellerReview': {...reviewPayload} });
 }
 
 export {
     getTransactions,
     getTransactionsByBuyer,
     getTransactionsByListing,
-    getTransactionsBySeller,
+    getPendingTransactionsBySeller,
+    getApprovedTransactionsBySeller,
     createTransaction,
     updateTransaction,
     deleteTransaction,
@@ -128,3 +150,4 @@ export {
     updateBuyerReview,
     updateSellerReview,
 }
+

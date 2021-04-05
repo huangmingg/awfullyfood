@@ -4,20 +4,22 @@
     <h2>Available Transactions</h2>
     <br>
      <b-list-group deck>
-      <b-list-group-item  v-for="list in listing"
+      <b-list-group-item  v-for="list in thirdListing"
         v-bind:key="list.id" 
-        class="d-flex justify-content-between list-group-item-action align-items-center">
-        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}
-        <br><br>
-        {{ list.listingId }}
+        class="d-flex justify-content-between list-group-item-action align-items-center" >
+        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
+        {{ list.productName }} -> This should be the name.
         <br>
         Quantity: {{ list.quantity }}
         <br> 
         <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
-        <b-button variant="outline-info" class="ml-auto" @click="showModal()" :disabled="isDisabled">Review</b-button>
-
+        <b-button-group>
+        <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
+        
+        <b-button variant="outline-info" class="ml-auto" @click="showModal()" :disabled="isDisabled(list.isApproved)">Review</b-button>
+        </b-button-group>
 
           <b-modal id="modal-closing" ref="modal-review" 
           title="Submit Your Review"
@@ -53,13 +55,13 @@
                 <b-form-group
                   label="Review"
                   label-for="review-input"
-                  invalid-feedback="Review is required and must have at least 10 characters"
-                  :state="review.length >= 10"
+                  invalid-feedback="Review is required and must have at least 20 characters"
+                  :state="review.length >= 20"
                 >
                 <b-form-textarea
                   id="review-input"
                   v-model="review"
-                  :state="review.length >= 10"
+                  :state="review.length >= 20"
                   required
                 ></b-form-textarea> 
                 </b-form-group>
@@ -69,14 +71,36 @@
 
         
       </b-list-group-item>
-
   </b-list-group>
+  <br>
+  <div>
+    <div style="text-align:center">
+    <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Past Transactions</b-button>
+    </div>
+    <b-collapse id="collapse-1" class="mt-2">
+          
+        <b-list-group deck>
+            <b-list-group-item  v-for="list in secondListing"
+              v-bind:key="list.id"
+              class="d-flex list-group-item-action justify-content-between align-items-center">
+              <h1 class="mb-1"><small>Item: {{ list.listingId }} This should be name too.<br>
+              Quantity: {{ list.quantity }}<br>
+              Reviewed at: {{ list.buyerReview.updatedAt }}</small>
+              </h1>
+               <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button> 
+              
+          </b-list-group-item>
+        </b-list-group>
+
+    </b-collapse>
+  </div>
 
   </div>
 </template>
 
 <script>
 import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
+import { getListing } from "@/services/list.service";
 import { store } from "@/stores";
 import { router } from "@/routes";
 
@@ -84,31 +108,50 @@ export default {
   name: "STransactionDetailPage",
   data() {
     return {
-      profile: {},
+      product: {},
       review: '', 
       reviewState: null,
       value: 0, 
       disabled: false,
+      secondListing: {},
+      thirdListing: {},
+      test: '',
     }
   },
   computed: {
     listing() {
       return store.getters.getList;
     },
-    isDisabled() {
-      return this.disabled;
-    }
   },
   async created() {
     const res = await getTransactionsByBuyer(store.getters.getProfileState?.id); 
     console.log(res)
   },
+  async mounted() {
+    const transactions = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id)
+    ).filter((ele) => {
+      return ele.isApproved === true;
+    }).filter((ele) => {
+      return ele.buyerReview.size != 0;
+    })
+    this.secondListing = transactions;
+    const transactions2 = (
+      await getTransactionsByBuyer(store.getters.getProfileState?.id)
+    ).filter((ele) => {
+      return Object.entries(ele.buyerReview).length === 0;
+    })
+    this.thirdListing = transactions2;
+
+  },
   methods: {
     checkFormValidity() {
-      if (this.value > 0) { 
+    if (this.value > 0 && this.review.length >= 20) { 
         const valid = this.$refs.form[0].checkValidity() //its an array due to for loop above. so add [0]
         this.reviewState = valid
         return valid
+      } else {
+        alert('Please fill in your review.')
       }
     },
     handleOk(bvModalEvt,id) {
@@ -141,13 +184,26 @@ export default {
     },
     getStatus:function(item) {
       if (item) {
-        this.disabled = false
         return 'Transaction is approved and you can leave a review for the seller.'
       } else {
-        this.disabled = true
         return 'Transaction is not approved.'
       }
-    }
+    },
+    isDisabled:function(item){
+      if (item) {
+        return false
+      } else {
+        return true
+      }        
+    },
+    getProduct: async function(id) {
+      this.product = await getListing(id)
+      console.log(this.product)
+      return this.product.name
+    },
+    navigate: function (listId) {
+      router.push(`browse/${listId}`);
+    },
   },
   
 }
