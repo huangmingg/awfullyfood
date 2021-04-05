@@ -8,7 +8,7 @@
     <!--search button-->
     <span class="float-right">
       <div class="input-group">
-        <input
+        <b-input
           type="search"
           class="form-control rounded mr-1"
           placeholder="Enter Listing Name"
@@ -74,18 +74,22 @@ export default {
   components: { BrowseModal, SortModal, BIconHeartFill },
   data() {
     return {
-      loading: true,
-      itemCategory: [],
-      datePosted: "",
-      searchItem: "",
       content: "",
-      sortCat: "",
     };
   },
   computed: {
     listing() {
       return store.getters.getFilteredList;
     },
+  },
+
+  watch: {
+    content: function (newQuery) {
+      this.content = newQuery;
+      this.sanitizeQuery();
+      store.dispatch('setFilter', {...store.getters.getFilter, nameSubstring: this.content});
+      store.dispatch('filterList');
+    }
   },
 
   async created() {
@@ -109,7 +113,17 @@ export default {
     },
 
     search: function () {
-      this.searchItem = document.getElementById("searchEntry").value;
+      this.sanitizeQuery();
+      if (this.content) {
+        store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
+        store.dispatch('filterList');
+      } else {
+        alert("Invalid search field!");
+      }
+    },
+
+    sanitizeQuery: function () {
+      this.content = this.content.trim();
     },
 
     filterListing(form) {
