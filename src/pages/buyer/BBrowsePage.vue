@@ -31,7 +31,7 @@
         v-for="list in getDisplayList()"
         v-bind:key="list.id"
         :title="list.name"
-        :img-src="list.imageURL"
+        :img-src="list.photo"
         img-alt="Image"
         img-top
         img-height="200"
@@ -47,9 +47,9 @@
           ${{ list.price }} per {{ list.unit }}
           <small>
             <br />
-            Created Date: {{ list.createdAt.toDate().toLocaleDateString() }}
+            Created Date: {{ convertTimestamp(list.createdAt) }}
             <br />
-            Expiry Date: {{ list.expiredAt.toDate().toLocaleDateString() }}
+            Expiry Date: {{ convertTimestamp(list.expiredAt) }}
           </small>
         </b-card-text>
         <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
@@ -68,6 +68,7 @@ import { router } from "@/routes";
 import BrowseModal from "@/components/BrowseModal";
 import SortModal from "@/components/SortModal";
 import { BIconHeartFill } from "bootstrap-vue";
+import { convertTimestamp } from "@/services/utils.service";
 
 export default {
   name: "BBrowsePage",
@@ -86,6 +87,7 @@ export default {
       return store.getters.getList; //get listings from store
     },
   },
+
   created() {
     getListings(); //store listings in store
   },
@@ -94,9 +96,15 @@ export default {
     navigate: function (listId) {
       router.push(`browse/${listId}`);
     },
+
+    convertTimestamp: function (timestamp) {
+      return convertTimestamp(timestamp);
+    },
+
     search: function () {
       this.searchItem = document.getElementById("searchEntry").value;
     },
+
     findDiffInDate: function (a) {
       const _MS_PER_DAY = 1000 * 60 * 60 * 24;
       //discard time and time-zone information
@@ -140,16 +148,18 @@ export default {
       if (this.sortCat != "") {
         lst = this.sorting(lst);
       }
-
       return lst;
     },
+
     filterContent(value) {
       this.itemCategory = value[0];
       this.datePosted = value[1];
     },
+
     dateFilter(day) {
       this.datePosted = day;
     },
+
     filterByDate(currList, daysToFilter) {
       return currList.filter(
         (element) =>

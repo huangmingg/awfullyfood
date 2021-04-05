@@ -1,16 +1,15 @@
 import { store } from "@/stores";
 import { database } from "@/firebase";
 import { downloadFile, uploadFile } from "@/services/storage.service";
+import { ListingCreate, ListingRead, ListingUpdate } from "@/models/listing.class";
+import { getCurrentTimestamp } from "@/services/utils.service";
 
 const getListings = async (saveState = true) => {
     return database.collection("listings").get()
         .then(async(res) => {
-            const output =  res.docs.map(doc => {
-                return {
-                    ...doc.data(),
-                    'id': doc.id,
-                };
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new ListingRead(doc.data(), doc.id, await getListingPhoto(doc.id))
+            }));
             saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
@@ -18,19 +17,16 @@ const getListings = async (saveState = true) => {
             console.log(error);
             return [];
         });
-}
+};
 
 const getListingBySeller = async (sellerId, saveState = true) => {
     return database.collection("listings")
         .where("sellerId", "==", sellerId)
         .get()
         .then(async(res) => {
-            const output =  res.docs.map(doc => {
-                return {
-                    ...doc.data(),
-                    'id': doc.id,
-                };
-            });
+            const output = await Promise.all(res.docs.map(async(doc) => {
+                return new ListingRead(doc.data(), doc.id, await getListingPhoto(doc.id))
+            }));
             saveState ? await store.dispatch('updateList', output) : null;
             return output;
         })
@@ -44,8 +40,8 @@ const getListing = async (listingId) => {
     return database.collection("listings")
         .doc(listingId)
         .get()
-        .then((res) => {
-            return res.data();
+        .then(async(res) => {
+            return new ListingRead(res.data(), res.id, await getListingPhoto(res.id));
         })
         .catch((error) => {
             console.log(error);
@@ -54,11 +50,21 @@ const getListing = async (listingId) => {
 }
 
 const createListing = async (payload) => {
-    console.log(payload)
+    const listing = new ListingCreate(payload);
+    return database.collection("listings").add(listing)
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+            return true;
+        })
+        .catch((error) => {
+            console.log(error);
+            return false;
+        });
 }
 
 const updateListing = async (listingId, payload) => {
-    return database.collection("listings").doc(listingId).update(payload)
+    const listing = new ListingUpdate(payload);
+    return database.collection("listings").doc(listingId).update(listing)
         .then(() => {
             return true;
         })
@@ -69,7 +75,8 @@ const updateListing = async (listingId, payload) => {
 }
 
 const deleteListing = async (listingId) => {
-    console.log(listingId)
+    const deletePayload = { 'deletedAt' : getCurrentTimestamp() };
+    return await updateListing(listingId, deletePayload);
 }
 
 const updateListingPhoto = async(listingId, file) => {
@@ -77,8 +84,13 @@ const updateListingPhoto = async(listingId, file) => {
 }
 
 const getListingPhoto = async (listingId) => {
-    const res = await downloadFile(`lists/${listingId}`);
-    return res ? res : downloadFile('lists/dummy.png');
+    const res = await downloadFile(`listings/${listingId}`);
+    return res ? res : downloadFile('listings/dummy.png');
+}
+
+const getListingName = async (listingId) => {
+    const res = await getListing(listingId);
+    return res?.name
 }
 
 
@@ -91,5 +103,6 @@ export {
     deleteListing,
     updateListingPhoto,
     getListingPhoto,
+    getListingName
 }
 
