@@ -2,17 +2,20 @@
   <div>
     <h2>Available Transactions</h2>
     <br>
-     <b-list-group deck>
-      <b-list-group-item  v-for="list in unreviewedListings"
-        v-bind:key="list.id" 
-        class="d-flex justify-content-between list-group-item-action align-items-center" >
-        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br><br>
+    <b-list-group deck>
+      <b-list-group-item
+        v-for="list in unreviewedListings"
+        :key="list.id" 
+        class="d-flex justify-content-between list-group-item-action align-items-center"
+      >
+        <h1 class="mb-1">
+          Status: {{ getStatus(list.isApproved) }}<br><br>
 
-        Item: {{ list.listName }}
-        <br>
-        Quantity: {{ list.quantity }}
-        <br> 
-        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+          Item: {{ list.listName }}
+          <br>
+          Quantity: {{ list.quantity }}
+          <br> 
+          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
         <b-button-group>
@@ -113,7 +116,7 @@
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
             <h1 class="mb-1">
-                <small>Item: {{ list.listName }}<br>
+              <small>Item: {{ list.listName }}<br>
                 Quantity: {{ list.quantity }}<br>
                 Reviewed at: {{ list.buyerReview.updatedAt }}</small>
             </h1>
@@ -132,9 +135,9 @@
 </template>
 
 <script>
-import { getTransactionsByBuyer, updateBuyerReview } from "@/services/transaction.service";
-import { store } from "@/stores";
-import { router } from "@/routes";
+import { getTransactionsByBuyer, updateBuyerReview } from '@/services/transaction.service';
+import { store } from '@/stores';
+import { router } from '@/routes';
 
 export default {
   name: 'STransactionDetailPage',
