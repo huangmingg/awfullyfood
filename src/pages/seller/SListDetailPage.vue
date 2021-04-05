@@ -1,15 +1,16 @@
 <template>
   <div>
-    <b-button v-on:click="back()" variant="info">Back </b-button>
-    <hr class="dropdown-divider" />
-
     <b-container fluid class="p-4 bg-light">
       <b-row>
+      <b-button v-on:click="back()" variant="info">Back </b-button>
+
+
         <b-btn-group class="ml-auto" >
           <b-button v-show="!edit" variant="info" v-on:click="editList()">Edit Listing</b-button>
           <b-button v-show="edit" variant="info" v-on:click="saveList()">Save Listing</b-button>
         </b-btn-group>
       </b-row>
+      <hr class="dropdown-divider"/>
       <b-form>
         <b-row>
           <b-img @click="clickImage()" width=400 height=400 class="border-info product-photo" thumbnail fluid :src="form.photo" alt="Product Photo"/>
