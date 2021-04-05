@@ -1,4 +1,4 @@
-name: Run lint
+name: lint
 
 on: [push,pull_request]
 
@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Lint check and audit check for vulnerabilities
-        run: |
+      - run: |
         npm ci
         npm run lint
         npm audit --audit-level=moderate --registry=https://registry.npmjs.org/
