@@ -56,7 +56,7 @@ const getListing = async (listingId) => {
 
 const createListing = async (payload) => {
   const listing = new ListingCreate(payload);
-  return database.collection('listings').add(listing)
+  return database.collection('listings').add( { ...listing })
     .then((docRef) => {
       console.log('Document written with ID: ', docRef.id);
       return true;
@@ -69,7 +69,7 @@ const createListing = async (payload) => {
 
 const updateListing = async (listingId, payload) => {
   const listing = new ListingUpdate(payload);
-  return database.collection('listings').doc(listingId).update(listing)
+  return database.collection('listings').doc(listingId).update({ ...listing })
     .then(() => {
       return true;
     })
