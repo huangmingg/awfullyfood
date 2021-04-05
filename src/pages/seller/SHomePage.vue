@@ -15,19 +15,25 @@
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Seller'" />
+        <OrderHistory
+          :orders="orderHistory"
+          :role="'Seller'"
+        />
       </li>
       <li class="orderList">
-        <PendingOrders :orders="pendingOrders" :role="'Seller'" />
+        <PendingOrders
+          :orders="pendingOrders"
+          :role="'Seller'"
+        />
       </li>
       <li>
-        <s-listing-category-chart></s-listing-category-chart>
+        <s-listing-category-chart />
       </li>
       <li class="orderList">
-        <s-top-likes></s-top-likes>
+        <s-top-likes />
       </li>
       <li class="orderList">
-        <s-top-interest></s-top-interest>
+        <s-top-interest />
       </li>
     </ul>
   </div>
@@ -47,6 +53,13 @@ import STopInterest from './visualisation/STopInterest.vue';
 
 export default {
   name: 'SHomePage',
+  components: {
+    SListingCategoryChart,
+    STopInterest,
+    STopLikes,
+    OrderHistory,
+    PendingOrders,
+  },
   data() {
     return {
       orderHistory: [],
@@ -54,13 +67,6 @@ export default {
       orderHistoryCounter: 0,
       pendingOrdersCounter: 0,
     };
-  },
-  components: {
-    SListingCategoryChart,
-    STopInterest,
-    STopLikes,
-    OrderHistory,
-    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {

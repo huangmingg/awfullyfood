@@ -1,59 +1,87 @@
 <template>
   <b-container class="register-component">
-    <b-form @submit="onSubmit" v-if="show">
-      <p class="text-justify"> Welcome! Tell us a little more about yourself</p>
+    <b-form
+      v-if="show"
+      @submit="onSubmit"
+    >
+      <p class="text-justify">
+        Welcome! Tell us a little more about yourself
+      </p>
 
-      <b-form-group id="input-group-1" label="Your Email:" label-for="input-1">
+      <b-form-group
+        id="input-group-1"
+        label="Your Email:"
+        label-for="input-1"
+      >
         <b-form-input
-            disabled
-            id="input-1"
-            v-model="form.email"
-            type="email"
-            required
-        ></b-form-input>
+          id="input-1"
+          v-model="form.email"
+          disabled
+          type="email"
+          required
+        />
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="Your Display Name:" label-for="input-2">
+      <b-form-group
+        id="input-group-2"
+        label="Your Display Name:"
+        label-for="input-2"
+      >
         <b-form-input
-            id="input-2"
-            v-model="form.name"
-            type="text"
-            placeholder="Enter name"
-            required
-        ></b-form-input>
+          id="input-2"
+          v-model="form.name"
+          type="text"
+          placeholder="Enter name"
+          required
+        />
       </b-form-group>
 
-      <b-form-group id="input-group-3" label="Your Phone Number:" label-for="input-3">
+      <b-form-group
+        id="input-group-3"
+        label="Your Phone Number:"
+        label-for="input-3"
+      >
         <b-form-input
-            id="input-3"
-            v-model="form.phoneNumber"
-            placeholder="Enter phone number"
-            type="number"
-            required
-        ></b-form-input>
+          id="input-3"
+          v-model="form.phoneNumber"
+          placeholder="Enter phone number"
+          type="number"
+          required
+        />
       </b-form-group>
 
-      <b-form-group id="input-group-4" label="Your Address:" label-for="input-4">
+      <b-form-group
+        id="input-group-4"
+        label="Your Address:"
+        label-for="input-4"
+      >
         <b-form-input
-            id="input-4"
-            v-model="form.address"
-            placeholder="Enter phone number"
-            type="text"
-            required
-        ></b-form-input>
+          id="input-4"
+          v-model="form.address"
+          placeholder="Enter phone number"
+          type="text"
+          required
+        />
       </b-form-group>
 
-      <b-form-group label="Select Your Role:" v-slot="{ ariaDescribedby }">
+      <b-form-group
+        v-slot="{ ariaDescribedby }"
+        label="Select Your Role:"
+      >
         <b-form-radio-group
-            v-model="form.role"
-            :options="roles"
-            :aria-describedby="ariaDescribedby"
-            name="radio-options"
-        ></b-form-radio-group>
+          v-model="form.role"
+          :options="roles"
+          :aria-describedby="ariaDescribedby"
+          name="radio-options"
+        />
       </b-form-group>
 
-      <b-button type="submit" variant="primary">Submit</b-button>
-
+      <b-button
+        type="submit"
+        variant="primary"
+      >
+        Submit
+      </b-button>
     </b-form>
   </b-container>
 </template>
@@ -66,7 +94,14 @@ import { authService } from '@/firebase';
 
 export default {
   name: 'RegistrationPage',
-  props: ['authResult'],
+  props: {
+    authResult: {
+      type: Object,
+      default: function () {
+        return {}
+      },
+    },
+  },
   data() {
     return {
       userId: '',
@@ -80,6 +115,20 @@ export default {
       roles: ['Buyer', 'Seller'],
       show: true,
     };
+  },
+
+  async created() {
+    if (!this.authResult) {
+      const res = await getUserProfile(authService.currentUser.uid);
+      this.userId = res.uid;
+      this.form.email = res.email;
+      this.form.name = res.name;
+      this.form.phoneNumber = res.phoneNumber;
+    }
+  },
+
+  mounted() {
+    this.initProps();
   },
   methods: {
     async onSubmit(event) {
@@ -101,20 +150,6 @@ export default {
         this.form.phoneNumber = this.authResult.user.phoneNumber;
       }
     },
-  },
-
-  async created() {
-    if (!this.authResult) {
-      const res = await getUserProfile(authService.currentUser.uid);
-      this.userId = res.uid;
-      this.form.email = res.email;
-      this.form.name = res.name;
-      this.form.phoneNumber = res.phoneNumber;
-    }
-  },
-
-  mounted() {
-    this.initProps();
   },
 };
 </script>

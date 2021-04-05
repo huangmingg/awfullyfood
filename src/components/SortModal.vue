@@ -1,26 +1,47 @@
 <template>
-    <div>
-      <b-button variant="info" class="mr-2" v-b-modal.sort>Sort By</b-button>
-      <b-modal v-model="show" id="sort" centered title="Sort By">
-        <div class="modal-content">
-          <b-form class="modal-body">
-              <b-form-radio-group
-                  v-model="form.sort"
-                  :options="sortOptions"
-              ></b-form-radio-group>
-          </b-form>
-        </div>
-        <template v-slot:modal-footer>
-          <b-button @click="onReset" variant="info">Reset</b-button>
-          <b-button @click="onSubmit" variant="info">Show Results</b-button>
-        </template>
-      </b-modal>
-    </div>
+  <div>
+    <b-button
+      v-b-modal.sort
+      variant="info"
+      class="mr-2"
+    >
+      Sort By
+    </b-button>
+    <b-modal
+      id="sort"
+      v-model="show"
+      centered
+      title="Sort By"
+    >
+      <div class="modal-content">
+        <b-form class="modal-body">
+          <b-form-radio-group
+            v-model="form.sort"
+            :options="sortOptions"
+          />
+        </b-form>
+      </div>
+      <template v-slot:modal-footer>
+        <b-button
+          variant="info"
+          @click="onReset"
+        >
+          Reset
+        </b-button>
+        <b-button
+          variant="info"
+          @click="onSubmit"
+        >
+          Show Results
+        </b-button>
+      </template>
+    </b-modal>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'SortModal.vue',
+  name: 'SortModalVue',
   data() {
     return {
       show: false,

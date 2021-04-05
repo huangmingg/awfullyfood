@@ -5,14 +5,21 @@
     </b-card-title>
     <b-list-group>
       <b-list-group-item
-          v-for="(review, index) in reviews"
-          v-bind:key="index"
-          class="flex-column align-items-start list-item"
+        v-for="(review, index) in reviews"
+        :key="index"
+        class="flex-column align-items-start list-item"
       >
         <div class="d-flex w-100 justify-content-between">
-          <p class="mb-1 font-italic"> "{{ review.description }}" </p>
+          <p class="mb-1 font-italic">
+            "{{ review.description }}"
+          </p>
           <small>
-            <b-form-rating :value="review.rating" readonly precision="2" inline></b-form-rating>
+            <b-form-rating
+              :value="review.rating"
+              readonly
+              precision="2"
+              inline
+            />
           </small>
         </div>
         <small> {{ review.username }}, {{ review.updatedAt.toDate().toLocaleDateString() }} </small>
@@ -26,8 +33,15 @@
 <script>
 
 export default {
-  name: 'Review.vue',
-  props: ['reviews'],
+  name: 'ReviewVue',
+  props: {
+    reviews: {
+      type: Array,
+      default: function () {
+        return []
+      },
+    },
+  },
 };
 </script>
 

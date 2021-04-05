@@ -24,33 +24,35 @@
     <span class="float-right">
       <div class="input-group">
         <b-input
+          v-model.lazy="content"
           type="search"
           class="form-control rounded"
           placeholder="Search"
           aria-label="Search"
           aria-describedby="search-addon"
-          v-model.lazy="content"
         />
       </div>
     </span>
 
     <b-button-group>
       <span>
-         <SortModal v-on:sortListing="sortListing" />
+        <SortModal @sortListing="sortListing" />
       </span>
 
       <span>
-        <b-button variant="info" class="ml-auto" v-on:click="addListing()"
-          >Create Listing</b-button
-        >
+        <b-button
+          variant="info"
+          class="ml-auto"
+          @click="addListing()"
+        >Create Listing</b-button>
       </span>
     </b-button-group>
 
-    <hr class="dropdown-divider" />
+    <hr class="dropdown-divider">
     <b-card-group deck>
       <b-card
         v-for="list in listing"
-        v-bind:key="list.id"
+        :key="list.id"
         :title="list.name"
         :img-src="list.photo"
         img-alt="Image"
@@ -60,24 +62,20 @@
         style="max-width: 20rem"
         class="mb-2 list-item"
         border-variant="info"
-        v-on:click="edit(list.id)"
+        @click="edit(list.id)"
       >
         <b-card-text>
           {{ list.description }}
-          <br />
+          <br>
           ${{ list.price }} per {{ list.unit }}
-          <br />
-          <small
-            >Created Date:
-            {{ convertTimestamp(list.createdAt) }}</small
-          >
-          <br />
-          <small
-            >Expiry Date:
-            {{ convertTimestamp(list.expiredAt) }}</small
-          >
+          <br>
+          <small>Created Date:
+            {{ convertTimestamp(list.createdAt) }}</small>
+          <br>
+          <small>Expiry Date:
+            {{ convertTimestamp(list.expiredAt) }}</small>
         </b-card-text>
-        <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
+        <b-icon-heart-fill style="color: red" />
         <span style="color: red">
           {{ list.bookmarks.length }}
         </span>
@@ -109,6 +107,15 @@ export default {
     },
   },
 
+  watch: {
+    content(newQuery) {
+      this.content = newQuery;
+      this.sanitizeQuery();
+      store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
+      store.dispatch('filterList');
+    },
+  },
+
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
@@ -118,15 +125,6 @@ export default {
     await store.dispatch('resetFilter');
     await store.dispatch('filterList');
     loader.hide();
-  },
-
-  watch: {
-    content(newQuery) {
-      this.content = newQuery;
-      this.sanitizeQuery();
-      store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
-      store.dispatch('filterList');
-    },
   },
 
   methods: {

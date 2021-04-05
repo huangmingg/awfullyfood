@@ -1,52 +1,80 @@
 <template>
-    <b-container fluid class="p-4 bg-light">
-        <b-row class="mx-2">
-          <b-input-group>
-            <b-form-input
-                v-model="userId"
-                placeholder="Enter User ID">
-            </b-form-input>
-            <b-button class="ml-2" variant="outline-info" @click="submitParam()">Search</b-button>
-          </b-input-group>
-        </b-row>
-      <hr/>
-      <b-collapse id="collapse-1" class="mt-2">
-        <b-row class="my-5" v-show="found == false">
-          <b-card-text class="ml-4">
-            User Not Found, please try again!
-          </b-card-text>
-        </b-row>
+  <b-container
+    fluid
+    class="p-4 bg-light"
+  >
+    <b-row class="mx-2">
+      <b-input-group>
+        <b-form-input
+          v-model="userId"
+          placeholder="Enter User ID"
+        />
+        <b-button
+          class="ml-2"
+          variant="outline-info"
+          @click="submitParam()"
+        >
+          Search
+        </b-button>
+      </b-input-group>
+    </b-row>
+    <hr>
+    <b-collapse
+      id="collapse-1"
+      class="mt-2"
+    >
+      <b-row
+        v-show="found == false"
+        class="my-5"
+      >
+        <b-card-text class="ml-4">
+          User Not Found, please try again!
+        </b-card-text>
+      </b-row>
 
-        <div v-show="found">
-          <b-row class="my-5">
-              <b-img class="border-info profile-photo" thumbnail width=400 height=400 fluid :src="photo" alt="Display Photo">
-              </b-img>
-            <b-col>
-              <b-card-text>
-                <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
-              </b-card-text>
-              <b-card-text>
-                Email: {{ profile.email }}
-              </b-card-text>
-              <b-card-text>
-                Name: {{ profile.name }}
-              </b-card-text>
-              <b-card-text>
-                Role: {{ profile.role }}
-              </b-card-text>
-              <b-card-text>
-                Number: {{ profile.phoneNumber }}
-              </b-card-text>
-              <b-card-text>
-                Address: {{ profile.address }}
-              </b-card-text>
-            </b-col>
-          </b-row>
-          <hr/>
-          <Review v-bind:reviews="reviews"/>
-        </div>
-      </b-collapse>
-    </b-container>
+      <div v-show="found">
+        <b-row class="my-5">
+          <b-img
+            class="border-info profile-photo"
+            thumbnail
+            width="400"
+            height="400"
+            fluid
+            :src="photo"
+            alt="Display Photo"
+          />
+          <b-col>
+            <b-card-text>
+              <b-form-rating
+                v-model="averageRating"
+                readonly
+                show-value
+                precision="2"
+                inline
+              />
+            </b-card-text>
+            <b-card-text>
+              Email: {{ profile.email }}
+            </b-card-text>
+            <b-card-text>
+              Name: {{ profile.name }}
+            </b-card-text>
+            <b-card-text>
+              Role: {{ profile.role }}
+            </b-card-text>
+            <b-card-text>
+              Number: {{ profile.phoneNumber }}
+            </b-card-text>
+            <b-card-text>
+              Address: {{ profile.address }}
+            </b-card-text>
+          </b-col>
+        </b-row>
+        <hr>
+        <Review :reviews="reviews" />
+      </div>
+    </b-collapse>
+  </b-container>
 </template>
 
 <script>
@@ -72,15 +100,15 @@ export default {
       click: false,
     };
   },
-  async mounted() {
-    this.userId = this.$route.query.userId;
-    this.userId ? await this.searchUser() : null;
-  },
 
   watch: {
     '$route.params': async function () {
       await this.searchUser();
     },
+  },
+  async mounted() {
+    this.userId = this.$route.query.userId;
+    this.userId ? await this.searchUser() : null;
   },
 
   methods: {

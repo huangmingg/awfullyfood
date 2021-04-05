@@ -1,13 +1,22 @@
 <template>
   <div>
-    <b-button v-on:click="back()" variant="info">Back </b-button>
-    <hr class="dropdown-divider" />
-    <p class="headerFont">Create a new listing</p>
-    <b-container fluid class="p-4 bg-light">
+    <b-button
+      variant="info"
+      @click="back()"
+    >
+      Back
+    </b-button>
+    <hr class="dropdown-divider">
+    <p class="headerFont">
+      Create a new listing
+    </p>
+    <b-container
+      fluid
+      class="p-4 bg-light"
+    >
       <b-form>
         <b-row>
           <b-img
-            @click="clickImage()"
             width="400"
             height="400"
             class="border-info product-photo"
@@ -15,8 +24,13 @@
             fluid
             :src="form.photo"
             alt="Product Photo"
+            @click="clickImage()"
           />
-          <input accept="image/*" v-on:change="onFileChange()" type="file" />
+          <input
+            accept="image/*"
+            type="file"
+            @change="onFileChange()"
+          >
           <b-col>
             <b-form-group
               id="input-group-1"
@@ -28,7 +42,7 @@
                 v-model="form.name"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -41,25 +55,33 @@
                 v-model="form.category"
                 :options="options"
                 required
-              ></b-form-radio-group>
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Price:" label-for="input-3">
+            <b-form-group
+              id="input-group-3"
+              label="Price:"
+              label-for="input-3"
+            >
               <b-form-input
                 id="input-3"
                 v-model="form.price"
                 type="number"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
+            <b-form-group
+              id="input-group-4"
+              label="Unit:"
+              label-for="input-4"
+            >
               <b-form-input
                 id="input-4"
                 v-model="form.unit"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -72,7 +94,7 @@
                 v-model="form.quantity"
                 type="number"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -85,7 +107,7 @@
                 v-model="form.description"
                 type="text"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
             <b-form-group
@@ -98,12 +120,16 @@
                 v-model="form.expiredAt"
                 type="datetime-local"
                 required
-              ></b-form-input>
+              />
             </b-form-group>
 
-            <b-button class="float-right" v-on:click="create()" variant="info"
-              >Create</b-button
+            <b-button
+              class="float-right"
+              variant="info"
+              @click="create()"
             >
+              Create
+            </b-button>
           </b-col>
         </b-row>
       </b-form>
@@ -119,7 +145,7 @@ import { authService } from '@/firebase';
 import { getUserProfile } from '@/services/user.service';
 
 export default {
-  name: 'SAddListPage.vue',
+  name: 'SAddListPageVue',
   data() {
     return {
       form: {

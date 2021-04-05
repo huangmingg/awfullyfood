@@ -1,12 +1,17 @@
 <template>
   <div>
-    <b-button v-on:click="back()" variant="info"> Back </b-button>
+    <b-button
+      variant="info"
+      @click="back()"
+    >
+      Back
+    </b-button>
 
-    <hr class="dropdown-divider" />
+    <hr class="dropdown-divider">
 
     <div class="row">
       <div class="column">
-        <img v-bind:src="itemImg" />
+        <img :src="itemImg">
       </div>
       <div class="column">
         <div>
@@ -20,7 +25,7 @@
                 v-model="itemRating"
                 variant="info"
                 readonly
-              ></b-form-rating>
+              />
             </span>
           </span>
         </div>
@@ -34,16 +39,22 @@
         <div>Location: {{ location }}</div>
         <div>Additional Notes: {{ additionalNotes }}</div>
 
-        <br />
+        <br>
 
         <div class="float-right">
           <span>
-            <b-button id="bookmarkBtn" v-on:click="changeBMClass()">
-              <BIconHeartFill variant="white"></BIconHeartFill>
+            <b-button
+              id="bookmarkBtn"
+              @click="changeBMClass()"
+            >
+              <BIconHeartFill variant="white" />
             </b-button>
           </span>
           <span>
-            <b-button v-on:click="interested()" variant="info">
+            <b-button
+              variant="info"
+              @click="interested()"
+            >
               I'm interested!
             </b-button>
           </span>
@@ -63,8 +74,8 @@ import { authService } from '@/firebase';
 import { toggleBookmark } from '@/services/bookmark.service';
 
 export default {
-  components: { BIconHeartFill },
   name: 'BListDetailPage',
+  components: { BIconHeartFill },
   data() {
     return {
       itemImg: '',

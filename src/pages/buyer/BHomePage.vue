@@ -15,13 +15,19 @@
         </div>
       </li>
       <li class="orderList">
-        <OrderHistory :orders="orderHistory" :role="'Buyer'" />
+        <OrderHistory
+          :orders="orderHistory"
+          :role="'Buyer'"
+        />
       </li>
       <li class="orderList">
-        <PendingOrders :orders="pendingOrders" :role="'Buyer'" />
+        <PendingOrders
+          :orders="pendingOrders"
+          :role="'Buyer'"
+        />
       </li>
       <li>
-        <b-category-chart></b-category-chart>
+        <b-category-chart />
       </li>
     </ul>
   </div>
@@ -39,6 +45,11 @@ import BCategoryChart from './visualisation/BCategoryChart.vue';
 
 export default {
   name: 'BHomePage',
+  components: {
+    BCategoryChart,
+    OrderHistory,
+    PendingOrders,
+  },
   data() {
     return {
       orderHistory: [],
@@ -46,11 +57,6 @@ export default {
       orderHistoryCounter: 0,
       pendingOrdersCounter: 0,
     };
-  },
-  components: {
-    BCategoryChart,
-    OrderHistory,
-    PendingOrders,
   },
   async created() {
     if (!store.getters.getProfileState) {

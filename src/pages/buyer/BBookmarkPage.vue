@@ -5,7 +5,7 @@
     <b-card-group deck>
       <b-card
         v-for="list in bookmarks"
-        v-bind:key="list.id"
+        :key="list.id"
         :title="list.item"
         img-alt="Image"
         img-top
@@ -14,34 +14,35 @@
         style="max-width: 20rem"
         class="mb-2 list-item"
         border-variant="info"
-        v-on:click="route(list.listingId)"
+        @click="route(list.listingId)"
       >
         <b-card-text>
-          ${{ list.price }} per {{ list.unit }} <br />
+          ${{ list.price }} per {{ list.unit }} <br>
           Quantity: {{ list.quantity }} {{ list.unit }}
           <small>
-            <br />
+            <br>
             Seller: {{ list.user }}
-            <br />
-            <br />
+            <br>
+            <br>
           </small>
           <hr>
 
           <b-button
-            v-bind:id="list.id"
-            v-on:click="removeBookmark(list.listingId)"
-            >Remove Bookmark</b-button
+            :id="list.id"
+            @click="removeBookmark(list.listingId)"
           >
+            Remove Bookmark
+          </b-button>
         </b-card-text>
       </b-card>
     </b-card-group>
 
-    <hr />
+    <hr>
 
     <b-card-group deck>
       <b-card
         v-for="list in bookmarks"
-        v-bind:key="list.id"
+        :key="list.id"
         :title="list.item"
         img-alt="Image"
         img-top
@@ -52,23 +53,23 @@
         border-variant="info"
       >
         <b-card-text>
-          ${{ list.price }} per {{ list.unit }} <br />
+          ${{ list.price }} per {{ list.unit }} <br>
           Quantity: {{ list.quantity }} {{ list.unit }}
           <small>
-            <br />
+            <br>
             Seller: {{ list.user }}
-            <br />
-            <br />
+            <br>
+            <br>
             <hr>
-            <b-button v-bind:id="list.id" v-on:click="route(list.listingId)"
-              >View Listing</b-button
-            >
+            <b-button
+              :id="list.id"
+              @click="route(list.listingId)"
+            >View Listing</b-button>
 
             <b-button
-              v-bind:id="list.id"
-              v-on:click="removeBookmark(list.listingId)"
-              >Remove Bookmark</b-button
-            >
+              :id="list.id"
+              @click="removeBookmark(list.listingId)"
+            >Remove Bookmark</b-button>
           </small>
         </b-card-text>
       </b-card>
@@ -89,16 +90,6 @@ export default {
     return {
       bookmarks: [],
     };
-  },
-  methods: {
-    route(event) {
-      this.$router.push({ path: `/buyer/browse/${event}` });
-    },
-    async removeBookmark(listingId) {
-      await toggleBookmark(listingId, store.getters.getProfileState?.id);
-      alert('Bookmark Removed');
-      location.reload();
-    },
   },
   async created() {
     if (!store.getters.getProfileState) {
@@ -124,6 +115,16 @@ export default {
         };
       })
     );
+  },
+  methods: {
+    route(event) {
+      this.$router.push({ path: `/buyer/browse/${event}` });
+    },
+    async removeBookmark(listingId) {
+      await toggleBookmark(listingId, store.getters.getProfileState?.id);
+      alert('Bookmark Removed');
+      location.reload();
+    },
   },
 };
 </script>

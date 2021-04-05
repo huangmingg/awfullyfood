@@ -1,16 +1,18 @@
 <template>
   <b-container style="margin-top: 10%;">
-        <b-card img-right :img-src="require(`@/assets/images/login_page.jpeg`)">
-          <b-card-title>
-            AwfullyFood
-          </b-card-title>
-          <hr/>
-          <b-card-text class="mb-5">
-            Select Your Preferred Login Method
-          </b-card-text>
-          <div id="firebase-auth-container">
-          </div>
-        </b-card>
+    <b-card
+      img-right
+      :img-src="require(`@/assets/images/login_page.jpeg`)"
+    >
+      <b-card-title>
+        AwfullyFood
+      </b-card-title>
+      <hr>
+      <b-card-text class="mb-5">
+        Select Your Preferred Login Method
+      </b-card-text>
+      <div id="firebase-auth-container" />
+    </b-card>
   </b-container>
 </template>
 <script>

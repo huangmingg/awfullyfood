@@ -1,8 +1,8 @@
 <template>
   <div>
-    <app-navigation></app-navigation>
+    <app-navigation />
     <div class="m-4">
-      <router-view></router-view>
+      <router-view />
     </div>
   </div>
 </template>

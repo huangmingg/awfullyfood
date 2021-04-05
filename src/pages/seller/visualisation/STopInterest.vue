@@ -1,13 +1,21 @@
 <template>
   <div class="content">
     <h5>Most Interested Listings</h5>
-    <hr />
+    <hr>
     <ul>
-      <li v-for="order in sellerListings" v-bind:key="order.id">
-        {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br />
-        {{ order.interests.length }} interested. <br />
-        <b-button v-bind:id="order.id" v-on:click="route($event)">View Listing</b-button>
-        <hr />
+      <li
+        v-for="order in sellerListings"
+        :key="order.id"
+      >
+        {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br>
+        {{ order.interests.length }} interested. <br>
+        <b-button
+          :id="order.id"
+          @click="route($event)"
+        >
+          View Listing
+        </b-button>
+        <hr>
       </li>
     </ul>
   </div>
@@ -21,20 +29,13 @@ import { store } from '@/stores';
 
 export default {
   name: 'STopInterests',
+  components: {},
   data() {
     return {
       sellerListings: [],
       show: true,
     };
   },
-  methods: {
-    route(event) {
-      const userId = event.target.getAttribute('id');
-      this.$router.push({ path: `/seller/list/${userId}` });
-
-    },
-  },
-  components: {},
 
   async created() {
     if (!store.getters.getProfileState) {
@@ -44,6 +45,13 @@ export default {
       store.getters.getProfileState?.id
     );
     await this.sellerListings.sort((a, b) => ((b.likes > a.likes) ? 1 : ((a.likes > b.likes) ? -1 : 0)));
+  },
+  methods: {
+    route(event) {
+      const userId = event.target.getAttribute('id');
+      this.$router.push({ path: `/seller/list/${userId}` });
+
+    },
   },
 };
 </script>

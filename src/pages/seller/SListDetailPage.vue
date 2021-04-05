@@ -1,105 +1,169 @@
 <template>
   <div>
-    <b-container fluid class="p-4 bg-light">
+    <b-container
+      fluid
+      class="p-4 bg-light"
+    >
       <b-row>
-      <b-button v-on:click="back()" variant="info">Back </b-button>
+        <b-button
+          variant="info"
+          @click="back()"
+        >
+          Back
+        </b-button>
 
 
-        <b-btn-group class="ml-auto" >
-          <b-button v-show="!edit" variant="info" v-on:click="editList()">Edit Listing</b-button>
-          <b-button v-show="edit" variant="info" v-on:click="saveList()">Save Listing</b-button>
+        <b-btn-group class="ml-auto">
+          <b-button
+            v-show="!edit"
+            variant="info"
+            @click="editList()"
+          >
+            Edit Listing
+          </b-button>
+          <b-button
+            v-show="edit"
+            variant="info"
+            @click="saveList()"
+          >
+            Save Listing
+          </b-button>
         </b-btn-group>
       </b-row>
-      <hr class="dropdown-divider"/>
+      <hr class="dropdown-divider">
       <b-form>
         <b-row>
-          <b-img @click="clickImage()" width=400 height=400 class="border-info product-photo" thumbnail fluid :src="form.photo" alt="Product Photo"/>
-          <input accept="image/*" v-on:change="onFileChange()" type="file"/>
+          <b-img
+            width="400"
+            height="400"
+            class="border-info product-photo"
+            thumbnail
+            fluid
+            :src="form.photo"
+            alt="Product Photo"
+            @click="clickImage()"
+          />
+          <input
+            accept="image/*"
+            type="file"
+            @change="onFileChange()"
+          >
           <b-col>
-            <b-form-group id="input-group-1" label="Product Name:" label-for="input-1">
+            <b-form-group
+              id="input-group-1"
+              label="Product Name:"
+              label-for="input-1"
+            >
               <b-form-input
-                  disabled
-                  id="input-1"
-                  v-model="form.name"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-1"
+                v-model="form.name"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-2" label="Category:" label-for="input-2">
+            <b-form-group
+              id="input-group-2"
+              label="Category:"
+              label-for="input-2"
+            >
               <b-form-input
-                  disabled
-                  id="input-2"
-                  v-model="form.category"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-2"
+                v-model="form.category"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Price:" label-for="input-3">
+            <b-form-group
+              id="input-group-3"
+              label="Price:"
+              label-for="input-3"
+            >
               <b-form-input
-                  disabled
-                  id="input-3"
-                  v-model="form.price"
-                  type="number"
-                  required
-              ></b-form-input>
+                id="input-3"
+                v-model="form.price"
+                disabled
+                type="number"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Unit:" label-for="input-4">
+            <b-form-group
+              id="input-group-4"
+              label="Unit:"
+              label-for="input-4"
+            >
               <b-form-input
-                  disabled
-                  id="input-4"
-                  v-model="form.unit"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-4"
+                v-model="form.unit"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-5" label="Quantity:" label-for="input-5">
+            <b-form-group
+              id="input-group-5"
+              label="Quantity:"
+              label-for="input-5"
+            >
               <b-form-input
-                  disabled
-                  id="input-5"
-                  v-model="form.quantity"
-                  type="number"
-                  required
-              ></b-form-input>
+                id="input-5"
+                v-model="form.quantity"
+                disabled
+                type="number"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-6" label="Description:" label-for="input-6">
+            <b-form-group
+              id="input-group-6"
+              label="Description:"
+              label-for="input-6"
+            >
               <b-form-input
-                  disabled
-                  id="input-6"
-                  v-model="form.description"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-6"
+                v-model="form.description"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-7" label="Created Date:" label-for="input-7">
+            <b-form-group
+              id="input-group-7"
+              label="Created Date:"
+              label-for="input-7"
+            >
               <b-form-input
-                  disabled
-                  id="input-7"
-                  v-model="form.createdAt"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-7"
+                v-model="form.createdAt"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-8" label="Expiry Date:" label-for="input-8">
+            <b-form-group
+              id="input-group-8"
+              label="Expiry Date:"
+              label-for="input-8"
+            >
               <b-form-input
-                  disabled
-                  id="input-8"
-                  v-model="form.expiredAt"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-8"
+                v-model="form.expiredAt"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
-
           </b-col>
         </b-row>
       </b-form>
-      <hr/>
+      <hr>
     </b-container>
   </div>
 </template>
@@ -131,8 +195,10 @@ export default {
   },
   computed: {
   },
+
   async created() {
     const listingId = this.$route.params.id;
+    await getListing(listingId);
     this.retrieveInfo(listingId);
   },
   methods: {

@@ -1,71 +1,119 @@
 <template>
   <div>
-    <b-container fluid class="p-4 bg-light">
+    <b-container
+      fluid
+      class="p-4 bg-light"
+    >
       <b-row>
-        <b-btn-group class="ml-auto" >
-          <b-button v-show="!edit" variant="outline-info" v-on:click="editProfile()">Edit Profile</b-button>
-          <b-button v-show="edit" variant="info" v-on:click="saveProfile()">Save Profile</b-button>
+        <b-btn-group class="ml-auto">
+          <b-button
+            v-show="!edit"
+            variant="outline-info"
+            @click="editProfile()"
+          >
+            Edit Profile
+          </b-button>
+          <b-button
+            v-show="edit"
+            variant="info"
+            @click="saveProfile()"
+          >
+            Save Profile
+          </b-button>
         </b-btn-group>
       </b-row>
       <b-form>
         <b-row>
-          <b-img @click="clickImage()" width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
-          <input accept="image/*" v-on:change="onFileChange()" type="file"/>
+          <b-img
+            width="400"
+            height="400"
+            class="border-info profile-photo"
+            thumbnail
+            fluid
+            :src="photo"
+            alt="Display Photo"
+            @click="clickImage()"
+          />
+          <input
+            accept="image/*"
+            type="file"
+            @change="onFileChange()"
+          >
           <b-col>
             <b-card-text>
               <span class="mr-2 font-weight-bolder">
                 {{ form.role }}
               </span>
-              <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
+              <b-form-rating
+                v-model="averageRating"
+                readonly
+                show-value
+                precision="2"
+                inline
+              />
             </b-card-text>
 
-            <b-form-group id="input-group-1" label="Email:" label-for="input-1">
+            <b-form-group
+              id="input-group-1"
+              label="Email:"
+              label-for="input-1"
+            >
               <b-form-input
-                  disabled
-                  id="input-1"
-                  v-model="form.email"
-                  required
-              ></b-form-input>
+                id="input-1"
+                v-model="form.email"
+                disabled
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-2" label="Display Name:" label-for="input-2">
+            <b-form-group
+              id="input-group-2"
+              label="Display Name:"
+              label-for="input-2"
+            >
               <b-form-input
-                  disabled
-                  id="input-2"
-                  v-model="form.name"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-2"
+                v-model="form.name"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Phone Number:" label-for="input-3">
+            <b-form-group
+              id="input-group-3"
+              label="Phone Number:"
+              label-for="input-3"
+            >
               <b-form-input
-                  disabled
-                  id="input-3"
-                  v-model="form.phoneNumber"
-                  type="number"
-                  required
-              ></b-form-input>
+                id="input-3"
+                v-model="form.phoneNumber"
+                disabled
+                type="number"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Address:" label-for="input-4">
+            <b-form-group
+              id="input-group-4"
+              label="Address:"
+              label-for="input-4"
+            >
               <b-form-input
-                  disabled
-                  id="input-4"
-                  v-model="form.address"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-4"
+                v-model="form.address"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
-
           </b-col>
         </b-row>
       </b-form>
-      <hr/>
-      <Review v-bind:reviews="reviews"/>
+      <hr>
+      <Review :reviews="reviews" />
     </b-container>
   </div>
-
 </template>
 
 <script>

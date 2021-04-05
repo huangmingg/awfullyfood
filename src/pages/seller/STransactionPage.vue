@@ -2,20 +2,19 @@
   <div>
     <h1>Available Transactions</h1><br>
 
-  <b-list-group deck>
-      <b-list-group-item v-for="list in listing"
-        v-bind:key="list.id"
-        v-on:click="navigate(list.id)"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+    <b-list-group deck>
+      <b-list-group-item
+        v-for="list in listing"
+        :key="list.id"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        @click="navigate(list.id)"
+      >
         {{ list.name }}<br>
         >> {{ list.description }}
-
       </b-list-group-item>
+    </b-list-group>
 
-  </b-list-group>
-
-  <br><br>
-
+    <br><br>
   </div>
 </template>
 

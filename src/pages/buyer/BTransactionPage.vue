@@ -1,100 +1,135 @@
 <template>
   <div>
-
     <h2>Available Transactions</h2>
     <br>
-     <b-list-group deck>
-      <b-list-group-item  v-for="list in thirdListing"
-        v-bind:key="list.id"
-        class="d-flex justify-content-between list-group-item-action align-items-center" >
-        <h1 class="mb-1">Status: {{ getStatus(list.isApproved) }}<br>
-        {{ list.productName }} -> This should be the name.
-        <br>
-        Quantity: {{ list.quantity }}
-        <br>
-        <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+    <b-list-group deck>
+      <b-list-group-item
+        v-for="list in thirdListing"
+        :key="list.id"
+        class="d-flex justify-content-between list-group-item-action align-items-center"
+      >
+        <h1 class="mb-1">
+          Status: {{ getStatus(list.isApproved) }}<br>
+          {{ list.productName }} -> This should be the name.
+          <br>
+          Quantity: {{ list.quantity }}
+          <br>
+          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
         <b-button-group>
-        <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button>
+          <b-button
+            variant="outline-info"
+            class="ml-auto"
+            @click="navigate(list.listingId)"
+          >
+            View Listing
+          </b-button>
 
-        <b-button variant="outline-info" class="ml-auto" @click="showModal()" :disabled="isDisabled(list.isApproved)">Review</b-button>
+          <b-button
+            variant="outline-info"
+            class="ml-auto"
+            :disabled="isDisabled(list.isApproved)"
+            @click="showModal()"
+          >
+            Review
+          </b-button>
         </b-button-group>
 
-          <b-modal id="modal-closing" ref="modal-review"
+        <b-modal
+          id="modal-closing"
+          ref="modal-review"
           title="Submit Your Review"
 
+          no-close-on-backdrop
           @show="resetModal"
           @hidden="resetModal"
           @ok="handleOk($event,list.id)"
-          no-close-on-backdrop
-          >
-            <template #modal-title>
-              Submit Your Review
-            </template>
-            <div class="d-block text-left">
-              Transaction ID: {{list.id}} <br><br>
+        >
+          <template #modal-title>
+            Submit Your Review
+          </template>
+          <div class="d-block text-left">
+            Transaction ID: {{ list.id }} <br><br>
 
-              <form ref="form" @submit.stop.prevent="handleSubmit">
+            <form
+              ref="form"
+              @submit.stop.prevent="handleSubmit"
+            >
               <div>
-              <b-form-group
-                label="Rating"
-                label-for="rating-inline"
-                invalid-feedback="Please rate your experience"
-                :state="value > 0"
-              >
-              <b-form-rating id="rating-inline"
-              inline value="1"
-              v-model="value"
-              :state="value > 0"
-              no-border
-              required></b-form-rating>
-              </b-form-group>
+                <b-form-group
+                  label="Rating"
+                  label-for="rating-inline"
+                  invalid-feedback="Please rate your experience"
+                  :state="value > 0"
+                >
+                  <b-form-rating
+                    id="rating-inline"
+                    v-model="value"
+                    inline
+                    value="1"
+                    :state="value > 0"
+                    no-border
+                    required
+                  />
+                </b-form-group>
               </div>
 
-                <b-form-group
-                  label="Review"
-                  label-for="review-input"
-                  invalid-feedback="Review is required and must have at least 20 characters"
-                  :state="review.length >= 20"
-                >
+              <b-form-group
+                label="Review"
+                label-for="review-input"
+                invalid-feedback="Review is required and must have at least 20 characters"
+                :state="review.length >= 20"
+              >
                 <b-form-textarea
                   id="review-input"
                   v-model="review"
                   :state="review.length >= 20"
                   required
-                ></b-form-textarea>
-                </b-form-group>
-              </form>
-            </div>
-            </b-modal>
-
-
+                />
+              </b-form-group>
+            </form>
+          </div>
+        </b-modal>
       </b-list-group-item>
-  </b-list-group>
-  <br>
-  <div>
-    <div style="text-align:center">
-    <b-button v-b-toggle.collapse-1 variant="info" class="ml-auto">Show Past Transactions</b-button>
-    </div>
-    <b-collapse id="collapse-1" class="mt-2">
-
+    </b-list-group>
+    <br>
+    <div>
+      <div style="text-align:center">
+        <b-button
+          v-b-toggle.collapse-1
+          variant="info"
+          class="ml-auto"
+        >
+          Show Past Transactions
+        </b-button>
+      </div>
+      <b-collapse
+        id="collapse-1"
+        class="mt-2"
+      >
         <b-list-group deck>
-            <b-list-group-item  v-for="list in secondListing"
-              v-bind:key="list.id"
-              class="d-flex list-group-item-action justify-content-between align-items-center">
-              <h1 class="mb-1"><small>Item: {{ list.listingId }} This should be name too.<br>
-              Quantity: {{ list.quantity }}<br>
-              Reviewed at: {{ list.buyerReview.updatedAt }}</small>
-              </h1>
-               <b-button variant="outline-info" class="ml-auto" v-on:click="navigate(list.listingId)">View Listing</b-button>
-
+          <b-list-group-item
+            v-for="list in secondListing"
+            :key="list.id"
+            class="d-flex list-group-item-action justify-content-between align-items-center"
+          >
+            <h1 class="mb-1">
+              <small>Item: {{ list.listingId }} This should be name too.<br>
+                Quantity: {{ list.quantity }}<br>
+                Reviewed at: {{ list.buyerReview.updatedAt }}</small>
+            </h1>
+            <b-button
+              variant="outline-info"
+              class="ml-auto"
+              @click="navigate(list.listingId)"
+            >
+              View Listing
+            </b-button>
           </b-list-group-item>
         </b-list-group>
-
-    </b-collapse>
-  </div>
-
+      </b-collapse>
+    </div>
   </div>
 </template>
 

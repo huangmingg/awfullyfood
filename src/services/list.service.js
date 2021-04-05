@@ -4,6 +4,11 @@ import { downloadFile, uploadFile } from '@/services/storage.service';
 import { ListingCreate, ListingRead, ListingUpdate } from '@/models/listing.class';
 import { getCurrentTimestamp, comparator } from '@/services/utils.service';
 
+const getListingPhoto = async (listingId) => {
+  const res = await downloadFile(`listings/${listingId}`);
+  return res || downloadFile('listings/dummy.png');
+};
+
 const getListings = async (saveState = true) => {
   return database.collection('listings').get()
     .then(async (res) => {
@@ -83,11 +88,6 @@ const updateListingPhoto = async (listingId, file) => {
   return uploadFile(file, `listings/${listingId}`);
 };
 
-const getListingPhoto = async (listingId) => {
-  const res = await downloadFile(`listings/${listingId}`);
-  return res || downloadFile('listings/dummy.png');
-};
-
 const getListingName = async (listingId) => {
   const res = await getListing(listingId);
   return res?.name;
@@ -97,18 +97,19 @@ const orderList = (list, order) => {
   return list.sort(comparator(order[0], order[1]));
 };
 
-const filterList = (list, filters) => {
-  const _filterListByPropertyInArray = (list, property, array) => {
+const filterList = (listing, filters) => {
+  let listArray = listing;
+  const _filterListByPropertyInArray = (listArray, property, array) => {
     if (array && Array.isArray(array)) {
       if (array.length) {
-        return list.filter((ele) => {
+        return listArray.filter((ele) => {
           return array.includes(ele[property]);
         });
       }
       return [];
 
     }
-    return list;
+    return listArray;
 
   };
   const buyerId = filters.buyerId;
@@ -118,25 +119,25 @@ const filterList = (list, filters) => {
   const datePosted = filters.datePosted;
   const nameSubstring = filters.nameSubstring;
 
-  list = _filterListByPropertyInArray(list, 'buyerId', buyerId);
-  list = _filterListByPropertyInArray(list, 'sellerId', sellerId);
-  list = _filterListByPropertyInArray(list, 'listingId', listingId);
-  list = _filterListByPropertyInArray(list, 'category', itemCategory);
+  listArray = _filterListByPropertyInArray(listArray, 'buyerId', buyerId);
+  listArray = _filterListByPropertyInArray(listArray, 'sellerId', sellerId);
+  listArray = _filterListByPropertyInArray(listArray, 'listingId', listingId);
+  listArray = _filterListByPropertyInArray(listArray, 'category', itemCategory);
 
   if (datePosted && +datePosted) {
-    list = list.filter((ele) => {
+    listArray = listArray.filter((ele) => {
       const result = Math.abs(ele.createdAt.seconds - (Date.now() / 1000));
       return result <= +datePosted;
     });
   }
 
   if (nameSubstring) {
-    list = list.filter((ele) => {
+    listArray = listArray.filter((ele) => {
       return ele.name.substr(0, nameSubstring.length).toUpperCase() === nameSubstring.toUpperCase();
     });
   }
 
-  return list;
+  return listArray;
 };
 
 

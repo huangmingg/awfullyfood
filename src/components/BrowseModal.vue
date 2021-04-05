@@ -1,35 +1,56 @@
 <template>
-    <div>
-      <b-button variant="info" class="mr-2" v-b-modal.filter>Filter</b-button>
-      <b-modal v-model="show" id="filter" centered title="Filters">
-        <div class="modal-content">
-          <b-form class="modal-body">
-            <b-form-group label="Item Category:">
-              <b-form-checkbox-group
-                  v-model="form.category"
-                  :options="categories"
-                  :values="categories"
-              ></b-form-checkbox-group>
-            </b-form-group>
-            <b-form-group label="Date Posted">
-              <b-form-radio-group
-                  v-model="form.datePosted"
-                  :options="dateOptions"
-              ></b-form-radio-group>
-            </b-form-group>
-          </b-form>
-        </div>
-        <template v-slot:modal-footer>
-          <b-button @click="onReset" variant="info">Reset</b-button>
-          <b-button @click="onSubmit" variant="info">Show Results</b-button>
-        </template>
-      </b-modal>
-    </div>
+  <div>
+    <b-button
+      v-b-modal.filter
+      variant="info"
+      class="mr-2"
+    >
+      Filter
+    </b-button>
+    <b-modal
+      id="filter"
+      v-model="show"
+      centered
+      title="Filters"
+    >
+      <div class="modal-content">
+        <b-form class="modal-body">
+          <b-form-group label="Item Category:">
+            <b-form-checkbox-group
+              v-model="form.category"
+              :options="categories"
+              :values="categories"
+            />
+          </b-form-group>
+          <b-form-group label="Date Posted">
+            <b-form-radio-group
+              v-model="form.datePosted"
+              :options="dateOptions"
+            />
+          </b-form-group>
+        </b-form>
+      </div>
+      <template v-slot:modal-footer>
+        <b-button
+          variant="info"
+          @click="onReset"
+        >
+          Reset
+        </b-button>
+        <b-button
+          variant="info"
+          @click="onSubmit"
+        >
+          Show Results
+        </b-button>
+      </template>
+    </b-modal>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'BrowseModal.vue',
+  name: 'BrowseModalVue',
   data() {
     return {
       show: false,

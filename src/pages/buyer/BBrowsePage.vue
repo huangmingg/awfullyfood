@@ -1,31 +1,31 @@
 <template>
   <div>
     <b-button-group>
-      <BrowseModal v-on:filterListing="filterListing"/>
-      <SortModal v-on:sortListing="sortListing" />
+      <BrowseModal @filterListing="filterListing" />
+      <SortModal @sortListing="sortListing" />
     </b-button-group>
 
     <!--search button-->
     <span class="float-right">
       <div class="input-group">
         <b-input
+          id="searchEntry"
+          v-model.lazy="content"
           type="search"
           class="form-control rounded mr-1"
           placeholder="Enter Listing Name"
           aria-label="Search"
           aria-describedby="search-addon"
-          id="searchEntry"
-          v-model.lazy="content"
         />
       </div>
     </span>
 
-    <hr class="dropdown-divider" />
+    <hr class="dropdown-divider">
     <!--listing-->
     <b-card-group deck>
       <b-card
         v-for="list in listing"
-        v-bind:key="list.id"
+        :key="list.id"
         :title="list.name"
         :img-src="list.photo"
         img-alt="Image"
@@ -35,20 +35,20 @@
         style="max-width: 20rem"
         class="mb-2 list-item"
         border-variant="info"
-        v-on:click="navigate(list.id)"
+        @click="navigate(list.id)"
       >
         <b-card-text>
           {{ list.description }}
-          <br />
+          <br>
           ${{ list.price }} per {{ list.unit }}
           <small>
-            <br />
+            <br>
             Created Date: {{ convertTimestamp(list.createdAt) }}
-            <br />
+            <br>
             Expiry Date: {{ convertTimestamp(list.expiredAt) }}
           </small>
         </b-card-text>
-        <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
+        <b-icon-heart-fill style="color: red" />
         <span>
           {{ list.bookmarks.length }}
         </span>
