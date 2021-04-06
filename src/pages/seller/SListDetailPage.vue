@@ -20,8 +20,18 @@
           >
             Delete Listing
           </b-button>
+          <!--expired-->
           <b-button
-            v-show="!edit"
+            v-show="checkExpire()==true"
+            variant="info"
+            id="expire"
+            title="Expired!"
+            disabled
+          >
+            Edit Listing
+          </b-button>
+           <b-button
+            v-show="!edit && checkExpire()==false"
             variant="info"
             @click="editList()"
           >
@@ -346,6 +356,11 @@ export default {
       deleteListing(this.$route.params.id);
       router.back();
     },
+    checkExpire() {
+      return (
+        new Date(this.form.expiredAt).toLocaleDateString() < new Date().toLocaleDateString()
+      );
+    },
   },
 };
 </script>
@@ -358,5 +373,10 @@ export default {
 
 input[type="file"] {
   display: none;
+}
+
+#expire {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

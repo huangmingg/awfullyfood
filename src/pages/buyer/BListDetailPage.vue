@@ -29,6 +29,12 @@
             </span>
           </span>
         </div>
+        <div
+          v-show="checkExpire()"
+          style="color: red; font-size: 20px"
+        >
+          Expired!
+        </div>
         <div><b>Category:</b> {{ itemCategory }}</div>
         <div><b>Price:</b> {{ itemPrice }}</div>
         <div><b>Quantity:</b> {{ itemQty }}</div>
@@ -42,16 +48,35 @@
         <div class="float-right">
           <span>
             <b-button
+              v-show="checkExpire()==false"
               id="bookmarkBtn"
               @click="changeBMClass()"
+            >
+              <BIconHeartFill variant="white" />
+            </b-button>
+            <b-button
+              v-show="checkExpire()==true"
+              id="expire"
+              title="Expired!"
+              disabled
             >
               <BIconHeartFill variant="white" />
             </b-button>
           </span>
           <span>
             <b-button
+              v-show="checkExpire()==false"
               variant="info"
               @click="validateTransaction()"
+            >
+              I'm interested!
+            </b-button>
+            <b-button
+              variant="info"
+              v-show="checkExpire()==true"
+              id="expire"
+              title="Expired!"
+              disabled
             >
               I'm interested!
             </b-button>
@@ -205,6 +230,11 @@ export default {
       }
       toggleBookmark(this.listingId, store.getters.getProfileState.id);
     },
+    checkExpire() {
+      return (
+        new Date(this.expiredAt).toLocaleDateString() < new Date().toLocaleDateString()
+      );
+    },
   },
 };
 </script>
@@ -242,5 +272,10 @@ div {
   display: inline-block;
   padding-right: 10px;
   padding-top: 5px;
+}
+
+#expire {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>
