@@ -1,20 +1,86 @@
+import { filterList, orderList } from '@/services/list.service';
+
 export default {
-    state: {
-        list: [],
+  state: {
+    list: [],
+    filteredList: [],
+    defaultFilter: {
+      itemCategory: ['Ugly', 'Expiring'],
     },
-    getters: {
-        getList: state => {
-            return state.list;
-        },
+    defaultOrder: [['expiredAt', 'seconds'], 1],
+    order: [],
+    filter: {},
+  },
+  getters: {
+    getList: (state) => {
+      return state.list;
     },
-    mutations: {
-        updateList (state, list) {
-            state.list = list;
-        }
+
+    getFilteredList: (state) => {
+      return state.filteredList;
     },
-    actions: {
-        updateList (context, list) {
-            context.commit('updateList', list);
-        },
-    }
-}
+
+    getFilter: (state) => {
+      return state.filter;
+    },
+
+  },
+  mutations: {
+    updateList(state, list) {
+      state.list = list;
+    },
+
+    filterList(state) {
+      state.filteredList = filterList(state.list, state.filter);
+    },
+
+    orderList(state) {
+      state.filteredList = orderList(state.filteredList, state.order);
+    },
+
+    setFilter(state, filter) {
+      state.filter = filter;
+    },
+
+    setOrder(state, order) {
+      state.order = order;
+    },
+
+    resetFilter(state) {
+      state.filter = state.defaultFilter;
+    },
+
+    resetOrder(state) {
+      state.order = state.defaultOrder;
+    },
+  },
+  actions: {
+    updateList(context, list) {
+      context.commit('updateList', list);
+    },
+
+    setFilter(context, filter) {
+      context.commit('setFilter', filter);
+    },
+
+    setOrder(context, order) {
+      context.commit('setOrder', order);
+    },
+
+    filterList(context) {
+      context.commit('filterList');
+    },
+
+    orderList(context) {
+      context.commit('orderList');
+    },
+
+    resetFilter(context) {
+      context.commit('resetFilter');
+    },
+
+    resetOrder(context) {
+      context.commit('resetOrder');
+    },
+  },
+};

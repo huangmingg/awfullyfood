@@ -1,62 +1,40 @@
 <template>
   <div>
-    <!--b-container fluid>
-    <b-list-group>
-      <b-button variant="outline-info" class="ml-auto" v-on:click="addListing()">Create Listing</b-button>
-      <hr class="dropdown-divider"/>
-      <b-list-group-item
-          v-for="(list, index) in listing"
-          :key="index"
-          class="flex-column align-items-start list-item">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ list.name }}</h5>
-          <small> {{ list.createdAt.toDate().toLocaleDateString() }} </small>
-        </div>
-        <p class="mb-1">
-          {{ list.description }}
-        </p>
-        <small>Expiring at: {{ list.expiredAt.toDate().toLocaleDateString() }}</small>
-      </b-list-group-item>
-    </b-list-group>
-  </b-container-->
-
     <!--search button-->
     <span class="float-right">
       <div class="input-group">
-        <input
+        <b-input
+          v-model.lazy="content"
           type="search"
           class="form-control rounded"
           placeholder="Search"
           aria-label="Search"
           aria-describedby="search-addon"
-          id="searchEntry"
-          v-model.lazy="content"
         />
-        <button type="button" class="btn btn-info" v-on:click="search()">
-          Search
-        </button>
       </div>
     </span>
 
     <b-button-group>
       <span>
-        <SortModal v-on:sortBy="sortContent" />
+        <SortModal @sortListing="sortListing" />
       </span>
 
       <span>
-        <b-button variant="info" class="ml-auto" v-on:click="addListing()"
-          >Create Listing</b-button
-        >
+        <b-button
+          variant="info"
+          class="ml-auto"
+          @click="addListing()"
+        >Create Listing</b-button>
       </span>
     </b-button-group>
 
-    <hr class="dropdown-divider" />
+    <hr class="dropdown-divider">
     <b-card-group deck>
       <b-card
-        v-for="list in getDisplayList()"
-        v-bind:key="list.id"
+        v-for="list in listing"
+        :key="list.id"
         :title="list.name"
-        :img-src="list.imageURL"
+        :img-src="list.photo"
         img-alt="Image"
         img-top
         img-height="200"
@@ -64,27 +42,26 @@
         style="max-width: 20rem"
         class="mb-2 list-item"
         border-variant="info"
-        v-on:click="edit(list.id)"
+        @click="edit(list.id)"
       >
         <b-card-text>
           {{ list.description }}
-          <br />
+          <br>
           ${{ list.price }} per {{ list.unit }}
-          <br />
-          <small
-            >Created Date:
-            {{ list.createdAt.toDate().toLocaleDateString() }}</small
-          >
-          <br />
-          <small
-            >Expiry Date:
-            {{ list.expiredAt.toDate().toLocaleDateString() }}</small
-          >
-          <div v-show="checkExpire(list.expiredAt)" style="color: red"> 
-              Expired!
-            </div>
+          <br>
+          <small>Created Date:
+            {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+          <br>
+          <small>Expiry Date:
+            {{ list.expiredAt.toDate().toLocaleDateString() }}</small>
+          <div
+            v-show="checkExpire(list.expiredAt)"
+            style="color: red"
+          > 
+            Expired!
+          </div>
         </b-card-text>
-        <b-icon-heart-fill style="color: red"></b-icon-heart-fill>
+        <b-icon-heart-fill style="color: red" />
         <span style="color: red">
           {{ list.bookmarks.length }}
         </span>
@@ -94,121 +71,79 @@
 </template>
 
 <script>
-import { store } from "@/stores";
-import { getListingBySeller } from "@/services/list.service";
-import { router } from "@/routes";
-import SortModal from "@/components/SortModal";
+import { store } from '@/stores';
+import { getListingBySeller } from '@/services/list.service';
+import { router } from '@/routes';
+import SortModal from '@/components/SortModal';
+import { getUserProfile } from '@/services/user.service';
+import { authService } from '@/firebase';
+import { convertTimestamp } from '@/services/utils.service';
 
 export default {
-  name: "SListDetailPage",
+  name: 'SListDetailPage',
   components: { SortModal },
   data() {
     return {
-      lists: [],
-      searchItem: "",
-      content: "",
-      sortCat: "", //sort category
+      content: '',
     };
   },
   computed: {
     listing() {
-      return store.getters.getList;
+      return store.getters.getFilteredList;
     },
   },
-  async created() {
-    const res = await getListingBySeller(store.getters.getProfileState?.id);
-    console.log(res);
+
+  watch: {
+    content(newQuery) {
+      this.content = newQuery;
+      this.sanitizeQuery();
+      store.dispatch('setFilter', { ...store.getters.getFilter, nameSubstring: this.content });
+      store.dispatch('filterList');
+    },
   },
+
+  async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
+    const loader = this.$loading.show({ color: 'teal' });
+    await getListingBySeller(store.getters.getProfileId);
+    await store.dispatch('resetFilter');
+    await store.dispatch('filterList');
+    loader.hide();
+  },
+
   methods: {
-    edit: function (listId) {
+    edit(listId) {
       router.push(`list/detail/${listId}`);
     },
 
-    addListing: function () {
-      router.push("list/add");
+    sanitizeQuery() {
+      this.content = this.content.trim();
     },
 
-    getDisplayList: function () {
-      var lst = this.listing;
-      //handle the cross in search bar
-      if (this.content == "") {
-        this.searchItem = "";
-      }
-
-      if (this.searchItem != "") {
-        lst = lst.filter((element) =>
-          element.name.toUpperCase().includes(this.searchItem.toUpperCase())
-        );
-      }
-
-      if (this.sortCat != "") {
-        lst = this.sorting(lst);
-      }
-
-      return lst;
-    },
-    sortContent(value) {
-      this.sortCat = value;
-    },
-    sorting(list) {
-      var newList = this.deepCopy(list);
-      switch (this.sortCat) {
-        case "price_asc":
-          return newList.sort(this.priceComparator);
-        case "price_des":
-          return newList.sort(this.priceComparator).reverse();
-        case "likes_asc":
-          return newList.sort(this.likesComparator);
-        case "likes_des":
-          return newList.sort(this.likesComparator).reverse();
-        case "expiry_asc":
-          return newList.sort(this.expiryComparator);
-        case "expiry_des":
-          return newList.sort(this.expiryComparator).reverse();
-      }
-    },
-    priceComparator(a, b) {
-      //ascending
-      if (a.price > b.price) return 1;
-      else if (b.price > a.price) return -1;
-      else return 0;
+    convertTimestamp(timestamp) {
+      return convertTimestamp(timestamp);
     },
 
-    likesComparator(a, b) {
-      //ascending
-      if (a.length > b.length) return 1;
-      else if (b.length > a.length) return -1;
-      else return 0;
+    addListing() {
+      router.push('list/add');
     },
 
-    expiryComparator(a, b) {
-      //ascending
-      if (a.expiredAt.seconds > b.expiredAt.seconds) return 1;
-      else if (b.expiredAt.seconds > a.expiredAt.seconds) return -1;
-      else return 0;
-    },
-
-    deepCopy(list) {
-      var newList = [];
-      list.forEach((element) => {
-        newList.push(element);
-      });
-      return newList;
-    },
-    search: function () {
-      this.searchItem = document.getElementById("searchEntry").value;
+    sortListing(order) {
+      store.dispatch('setOrder', order);
+      store.dispatch('orderList');
     },
     checkExpire(expire) {
       return expire.toDate().toLocaleDateString() < new Date().toLocaleDateString()
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
 .list-item:hover {
-  background-color:rgb(243, 250, 251);
-  background-image: none;
+  background-color: rgb(243, 250, 251);
   cursor: pointer;
 }
 

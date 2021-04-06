@@ -1,55 +1,75 @@
 <template>
-    <div>
-      <b-button variant="info" class="mr-2" v-b-modal.sort>Sort By</b-button>
-      <b-modal v-model="show" id="sort" centered title="Sort By">
-        <div class="modal-content">
-          <b-form class="modal-body" v-if="show">
-              <b-form-radio-group
-                  v-model="form.sort"
-                  :options="sortOptions"
-              ></b-form-radio-group>
-          </b-form>
-        </div>
-        <template v-slot:modal-footer>
-          <b-button @click="onReset" variant="info">Reset</b-button>
-          <b-button @click="onSubmit" variant="info">Show Results</b-button>
-        </template>
-      </b-modal>
-    </div>
+  <div>
+    <b-button
+      v-b-modal.sort
+      variant="info"
+      class="mr-2"
+    >
+      Sort By
+    </b-button>
+    <b-modal
+      id="sort"
+      v-model="show"
+      centered
+      title="Sort By"
+    >
+      <div class="modal-content">
+        <b-form class="modal-body">
+          <b-form-radio-group
+            v-model="form.sort"
+            :options="sortOptions"
+          />
+        </b-form>
+      </div>
+      <template v-slot:modal-footer>
+        <b-button
+          variant="info"
+          @click="onReset"
+        >
+          Reset
+        </b-button>
+        <b-button
+          variant="info"
+          @click="onSubmit"
+        >
+          Show Results
+        </b-button>
+      </template>
+    </b-modal>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "SortModal.vue",
+  name: 'SortModalVue',
   data() {
     return {
       show: false,
       form: {
-        sort: "",
+        sort: [['expiredAt', 'seconds'], 1],
       },
       sortOptions: [
-        {text: 'Price: Ascending', value: 'price_asc'},
-        {text: 'Price: Descending', value: 'price_des'},
-        {text: 'Likes: Ascending', value: 'likes_asc'},
-        {text: 'Likes: Descending', value: 'likes_des'},
-        {text: 'Expiry Date: Ascending', value: 'expiry_asc'},
-        {text: 'Expiry Date: Descending', value: 'expiry_des'}
-        ]
+        { text: 'Price: Asc', value: [['price'], 1] },
+        { text: 'Price: Desc', value: [['price'], -1] },
+        { text: 'Created: Asc', value: [['createdAt', 'seconds'], 1] },
+        { text: 'Created: Desc', value: [['createdAt', 'seconds'], -1] },
+        { text: 'Expiry: Asc', value: [['expiredAt', 'seconds'], 1] },
+        { text: 'Expiry: Desc', value: [['expiredAt', 'seconds'], -1] },
+      ],
     };
   },
   methods: {
-    onSubmit: function() {
-      console.log("sorting")
+    onSubmit() {
       this.show = false;
-      this.$emit('sortBy', this.form.sort)
+      this.$emit('sortListing', this.form.sort);
     },
 
-    onReset: function() {
-      this.form = {};
-      this.form.sort="";
+    onReset() {
+      this.form = { sort: [['expiredAt', 'seconds'], 1] };
     },
-  }
-}
+  },
+};
+
 </script>
 
 <style scoped>

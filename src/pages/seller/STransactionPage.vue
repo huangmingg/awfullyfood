@@ -2,48 +2,46 @@
   <div>
     <h1>Available Transactions</h1><br>
 
-  <b-list-group deck>
-      <b-list-group-item v-for="list in listing"
-        v-bind:key="list.id"
-        v-on:click="navigate(list.id)"
-        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+    <b-list-group deck>
+      <b-list-group-item
+        v-for="list in listing"
+        :key="list.id"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        @click="navigate(list.id)"
+      >
         {{ list.name }}<br>
         >> {{ list.description }}
-        
-        <b-badge variant="primary" pill> {{ list.interests.length }} </b-badge>
       </b-list-group-item>
+    </b-list-group>
 
-  </b-list-group>
-
-  <br><br>
-
+    <br><br>
   </div>
 </template>
 
 <script>
-import { getListingBySeller } from "@/services/list.service";
-import { store } from "@/stores";
-import { router } from "@/routes";
+import { getListingBySeller } from '@/services/list.service';
+import { store } from '@/stores';
+import { router } from '@/routes';
 
 export default {
-  name: "STransactionPage",
+  name: 'STransactionPage',
   computed: {
     listing() {
       return store.getters.getList;
     },
   },
-  
+
   async created() {
     const res = await getListingBySeller(store.getters.getProfileState?.id);
     console.log(res);
   },
-  
+
   methods: {
-    navigate: function (transactionId) {
+    navigate(transactionId) {
       router.push(`transaction/${transactionId}`);
     },
   },
-}
+};
 </script>
 
 <style scoped>

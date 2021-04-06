@@ -1,8 +1,7 @@
-class Review {
-    constructor(obj) {
-        this.rating = obj.rating;
-        this.description = obj.description;
-    }
+export class Review {
+  constructor(rating, description, updatedAt) {
+    this.rating = rating;
+    this.description = description;
+    this.updatedAt = updatedAt;
+  }
 }
-
-module.exports = Review;
