@@ -51,7 +51,7 @@
           <span>
             <b-button
               variant="info"
-              @click="interested()"
+              @click="validateTransaction()"
             >
               I'm interested!
             </b-button>
@@ -59,6 +59,11 @@
         </div>
       </div>
     </div>
+    <QuantityModal
+      v-if="validTransaction"
+      :max-quantity="parseInt(itemQty)"
+      @quantity="interested"
+    />
   </div>
 </template>
 
@@ -75,10 +80,11 @@ import {
   getTransactionsByListing,
 } from '@/services/transaction.service';
 import { convertTimestamp } from '@/services/utils.service';
+import QuantityModal from '@/components/QuantityModal';
 
 export default {
   name: 'BListDetailPage',
-  components: { BIconHeartFill },
+  components: { BIconHeartFill, QuantityModal },
   data() {
     return {
       itemImg: '',
@@ -95,6 +101,7 @@ export default {
       createdAt: '',
       listingId: '',
       sellerId: '',
+      validTransaction: false,
     };
   },
 
@@ -109,8 +116,11 @@ export default {
     back() {
       router.back();
     },
-
-    interested() {
+    valid() {
+      console.log(this.validTransaction);
+      return this.validTransaction;
+    },
+    validateTransaction() {
       const userId = store.getters.getProfileState.id;
       const allTransactions = getTransactionsByListing(this.listingId);
       const findTransaction = allTransactions.then((x) =>
@@ -122,20 +132,24 @@ export default {
             'You have already expressed your interest on ' +
               convertTimestamp(x[0].createdAt)
           );
+          this.validTransaction = false;
         } else {
-          const transaction = {
-            listingId: this.listingId,
-            buyerId: store.getters.getProfileState.id,
-            sellerId: this.sellerId,
-            quantity: this.itemQty,
-            createdAt: new Date(),
-            completedAt: '',
-            deletedAt: '',
-          };
-          createTransaction(transaction);
-          alert('Seller is notified! Seller will contact you soon!');
+          this.validTransaction = true;
         }
       });
+    },
+    interested(interestedQty) {
+      const transaction = {
+        listingId: this.listingId,
+        buyerId: store.getters.getProfileState.id,
+        sellerId: this.sellerId,
+        quantity: interestedQty,
+        createdAt: new Date(),
+        completedAt: '',
+        deletedAt: '',
+      };
+      createTransaction(transaction);
+      alert('Seller is notified! Seller will contact you soon!');
     },
     checkBookmark(bookmarkLst) {
       const userId = store.getters.getProfileState.id;
