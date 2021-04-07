@@ -277,6 +277,9 @@ export default {
     validateForm() {
       this.form.createdAt = convertDateObject(this.form.createdAt);
       this.form.expiredAt = convertDateObject(this.form.expiredAt);
+      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState) {
+        return false;
+      }
       return true;
     },
   },
