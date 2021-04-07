@@ -57,6 +57,7 @@
               <b-form-input
                 id="input-1"
                 v-model="form.name"
+                :state="nameState"
                 disabled
                 type="text"
                 required
@@ -71,6 +72,7 @@
               <b-form-input
                 id="input-3"
                 v-model="form.price"
+                :state="priceState"
                 disabled
                 type="number"
                 required
@@ -85,6 +87,7 @@
               <b-form-input
                 id="input-5"
                 v-model="form.quantity"
+                :state="quantityState"
                 disabled
                 type="number"
                 required
@@ -98,6 +101,7 @@
               <b-form-textarea
                 id="input-6"
                 v-model="form.description"
+                :state="descriptionState"
                 disabled
                 type="text"
                 required
@@ -196,6 +200,18 @@ export default {
     };
   },
   computed: {
+    descriptionState() {
+      return this.edit ? this.form.description?.length > 10 ? true : false : null;
+    },
+    nameState() {
+      return this.edit ? this.form.name?.length > 2 ? true : false : null;
+    },
+    priceState() {
+      return this.edit ? +this.form.price > 0 ? true : false : null;
+    },
+    quantityState() {
+      return this.edit ? +this.form.quantity > 0 ? true : false : null;
+    },
   },
 
   async created() {
