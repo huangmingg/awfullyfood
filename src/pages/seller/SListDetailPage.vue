@@ -118,6 +118,7 @@
                 id="input-4"
                 v-model="form.unit"
                 required
+                :state="unitState"
                 disabled
                 :options="units"
               />
@@ -212,6 +213,9 @@ export default {
     quantityState() {
       return this.edit ? +this.form.quantity > 0 ? true : false : null;
     },
+    unitState() {
+      return this.edit ? this.form.unit ? true : false : null;
+    },
   },
 
   async created() {
@@ -277,7 +281,7 @@ export default {
     validateForm() {
       this.form.createdAt = convertDateObject(this.form.createdAt);
       this.form.expiredAt = convertDateObject(this.form.expiredAt);
-      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState) {
+      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
         return false;
       }
       return true;
