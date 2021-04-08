@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "eslint --ext .js,.vue src --max-warnings 0",
+    "lintfix": "eslint --ext .js,.vue src --fix"
   },
   "dependencies": {
     "bootstrap": "^4.6.0",
@@ -16,6 +17,7 @@
     "firebaseui": "^4.7.3",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
+    "vue-loading-overlay": "^3.4.2",
     "vue-router": "^3.5.1",
     "vuex": "3.6.2"
   },
@@ -26,21 +28,13 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "vue-template-compiler": "^2.6.12"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "babel-eslint"
-    },
-    "rules": {}
   },
   "browserslist": [
     "> 1%",

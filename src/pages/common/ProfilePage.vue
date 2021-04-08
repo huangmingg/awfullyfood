@@ -1,88 +1,138 @@
 <template>
   <div>
-    <b-container fluid class="p-4 bg-light">
+    <b-container
+      fluid
+      class="p-4 bg-light"
+    >
       <b-row>
-        <b-btn-group class="ml-auto" >
-          <b-button v-show="!edit" variant="outline-info" v-on:click="editProfile()">Edit Profile</b-button>
-          <b-button v-show="edit" variant="info" v-on:click="saveProfile()">Save Profile</b-button>
+        <b-btn-group class="ml-auto">
+          <b-button
+            v-show="!edit"
+            variant="outline-info"
+            @click="editProfile()"
+          >
+            Edit Profile
+          </b-button>
+          <b-button
+            v-show="edit"
+            variant="info"
+            @click="saveProfile()"
+          >
+            Save Profile
+          </b-button>
         </b-btn-group>
       </b-row>
       <b-form>
         <b-row>
-          <b-img @click="clickImage()" width=400 height=400 class="border-info profile-photo" thumbnail fluid :src="photo" alt="Display Photo"/>
-          <input accept="image/*" v-on:change="onFileChange()" type="file"/>
+          <b-img
+            width="400"
+            height="400"
+            class="border-info profile-photo"
+            thumbnail
+            fluid
+            :src="photo"
+            alt="Display Photo"
+            @click="clickImage()"
+          />
+          <input
+            accept="image/*"
+            type="file"
+            @change="onFileChange()"
+          >
           <b-col>
             <b-card-text>
               <span class="mr-2 font-weight-bolder">
                 {{ form.role }}
               </span>
-              <b-form-rating v-model="averageRating" readonly show-value precision="2" inline></b-form-rating>
+              <b-form-rating
+                v-model="averageRating"
+                readonly
+                show-value
+                precision="2"
+                inline
+              />
             </b-card-text>
 
-            <b-form-group id="input-group-1" label="Email:" label-for="input-1">
+            <b-form-group
+              id="input-group-1"
+              label="Email:"
+              label-for="input-1"
+            >
               <b-form-input
-                  disabled
-                  id="input-1"
-                  v-model="form.email"
-                  required
-              ></b-form-input>
+                id="input-1"
+                v-model="form.email"
+                disabled
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-2" label="Display Name:" label-for="input-2">
+            <b-form-group
+              id="input-group-2"
+              label="Display Name:"
+              label-for="input-2"
+            >
               <b-form-input
-                  disabled
-                  id="input-2"
-                  v-model="form.name"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-2"
+                v-model="form.name"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-3" label="Phone Number:" label-for="input-3">
+            <b-form-group
+              id="input-group-3"
+              label="Phone Number:"
+              label-for="input-3"
+            >
               <b-form-input
-                  disabled
-                  id="input-3"
-                  v-model="form.phoneNumber"
-                  type="number"
-                  required
-              ></b-form-input>
+                id="input-3"
+                v-model="form.phoneNumber"
+                disabled
+                type="number"
+                required
+              />
             </b-form-group>
 
-            <b-form-group id="input-group-4" label="Address:" label-for="input-4">
+            <b-form-group
+              id="input-group-4"
+              label="Address:"
+              label-for="input-4"
+            >
               <b-form-input
-                  disabled
-                  id="input-4"
-                  v-model="form.address"
-                  type="text"
-                  required
-              ></b-form-input>
+                id="input-4"
+                v-model="form.address"
+                disabled
+                type="text"
+                required
+              />
             </b-form-group>
-
           </b-col>
         </b-row>
       </b-form>
-      <hr/>
-      <Review v-bind:reviews="reviews"/>
+      <hr>
+      <Review :reviews="reviews" />
     </b-container>
   </div>
-
 </template>
 
 <script>
 
-import { store } from "@/stores";
-import { getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser } from "@/services/user.service";
-import { authService } from "@/firebase";
-import { getAggregatedRating, getReviews } from "@/services/review.service";
-import Review from "@/components/Review";
+import { store } from '@/stores';
+import {
+  getUserProfile, getDisplayPhoto, updateDisplayPhoto, updateUser,
+} from '@/services/user.service';
+import { authService } from '@/firebase';
+import { getAggregatedRating, getReviews } from '@/services/review.service';
+import Review from '@/components/Review';
 
 export default {
-  name: "EditProfilePage",
+  name: 'EditProfilePage',
   components: { Review },
   data() {
     return {
       edit: false,
-      editableFields: ["input-2", "input-3", "input-4"],
+      editableFields: ['input-2', 'input-3', 'input-4'],
       file: '',
       imageInput: '',
       averageRating: 0,
@@ -96,7 +146,7 @@ export default {
         address: '',
         role: '',
       },
-    }
+    };
   },
 
   async created() {
@@ -114,13 +164,13 @@ export default {
   },
 
   methods: {
-    editProfile: function() {
+    editProfile() {
       this.toggleEdit(true);
     },
 
-    saveProfile: async function() {
+    async saveProfile() {
       if (!this.validateForm()) {
-        alert("Something went wrong, please check the input and try again");
+        alert('Something went wrong, please check the input and try again');
         return;
       }
       this.toggleEdit(false);
@@ -128,31 +178,31 @@ export default {
       await getUserProfile(authService.currentUser.uid);
     },
 
-    toggleEdit: function(isEdit) {
+    toggleEdit(isEdit) {
       this.edit = isEdit;
       this.editableFields.forEach((field) => {
         document.getElementById(field).disabled = !isEdit;
       });
     },
 
-    validateForm: function() {
-      return true
+    validateForm() {
+      return true;
     },
 
-    clickImage: function() {
+    clickImage() {
       this.edit ? document.querySelector('[type="file"]').click() : null;
     },
 
-    onFileChange: async function() {
+    async onFileChange() {
       const input = document.querySelector('[type="file"]');
       if (input.files) {
         await updateDisplayPhoto(this.form.id, input.files[0]);
         this.photo = await getDisplayPhoto(this.form.id);
       }
-    }
+    },
 
-  }
-}
+  },
+};
 </script>
 
 <style scoped>

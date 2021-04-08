@@ -1,26 +1,26 @@
 export default {
-    state: {
-        bookmarks: [],
+  state: {
+    bookmarks: [],
+  },
+  getters: {
+    getBookmarks: (state) => {
+      return state.bookmarks;
     },
-    getters: {
-        getBookmarks: state => {
-            return state.bookmarks;
-        },
+  },
+  mutations: {
+    updateBookmarks(state, bookmarks) {
+      state.bookmarks = bookmarks;
     },
-    mutations: {
-        updateBookmarks (state, bookmarks) {
-            state.bookmarks = bookmarks;
-        }
 
+  },
+  actions: {
+    updateBookmarks(context, bookmarks) {
+      context.commit('updateBookmarks', bookmarks);
     },
-    actions: {
-        updateBookmarks (context, bookmarks) {
-            context.commit('updateBookmarks', bookmarks);
-        },
 
-        clearProfile (context) {
-            context.commit('updateBookmarks', []);
-        }
+    clearProfile(context) {
+      context.commit('updateBookmarks', []);
+    },
 
-    }
-}
+  },
+};

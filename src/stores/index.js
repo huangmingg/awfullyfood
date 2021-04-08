@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import modules from './modules'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import modules from './modules';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
-    modules,
-    strict: process.env.NODE_ENV === 'development'
+  modules,
+  strict: process.env.NODE_ENV === 'development',
 });
 
-export { store }
+export { store };
