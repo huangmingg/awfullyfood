@@ -10,13 +10,13 @@
       >
         {{ list.name }}<br>
         >> {{ list.description }}
-          <b-button
-            variant="outline-info"
-            class="ml-auto"
-            @click="navigate(list.id)"
-          >
-            View More
-          </b-button>
+        <b-button
+          variant="outline-info"
+          class="ml-auto"
+          @click="navigate(list.id)"
+        >
+        View More
+      </b-button>
       </b-list-group-item>
     </b-list-group>
 
