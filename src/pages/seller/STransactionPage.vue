@@ -15,8 +15,8 @@
           class="ml-auto"
           @click="navigate(list.id)"
         >
-        View More
-      </b-button>
+          View More
+        </b-button>
       </b-list-group-item>
     </b-list-group>
 
