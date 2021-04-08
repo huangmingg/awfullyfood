@@ -7,10 +7,16 @@
         v-for="list in listing"
         :key="list.id"
         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-        @click="navigate(list.id)"
       >
         {{ list.name }}<br>
         >> {{ list.description }}
+          <b-button
+            variant="outline-info"
+            class="ml-auto"
+            @click="navigate(list.id)"
+          >
+            View More
+          </b-button>
       </b-list-group-item>
     </b-list-group>
 
@@ -37,8 +43,8 @@ export default {
   },
 
   methods: {
-    navigate(transactionId) {
-      router.push(`transaction/${transactionId}`);
+    navigate(listId) {
+      router.push(`transaction/${listId}`);
     },
   },
 };
