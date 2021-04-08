@@ -178,13 +178,15 @@ export default {
       value: 0, 
       pendingListings: {},
       approvedListings: {},
+      listingId: '',
     }
   },
   computed: {
   },
   async created() {
-    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
-    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
+    this.listingId = this.$route.params.id;
+    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id,this.listingId); 
+    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
   },
   methods: {
     checkFormValidity() {
