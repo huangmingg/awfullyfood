@@ -8,6 +8,7 @@ export class TransactionCreate {
     this.sellerReview = transaction.sellerReview ? transaction.sellerReview : {};
     this.isApproved = transaction.isApproved ? transaction.isApproved : false;
     this.createdAt = transaction.createdAt;
+    this.completedAt = transaction.completedAt;
     this.deletedAt = transaction.deletedAt;
   }
 }
