@@ -180,7 +180,7 @@ export default {
       value: 0, 
       pendingListings: {},
       approvedListings: {},
-    }
+    };
   },
   computed: {
   },

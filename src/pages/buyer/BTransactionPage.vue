@@ -150,7 +150,7 @@ export default {
       disabled: false,
       reviewedListings: {},
       unreviewedListings: {},
-    }
+    };
   },
   computed: {
     listing() {
@@ -168,13 +168,13 @@ export default {
       return ele.isApproved === true;
     }).filter((ele) => {
       return ele.buyerReview.size != 0;
-    })
+    });
     this.reviewedListings = transactions;
     const urtransaction = (
       await getTransactionsByBuyer(store.getters.getProfileState?.id)
     ).filter((ele) => {
       return Object.entries(ele.buyerReview).length === 0;
-    })
+    });
     this.unreviewedListings = urtransaction;
 
   },

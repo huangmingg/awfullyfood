@@ -232,7 +232,6 @@ export default {
 
     async retrieveInfo(id) {
       const itemDetails = await getListing(id);
-      console.log(itemDetails)
       this.form = {
         ...itemDetails,
         'createdAt': convertTimestamp(itemDetails.createdAt, false),
