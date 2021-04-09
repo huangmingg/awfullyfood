@@ -22,7 +22,6 @@ const getAggregatedRating = (reviews) => {
     return (total / length);
   }
   return 0;
-
 };
 
 
