@@ -74,11 +74,12 @@ export default {
       transactions.map(async (transaction) => {
         const listing = await getListing(transaction.listingId);
         const user = await getDisplayName(transaction.sellerId);
+        
         return {
           id: transaction.id,
           item: listing.name,
           quantity: listing.quantity,
-          user,
+          user: user,
           unit: listing.unit,
           date: transaction.completedAt,
         };
@@ -104,7 +105,6 @@ export default {
         };
       })
     );
-
     this.orderHistoryCounter = this.orderHistory.length;
     this.pendingOrdersCounter = this.pendingOrders.length;
   },
