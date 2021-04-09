@@ -1,3 +1,5 @@
+import { convertDateObject } from '@/services/utils.service';
+
 export class ListingCreate {
   constructor(list) {
     this.sellerId = list.sellerId;
@@ -7,12 +9,12 @@ export class ListingCreate {
     this.quantity = list.quantity;
     this.unit = list.unit;
     this.category = list.category;
-    this.status = list.status;
+    this.status = list.status ? list.status : 'Available';
     this.bookmarks = list.bookmarks ? list.bookmarks : [];
     this.interests = list.interests ? list.interests : [];
-    this.createdAt = list.createdAt;
-    this.expiredAt = list.expiredAt;
-    this.deletedAt = list.deletedAt;
+    this.createdAt = list.createdAt ? list.createdAt : convertDateObject(new Date());
+    this.expiredAt = list.expiredAt ? list.expiredAt : null;
+    this.deletedAt = list.deletedAt ? list.deletedAt : null;
   }
 }
 

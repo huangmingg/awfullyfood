@@ -4,7 +4,7 @@
       fluid
       class="p-4 bg-light"
     >
-      <b-row>
+      <b-row class="mx-2">
         <b-button
           variant="info"
           @click="back()"
@@ -24,14 +24,14 @@
           <b-button
             v-show="edit"
             variant="info"
-            @click="saveList()"
+            @click="onSubmit()"
           >
             Save Listing
           </b-button>
         </b-btn-group>
       </b-row>
       <hr class="dropdown-divider">
-      <b-form>
+      <b-form class="mx-3">
         <b-row>
           <b-img
             width="400"
@@ -57,20 +57,7 @@
               <b-form-input
                 id="input-1"
                 v-model="form.name"
-                disabled
-                type="text"
-                required
-              />
-            </b-form-group>
-
-            <b-form-group
-              id="input-group-2"
-              label="Category:"
-              label-for="input-2"
-            >
-              <b-form-input
-                id="input-2"
-                v-model="form.category"
+                :state="nameState"
                 disabled
                 type="text"
                 required
@@ -85,22 +72,9 @@
               <b-form-input
                 id="input-3"
                 v-model="form.price"
+                :state="priceState"
                 disabled
                 type="number"
-                required
-              />
-            </b-form-group>
-
-            <b-form-group
-              id="input-group-4"
-              label="Unit:"
-              label-for="input-4"
-            >
-              <b-form-input
-                id="input-4"
-                v-model="form.unit"
-                disabled
-                type="text"
                 required
               />
             </b-form-group>
@@ -113,23 +87,54 @@
               <b-form-input
                 id="input-5"
                 v-model="form.quantity"
+                :state="quantityState"
                 disabled
                 type="number"
                 required
               />
             </b-form-group>
-
             <b-form-group
               id="input-group-6"
               label="Description:"
               label-for="input-6"
             >
-              <b-form-input
+              <b-form-textarea
                 id="input-6"
                 v-model="form.description"
+                :state="descriptionState"
                 disabled
                 type="text"
                 required
+              />
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              id="input-group-4"
+              label="Unit:"
+              label-for="input-4"
+            >
+              <b-form-select
+                id="input-4"
+                v-model="form.unit"
+                required
+                :state="unitState"
+                disabled
+                :options="units"
+              />
+            </b-form-group>
+
+            <b-form-group
+              id="input-group-2"
+              label="Category:"
+              label-for="input-2"
+            >
+              <b-form-select
+                id="input-2"
+                v-model="form.category"
+                required
+                disabled
+                :options="categories"
               />
             </b-form-group>
 
@@ -138,11 +143,11 @@
               label="Created Date:"
               label-for="input-7"
             >
-              <b-form-input
+              <b-form-datepicker
                 id="input-7"
                 v-model="form.createdAt"
                 disabled
-                type="text"
+                date
                 required
               />
             </b-form-group>
@@ -152,11 +157,11 @@
               label="Expiry Date:"
               label-for="input-8"
             >
-              <b-form-input
+              <b-form-datepicker
                 id="input-8"
                 v-model="form.expiredAt"
                 disabled
-                type="text"
+                date
                 required
               />
             </b-form-group>
@@ -170,16 +175,18 @@
 
 <script>
 import { router } from '@/routes';
-import {
-  getListing, updateListing, getListingPhoto, updateListingPhoto,
-} from '@/services/list.service';
+import { getListing, updateListing, getListingPhoto, updateListingPhoto } from '@/services/list.service';
+import { convertTimestamp, convertDateObject } from '@/services/utils.service';
 
 export default {
   name: 'SListPage',
   data() {
     return {
+      listingId: '',
       edit: false,
       editableFields: ['input-1', 'input-3', 'input-4', 'input-5', 'input-6'],
+      categories: ['Ugly', 'Expiring'],
+      units: ['Carton', 'Kg', 'Ml', 'Box', 'Gram', 'Pax'],
       form: {
         name: '',
         price: 0,
@@ -194,30 +201,42 @@ export default {
     };
   },
   computed: {
+    descriptionState() {
+      return this.edit ? this.form.description?.length > 10 ? true : false : null;
+    },
+    nameState() {
+      return this.edit ? this.form.name?.length > 2 ? true : false : null;
+    },
+    priceState() {
+      return this.edit ? +this.form.price > 0 ? true : false : null;
+    },
+    quantityState() {
+      return this.edit ? +this.form.quantity > 0 ? true : false : null;
+    },
+    unitState() {
+      return this.edit ? this.form.unit ? true : false : null;
+    },
   },
 
   async created() {
-    const listingId = this.$route.params.id;
-    await getListing(listingId);
-    this.retrieveInfo(listingId);
+    const loader = this.$loading.show({ color: 'teal' });
+    this.listingId = this.$route.params.id;
+    await this.retrieveInfo(this.listingId);
+    loader.hide();
   },
+
   methods: {
     back() {
       router.back();
     },
-    retrieveInfo(id) {
-      const itemDetails = getListing(id);
-      itemDetails.then((x) => {
-        this.form.name = x.name;
-        this.form.price = x.price;
-        this.form.quantity = x.quantity;
-        this.form.unit = x.unit;
-        this.form.description = x.description;
-        this.form.expiredAt = x.expiredAt.toDate().toLocaleDateString();
-        this.form.createdAt = x.createdAt.toDate().toLocaleDateString();
-        this.form.category = x.category;
-        this.form.photo = x.imageURL;
-      });
+
+    async retrieveInfo(id) {
+      const itemDetails = await getListing(id);
+      this.form = {
+        ...itemDetails,
+        'createdAt': itemDetails.createdAt ? convertTimestamp(itemDetails.createdAt, false) : null,
+        'expiredAt': itemDetails.expiredAt ? convertTimestamp(itemDetails.expiredAt, false) : null,
+      };
     },
 
     clickImage() {
@@ -229,32 +248,26 @@ export default {
       if (input.files) {
         const listingId = this.$route.params.id;
         await updateListingPhoto(listingId, input.files[0]);
-        this.photo = await getListingPhoto(listingId);
+        this.form.photo = await getListingPhoto(listingId);
       }
     },
 
     editList() {
-      console.log('edit');
       this.toggleEdit(true);
     },
 
-    saveList() {
-      console.log('save');
+    async onSubmit() {
       if (!this.validateForm()) {
         alert('Something went wrong, please check the inputs and try again');
         return;
       }
-      this.editableFields.forEach((field) => document.getElementById(field).style = '');
       this.toggleEdit(false);
-      // update db
-      const change = {
-        name: this.form.name,
-        price: this.form.price,
-        quantity: this.form.quantity,
-        unit: this.form.unit,
-        description: this.form.description,
-      };
-      updateListing(this.$route.params.id, change);
+      const res = await updateListing(this.listingId, { ...this.form });
+      if (!res) {
+        alert('Something went wrong with updating the listing, please try again!');
+      } else {
+        this.back();
+      }
     },
 
     toggleEdit(isEdit) {
@@ -265,43 +278,12 @@ export default {
     },
 
     validateForm() {
-      let error = false;
-      if (this.form.name == '') {
-        document.getElementById('input-1').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-1').style.borderColor = '';
-      }
-      if (this.form.price < 0 || this.form.price == '') {
-        document.getElementById('input-3').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-3').style.borderColor = '';
-      }
-      if (this.form.unit == '') {
-        document.getElementById('input-4').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-4').style.borderColor = '';
-      }
-      if (this.form.quantity <= 0 || this.form.quantity == '') {
-        document.getElementById('input-5').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-5').style.borderColor = '';
-      }
-      if (this.form.description == '') {
-        document.getElementById('input-6').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-6').style.borderColor = '';
-      }
-
-      if (error) {
+      this.form.createdAt = this.form.createdAt ? convertDateObject(this.form.createdAt) : null;
+      this.form.expiredAt = this.form.expiredAt ?convertDateObject(this.form.expiredAt) : null;
+      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
         return false;
       }
       return true;
-
     },
   },
 };

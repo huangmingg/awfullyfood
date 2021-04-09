@@ -9,6 +9,10 @@ const getListingPhoto = async (listingId) => {
   return res || downloadFile('listings/dummy.png');
 };
 
+const getDummyPhoto = async () => {
+  return downloadFile('listings/dummy.png');
+};
+
 const getListings = async (saveState = true) => {
   return database.collection('listings').get()
     .then(async (res) => {
@@ -56,14 +60,15 @@ const getListing = async (listingId) => {
 
 const createListing = async (payload) => {
   const listing = new ListingCreate(payload);
+  console.log(listing);
   return database.collection('listings').add( { ...listing })
     .then((docRef) => {
       console.log('Document written with ID: ', docRef.id);
-      return true;
+      return [true, docRef.id];
     })
     .catch((error) => {
       console.log(error);
-      return false;
+      return [false, null];
     });
 };
 
@@ -155,5 +160,6 @@ export {
   getListingName,
   orderList,
   filterList,
+  getDummyPhoto,
 };
 
