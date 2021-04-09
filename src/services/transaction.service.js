@@ -75,6 +75,23 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
     });
 };
 
+const getTransactionsBySeller = async (sellerId, saveState = true) => {
+  return database.collection('transactions')
+    .where('sellerId', '==', sellerId)
+    .get()
+    .then(async (res) => {
+      const output = await Promise.all(res.docs.map(async (doc) => {
+        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+      }));
+      saveState ? await store.dispatch('updateTransaction', output) : null;
+      return output;
+    })
+    .catch((error) => {
+      console.log(error);
+      return [];
+    });
+};
+
 const getTransactionsByListing = async (listingId, saveState = false) => {
   return database.collection('transactions')
     .where('listingId', '==', listingId)
@@ -145,6 +162,7 @@ export {
   getTransactionsByListing,
   getPendingTransactionsBySeller,
   getApprovedTransactionsBySeller,
+  getTransactionsBySeller,
   createTransaction,
   updateTransaction,
   deleteTransaction,
