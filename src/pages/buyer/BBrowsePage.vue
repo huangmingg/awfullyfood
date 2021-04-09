@@ -22,7 +22,7 @@
 
     <hr class="dropdown-divider">
     <!--listing-->
-    <b-card-group deck>
+    <b-row>
       <b-card
         v-for="list in listing"
         :key="list.id"
@@ -33,7 +33,7 @@
         img-height="200"
         img-width="150"
         style="max-width: 20rem"
-        class="mb-2 list-item"
+        class="m-3 list-item"
         border-variant="info"
         @click="navigate(list.id)"
       >
@@ -53,7 +53,7 @@
           {{ list.bookmarks.length }}
         </span>
       </b-card>
-    </b-card-group>
+    </b-row>
   </div>
 </template>
 
@@ -133,6 +133,7 @@ export default {
 </script>
 
 <style scoped>
+
 input {
   display: inline-block;
 }
