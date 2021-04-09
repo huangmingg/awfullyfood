@@ -24,6 +24,8 @@ module.exports = {
         "no-void": 0,
         "operator-linebreak": 0,
         "no-multiple-empty-lines": 0,
+        "object-curly-spacing": ["error", "always"],
+        "semi": ["error", "always"],
         "comma-dangle": [
             "error",
             {

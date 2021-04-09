@@ -57,6 +57,7 @@
               <b-form-input
                 id="input-1"
                 v-model="form.name"
+                :state="nameState"
                 disabled
                 type="text"
                 required
@@ -71,6 +72,7 @@
               <b-form-input
                 id="input-3"
                 v-model="form.price"
+                :state="priceState"
                 disabled
                 type="number"
                 required
@@ -85,6 +87,7 @@
               <b-form-input
                 id="input-5"
                 v-model="form.quantity"
+                :state="quantityState"
                 disabled
                 type="number"
                 required
@@ -98,6 +101,7 @@
               <b-form-textarea
                 id="input-6"
                 v-model="form.description"
+                :state="descriptionState"
                 disabled
                 type="text"
                 required
@@ -114,6 +118,7 @@
                 id="input-4"
                 v-model="form.unit"
                 required
+                :state="unitState"
                 disabled
                 :options="units"
               />
@@ -196,6 +201,21 @@ export default {
     };
   },
   computed: {
+    descriptionState() {
+      return this.edit ? this.form.description?.length > 10 ? true : false : null;
+    },
+    nameState() {
+      return this.edit ? this.form.name?.length > 2 ? true : false : null;
+    },
+    priceState() {
+      return this.edit ? +this.form.price > 0 ? true : false : null;
+    },
+    quantityState() {
+      return this.edit ? +this.form.quantity > 0 ? true : false : null;
+    },
+    unitState() {
+      return this.edit ? this.form.unit ? true : false : null;
+    },
   },
 
   async created() {
@@ -212,11 +232,10 @@ export default {
 
     async retrieveInfo(id) {
       const itemDetails = await getListing(id);
-      console.log(itemDetails)
       this.form = {
         ...itemDetails,
-        'createdAt': convertTimestamp(itemDetails.createdAt, false),
-        'expiredAt': convertTimestamp(itemDetails.expiredAt, false),
+        'createdAt': itemDetails.createdAt ? convertTimestamp(itemDetails.createdAt, false) : null,
+        'expiredAt': itemDetails.expiredAt ? convertTimestamp(itemDetails.expiredAt, false) : null,
       };
     },
 
@@ -259,8 +278,11 @@ export default {
     },
 
     validateForm() {
-      this.form.createdAt = convertDateObject(this.form.createdAt);
-      this.form.expiredAt = convertDateObject(this.form.expiredAt);
+      this.form.createdAt = this.form.createdAt ? convertDateObject(this.form.createdAt) : null;
+      this.form.expiredAt = this.form.expiredAt ?convertDateObject(this.form.expiredAt) : null;
+      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
+        return false;
+      }
       return true;
     },
   },
