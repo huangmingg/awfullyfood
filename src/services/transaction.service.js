@@ -94,7 +94,7 @@ const getTransactionsByListing = async (listingId, saveState = false) => {
 
 const createTransaction = async (payload) => {
   const transaction = new TransactionCreate(payload);
-  return database.collection('transactions').add(transaction)
+  return database.collection('transactions').add({ ...transaction })
     .then((docRef) => {
       console.log('Document written with ID: ', docRef.id);
       return true;
