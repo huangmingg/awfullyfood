@@ -8,9 +8,7 @@
         class="d-flex justify-content-between align-items-center"
       >
         <h1 class="mb-1">
-          Buyer ID: {{ list.buyerId }}<br>
-        
-          Quantity: {{ list.quantity }}<br>
+          Buyer is interested in {{ list.quantity }}!<br>
           <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
@@ -143,8 +141,8 @@
             disabled
           >
             <h1 class="mb-1">
-              <small>ID: {{ list.buyerId }}<br>
-                Quantity: {{ list.quantity }}<br>
+              <small>
+                Buyer is interested in {{ list.quantity }}!<br>
                 Approved at: {{ list.sellerReview.updatedAt }}</small>
             </h1>
           </b-list-group-item>
@@ -180,13 +178,15 @@ export default {
       value: 0, 
       pendingListings: {},
       approvedListings: {},
-    };
+      listingId: '',
+    }
   },
   computed: {
   },
   async created() {
-    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id); 
-    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id);
+    this.listingId = this.$route.params.id;
+    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id,this.listingId); 
+    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
   },
   methods: {
     checkFormValidity() {

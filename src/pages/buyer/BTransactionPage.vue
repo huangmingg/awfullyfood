@@ -111,7 +111,7 @@
       >
         <b-list-group deck>
           <b-list-group-item
-            v-for="list in listing"
+            v-for="list in reviewedListings"
             :key="list.id"
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
