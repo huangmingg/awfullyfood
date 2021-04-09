@@ -38,6 +38,7 @@ export default {
     };
   },
 
+
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);

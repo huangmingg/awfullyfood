@@ -7,43 +7,7 @@
         v-for="list in bookmarks"
         :key="list.id"
         :title="list.item"
-        img-alt="Image"
-        img-top
-        img-height="200"
-        img-width="150"
-        style="max-width: 20rem"
-        class="mb-2 list-item"
-        border-variant="info"
-        @click="route(list.listingId)"
-      >
-        <b-card-text>
-          ${{ list.price }} per {{ list.unit }} <br>
-          Quantity: {{ list.quantity }} {{ list.unit }}
-          <small>
-            <br>
-            Seller: {{ list.user }}
-            <br>
-            <br>
-          </small>
-          <hr>
-
-          <b-button
-            :id="list.id"
-            @click="removeBookmark(list.listingId)"
-          >
-            Remove Bookmark
-          </b-button>
-        </b-card-text>
-      </b-card>
-    </b-card-group>
-
-    <hr>
-
-    <b-card-group deck>
-      <b-card
-        v-for="list in bookmarks"
-        :key="list.id"
-        :title="list.item"
+        :img-src="list.photo"
         img-alt="Image"
         img-top
         img-height="200"
@@ -157,9 +121,4 @@ input {
   display: inline-block;
 }
 
-.list-item:hover {
-  background-color: rgb(243, 250, 251);
-  background-image: none;
-  cursor: pointer;
-}
 </style>
