@@ -1,17 +1,14 @@
 <template>
   <div class="chart">
-    <div class="chartCard">
-      <s-listing-category-chart />
-    </div>
+      <chart></chart>
   </div>
 </template>
 
 <script>
-import SListingCategoryChart from './SListingCategoryChart.js';
-
+import Chart from './SListingCategoryChart.js';
 export default {
   components: {
-    SListingCategoryChart,
+    Chart,
   },
 };
 </script>

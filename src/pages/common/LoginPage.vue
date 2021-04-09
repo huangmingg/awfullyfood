@@ -44,7 +44,6 @@ export default {
               const profile = await getUserProfile(userId);
               switch (profile?.role) {
               case 'Buyer':
-                console.log('pushing to home');
                 await router.push('/buyer');
                 break;
               case 'Seller':

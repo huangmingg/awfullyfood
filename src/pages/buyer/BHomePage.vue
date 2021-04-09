@@ -1,16 +1,15 @@
 <template>
   <div class="content">
-    Buyer Home Page
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <h1>{{ orderHistoryCounter }}</h1>
+          <h1>{{ orderHistory.length }}</h1>
           <h5>Number of Completed Orders</h5>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <h1>{{ pendingOrdersCounter }}</h1>
+          <h1>{{ pendingOrders.length }}</h1>
           <h5>Number of Pending Orders</h5>
         </div>
       </li>
@@ -54,8 +53,6 @@ export default {
     return {
       orderHistory: [],
       pendingOrders: [],
-      orderHistoryCounter: 0,
-      pendingOrdersCounter: 0,
     };
   },
   async created() {
@@ -74,7 +71,7 @@ export default {
       transactions.map(async (transaction) => {
         const listing = await getListing(transaction.listingId);
         const user = await getDisplayName(transaction.sellerId);
-        
+
         return {
           id: transaction.id,
           item: listing.name,
@@ -105,8 +102,6 @@ export default {
         };
       })
     );
-    this.orderHistoryCounter = this.orderHistory.length;
-    this.pendingOrdersCounter = this.pendingOrders.length;
   },
 };
 </script>

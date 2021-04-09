@@ -1,16 +1,17 @@
 <template>
-  <div class="content">
+  <div>
     <h5>Most Bookmarked Listings</h5>
     <hr>
     <ul>
       <li
-        v-for="order in sellerListings"
-        :key="order.id"
+        v-for="list in listings"
+        :key="list.id"
       >
-        {{ order.quantity }} {{ order.unit }} of {{ order.name }} <br>
-        {{ order.likes.length }} bookmarked. <br>
+        {{ list.quantity }} {{ list.unit }} of {{ list.name }} <br>
+        {{ list.bookmarks.length }} bookmarked. <br>
         <b-button
-          :id="order.id"
+          :id="list.id"
+          variant="outline-info"
           @click="route($event)"
         >
           View Listing
@@ -22,36 +23,20 @@
 </template>
 
 <script>
-// import database from "../../../firebase.js";
-import { getListingBySeller } from '@/services/list.service';
-import { getUserProfile } from '@/services/user.service';
-import { authService } from '@/firebase';
-import { store } from '@/stores';
-
 export default {
   name: 'STopLikes',
-  components: {},
-  data() {
-    return {
-      sellerListings: [],
-      show: true,
-    };
-  },
-
-
-  async created() {
-    if (!store.getters.getProfileState) {
-      await getUserProfile(authService.currentUser.uid);
-    }
-    this.sellerListings = await getListingBySeller(
-      store.getters.getProfileState?.id
-    );
-    await this.sellerListings.sort((a, b) => (b.likes > a.likes ? 1 : a.likes > b.likes ? -1 : 0));
+  props: {
+    listings: {
+      type: Array,
+      default: function () {
+        return [];
+      },
+    },
   },
   methods: {
     route(event) {
       const userId = event.target.getAttribute('id');
-      this.$router.push({ path: `/seller/list/${userId}` });
+      this.$router.push({ path: `/seller/list/detail/${userId}` });
     },
   },
 };
@@ -59,18 +44,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#ordersList {
-  width: 50%;
-  max-width: 100%;
-  margin: 10px;
-  padding: 0 5px;
-  box-sizing: border-box;
-}
-
-#listContainer {
-  float: left;
-  width: 100%;
-}
 
 ul {
   display: flex;
@@ -92,11 +65,4 @@ button {
   margin: 10px;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
 </style>

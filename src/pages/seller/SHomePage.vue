@@ -1,16 +1,15 @@
 <template>
   <div class="content">
-    Seller Home Page
     <ul class="chartCardContainer">
       <li>
         <div class="numberCard">
-          <h1>{{ orderHistoryCounter }}</h1>
+          <h1>{{ orderHistory.length }}</h1>
           <h5>Number of Completed Orders</h5>
         </div>
       </li>
       <li>
         <div class="numberCard">
-          <h1>{{ pendingOrdersCounter }}</h1>
+          <h1>{{ pendingOrders.length }}</h1>
           <h5>Number of Pending Orders</h5>
         </div>
       </li>
@@ -27,27 +26,27 @@
         />
       </li>
       <li>
-        <s-listing-category-chart />
+        <SListingCategoryChart/>
       </li>
       <li class="orderList">
-        <s-top-likes />
+        <STopLikes :listings="listings"/>
       </li>
       <li class="orderList">
-        <s-top-interest />
+        <STopInterest :listings="listings"/>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getUserProfile } from '@/services/user.service';
 import { getTransactionsBySeller } from '@/services/transaction.service';
-import { getListing } from '@/services/list.service';
+import { getListingBySeller } from '@/services/list.service';
 import { authService } from '@/firebase';
 import { store } from '@/stores';
 import OrderHistory from '@/pages/common/visualisation/OrderHistory';
 import PendingOrders from '@/pages/common/visualisation/PendingOrders';
-import SListingCategoryChart from './visualisation/SListingCategoryChart.vue';
+import SListingCategoryChart from '@/pages/seller/visualisation/SListingCategoryChart';
 import STopLikes from './visualisation/STopLikes.vue';
 import STopInterest from './visualisation/STopInterest.vue';
 
@@ -60,66 +59,35 @@ export default {
     OrderHistory,
     PendingOrders,
   },
-  data() {
-    return {
-      orderHistory: [],
-      pendingOrders: [],
-      orderHistoryCounter: 0,
-      pendingOrdersCounter: 0,
-    };
+
+  computed: {
+    orderHistory() {
+      return store.getters.getApprovedTransaction;
+    },
+    pendingOrders() {
+      return store.getters.getPendingTransaction;
+    },
+    listings() {
+      return store.getters.getList;
+    },
   },
+
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-  },
-
-  async mounted() {
-    const transactions = (
-      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
-    ).filter((ele) => {
-      return ele.isApproved === true;
-    });
-    this.orderHistory = await Promise.all(
-      transactions.map(async (transaction) => {
-        const listing = await getListing(transaction.listingId);
-        const user = await getDisplayName(transaction.buyerId);
-        return {
-          id: transaction.id,
-          item: listing.name,
-          quantity: listing.quantity,
-          user,
-          unit: listing.unit,
-          date: transaction.completedAt,
-        };
-      })
-    );
-    const pendings = (
-      await getTransactionsBySeller(store.getters.getProfileState?.id, false)
-    ).filter((ele) => {
-      return ele.isApproved === false;
-    });
-    this.pendingOrders = await Promise.all(
-      pendings.map(async (pending) => {
-        const pendingListing = await getListing(pending.listingId);
-        const pendingUser = await getDisplayName(pending.buyerId);
-        return {
-          id: pending.id,
-          item: pendingListing.name,
-          quantity: pendingListing.quantity,
-          user: pendingUser,
-          unit: pendingListing.unit,
-          date: pending.createdAt,
-        };
-      })
-    );
-    this.orderHistoryCounter = this.orderHistory.length;
-    this.pendingOrdersCounter = this.pendingOrders.length;
+    const loader = this.$loading.show({ color: 'teal' });
+    await getTransactionsBySeller(store.getters.getProfileId);
+    await getListingBySeller(store.getters.getProfileId);
+    await store.dispatch('resetFilter');
+    await store.dispatch('filterList');
+    loader.hide();
   },
 };
 </script>
 
 <style scoped>
+
 ul {
   display: flex;
   flex-wrap: wrap;

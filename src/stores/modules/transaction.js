@@ -6,6 +6,18 @@ export default {
     getTransaction: (state) => {
       return state.transaction;
     },
+
+    getApprovedTransaction: (state) => {
+      return state.transaction.filter((t) => {
+        return t.isApproved;
+      });
+    },
+
+    getPendingTransaction: (state) => {
+      return state.transaction.filter((t) => {
+        return !t.isApproved;
+      });
+    },
   },
   mutations: {
     updateTransaction(state, transaction) {

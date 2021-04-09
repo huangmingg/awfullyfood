@@ -4,12 +4,19 @@ import { TransactionCreate, TransactionRead, TransactionUpdate } from '@/models/
 import { getCurrentTimestamp } from '@/services/utils.service';
 import { Review } from '@/models/review.class';
 import { getListingName } from '@/services/list.service';
+import { getDisplayName } from '@/services/user.service';
 
 const getTransactions = async (saveState = true) => {
   return database.collection('transactions').get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
@@ -28,7 +35,13 @@ const getPendingTransactionsBySeller = async (sellerId, listingId, saveState = t
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
@@ -47,7 +60,13 @@ const getApprovedTransactionsBySeller = async (sellerId, listingId, saveState = 
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
@@ -64,7 +83,13 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
@@ -81,7 +106,13 @@ const getTransactionsBySeller = async (sellerId, saveState = true) => {
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
@@ -98,7 +129,13 @@ const getTransactionsByListing = async (listingId, saveState = false) => {
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
-        return new TransactionRead(doc.data(), doc.id, await getListingName(doc.data()?.listingId));
+        return new TransactionRead(
+          doc.data(),
+          doc.id,
+          await getListingName(doc.data()?.listingId),
+          await getDisplayName(doc.data()?.buyerId),
+          await getDisplayName(doc.data()?.sellerId),
+        );
       }));
       saveState ? await store.dispatch('updateTransaction', output) : null;
       return output;
