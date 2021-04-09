@@ -26,7 +26,7 @@
         />
       </li>
       <li>
-        <BCategoryChart/>
+        <BCategoryChart />
       </li>
     </ul>
   </div>

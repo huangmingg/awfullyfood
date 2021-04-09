@@ -7,15 +7,15 @@
 
     <!--search button-->
     <span class="float-right">
-        <b-input
-          id="searchEntry"
-          v-model.lazy="content"
-          type="search"
-          class="form-control rounded mr-1"
-          placeholder="Enter Listing Name"
-          aria-label="Search"
-          aria-describedby="search-addon"
-        />
+      <b-input
+        id="searchEntry"
+        v-model.lazy="content"
+        type="search"
+        class="form-control rounded mr-1"
+        placeholder="Enter Listing Name"
+        aria-label="Search"
+        aria-describedby="search-addon"
+      />
     </span>
 
     <hr class="dropdown-divider">

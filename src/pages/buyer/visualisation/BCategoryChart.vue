@@ -1,7 +1,7 @@
 <template>
   <div class="chart">
     <div class="chartCard">
-      <BCategoryChart/>
+      <BCategoryChart />
     </div>
   </div>
 </template>

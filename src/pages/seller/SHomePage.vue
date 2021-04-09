@@ -26,13 +26,13 @@
         />
       </li>
       <li>
-        <SListingCategoryChart/>
+        <SListingCategoryChart />
       </li>
       <li class="orderList">
-        <STopLikes :listings="listings"/>
+        <STopLikes :listings="listings" />
       </li>
       <li class="orderList">
-        <STopInterest :listings="listings"/>
+        <STopInterest :listings="listings" />
       </li>
     </ul>
   </div>
