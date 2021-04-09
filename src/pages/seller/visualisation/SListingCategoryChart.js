@@ -25,9 +25,17 @@ export default {
       },
     };
   },
+
   async created() {
     await this.initChart();
   },
+
+  watch: {
+    dataCollection() {
+      this.renderChart(this.dataCollection, this.options);
+    },
+  },
+
   methods: {
     async initChart() {
       await getListingBySeller(store.getters.getProfileId);

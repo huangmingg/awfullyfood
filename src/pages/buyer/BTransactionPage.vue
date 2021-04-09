@@ -8,16 +8,14 @@
         :key="list.id"
         class="d-flex justify-content-between list-group-item-action align-items-center"
       >
-        <h1 class="mb-1">
-          Status: {{ getStatus(list.isApproved) }}<br><br>
-
-          Item: {{ list.listName }}
-          <br>
-          Quantity: {{ list.quantity }}
-          <br>
+        <div>
+          <h1 class="mb-3">
+            Status: {{ getStatus(list.isApproved) }}
+          </h1>
+          <h1> Item: {{ list.listName }} </h1>
+          <h1> Quantity: {{ list.quantity }} </h1>
           <small>Created at: {{ convertTimestamp(list.createdAt) }}</small>
-        </h1>
-
+        </div>
         <b-button-group>
           <b-button
             variant="outline-info"
@@ -115,11 +113,11 @@
             :key="list.id"
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
-            <h1 class="mb-1">
-              <small>Item: {{ list.listName }}<br>
-                Quantity: {{ list.quantity }}<br>
-                Reviewed at: {{ list.buyerReview.updatedAt }}</small>
-            </h1>
+            <div>
+              <h1> Item: {{ list.listName }} </h1>
+              <h1> Quantity: {{ list.quantity }} </h1>
+              <small> Reviewed at: {{ convertTimestamp(list.buyerReview.updatedAt) }}</small>
+            </div>
             <b-button
               variant="outline-info"
               class="ml-auto"
@@ -153,15 +151,17 @@ export default {
       unreviewedListings: {},
     };
   },
+
   computed: {
     listing() {
       return store.getters.getList;
     },
   },
+
   async created() {
-    const res = await getTransactionsByBuyer(store.getters.getProfileState?.id);
-    console.log(res);
+    await getTransactionsByBuyer(store.getters.getProfileState?.id);
   },
+
   async mounted() {
     const transactions = (
       await getTransactionsByBuyer(store.getters.getProfileState?.id)
@@ -200,11 +200,13 @@ export default {
       // Trigger submit handler
       this.handleSubmit(id);
     },
+
     resetModal() {
       this.review = '';
       this.reviewState = null;
       this.value = 0;
     },
+
     handleSubmit(id) {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
@@ -216,12 +218,15 @@ export default {
         this.$bvModal.hide('modal-closing');
       });
     },
+
     back() {
       router.back();
     },
+
     showModal() {
       this.$refs['modal-review'][0].show();
     },
+
     getStatus: function(item) {
       if (item) {
         return 'Transaction is approved and you can leave a review for the seller.';
@@ -229,6 +234,7 @@ export default {
       return 'Transaction is not approved.';
 
     },
+    
     isDisabled(item) {
       if (item) {
         return false;
@@ -236,6 +242,7 @@ export default {
       return true;
 
     },
+
     navigate: function (listId) {
       router.push(`browse/${listId}`);
     },

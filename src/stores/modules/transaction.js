@@ -18,6 +18,14 @@ export default {
         return !t.isApproved;
       });
     },
+
+    getBuyerReviewedTransaction: (state) => {
+
+    },
+
+    getSellerReviewedTransaction: (state) => {
+
+    },
   },
   mutations: {
     updateTransaction(state, transaction) {
