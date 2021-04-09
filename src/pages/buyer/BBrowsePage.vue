@@ -7,7 +7,6 @@
 
     <!--search button-->
     <span class="float-right">
-      <div class="input-group">
         <b-input
           id="searchEntry"
           v-model.lazy="content"
@@ -17,7 +16,6 @@
           aria-label="Search"
           aria-describedby="search-addon"
         />
-      </div>
     </span>
 
     <hr class="dropdown-divider">
@@ -30,8 +28,8 @@
         :img-src="list.photo"
         img-alt="Image"
         img-top
-        img-height="200"
-        img-width="150"
+        img-height="250px"
+        img-width="150px"
         style="max-width: 20rem"
         class="m-3 list-item"
         border-variant="info"
@@ -133,6 +131,11 @@ export default {
 </script>
 
 <style scoped>
+
+.list-item {
+  width: 450px;
+  height: 500px;
+}
 
 input {
   display: inline-block;
