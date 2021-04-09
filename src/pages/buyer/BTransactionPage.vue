@@ -5,7 +5,7 @@
     <b-list-group deck>
       <b-list-group-item
         v-for="list in unreviewedListings"
-        :key="list.id" 
+        :key="list.id"
         class="d-flex justify-content-between list-group-item-action align-items-center"
       >
         <h1 class="mb-1">
@@ -14,7 +14,7 @@
           Item: {{ list.listName }}
           <br>
           Quantity: {{ list.quantity }}
-          <br> 
+          <br>
           <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
         </h1>
 
@@ -111,7 +111,7 @@
       >
         <b-list-group deck>
           <b-list-group-item
-            v-for="list in secondListing"
+            v-for="list in listing"
             :key="list.id"
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
@@ -140,7 +140,7 @@ import { store } from '@/stores';
 import { router } from '@/routes';
 
 export default {
-  name: 'STransactionDetailPage',
+  name: 'BTransactionDetailPage',
   data() {
     return {
       product: {},

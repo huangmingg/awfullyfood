@@ -11,12 +11,12 @@ const convertTimestamp = function (firestoreTimestamp, toString= true) {
 
 // Convert date object to firestore timestamp
 const convertDateObject = function (dateObject) {
-  return firestore.Timestamp(Math.trunc(dateObject.getTime() / 1000), dateObject.getTime() % 1000);
+  return new firestore.Timestamp(Math.trunc(dateObject.getTime() / 1000), dateObject.getTime() % 1000);
 };
 
 // Convert date string to firestore timestamp
 const convertDateString = function (dateString) {
-  return firestore.Timestamp(Math.trunc(Date.parse(dateString) / 1000), Date.parse(dateString) % 1000);
+  return new firestore.Timestamp(Math.trunc(Date.parse(dateString) / 1000), Date.parse(dateString) % 1000);
 };
 
 // Get current firestore timestamp representation

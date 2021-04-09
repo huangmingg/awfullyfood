@@ -234,8 +234,8 @@ export default {
       const itemDetails = await getListing(id);
       this.form = {
         ...itemDetails,
-        'createdAt': convertTimestamp(itemDetails.createdAt, false),
-        'expiredAt': convertTimestamp(itemDetails.expiredAt, false),
+        'createdAt': itemDetails.createdAt ? convertTimestamp(itemDetails.createdAt, false) : null,
+        'expiredAt': itemDetails.expiredAt ? convertTimestamp(itemDetails.expiredAt, false) : null,
       };
     },
 
@@ -278,8 +278,8 @@ export default {
     },
 
     validateForm() {
-      this.form.createdAt = convertDateObject(this.form.createdAt);
-      this.form.expiredAt = convertDateObject(this.form.expiredAt);
+      this.form.createdAt = this.form.createdAt ? convertDateObject(this.form.createdAt) : null;
+      this.form.expiredAt = this.form.expiredAt ?convertDateObject(this.form.expiredAt) : null;
       if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
         return false;
       }

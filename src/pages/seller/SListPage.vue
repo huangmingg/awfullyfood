@@ -1,26 +1,5 @@
 <template>
   <div>
-    <!--b-container fluid>
-    <b-list-group>
-      <b-button variant="outline-info" class="ml-auto" v-on:click="addListing()">Create Listing</b-button>
-      <hr class="dropdown-divider"/>
-      <b-list-group-item
-          v-for="(list, index) in listing"
-          :key="index"
-          class="flex-column align-items-start list-item">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ list.name }}</h5>
-          <small> {{ list.createdAt.toDate().toLocaleDateString() }} </small>
-        </div>
-        <p class="mb-1">
-          {{ list.description }}
-        </p>
-        <small>Expiring at: {{ list.expiredAt.toDate().toLocaleDateString() }}</small>
-      </b-list-group-item>
-    </b-list-group>
-  </b-container-->
-
-    <!--search button-->
     <span class="float-right">
       <div class="input-group">
         <b-input
@@ -137,7 +116,7 @@ export default {
     },
 
     convertTimestamp(timestamp) {
-      return convertTimestamp(timestamp);
+      return timestamp ? convertTimestamp(timestamp) : 'No expiry stated!';
     },
 
     addListing() {
