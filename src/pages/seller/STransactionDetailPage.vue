@@ -179,7 +179,7 @@ export default {
       pendingListings: {},
       approvedListings: {},
       listingId: '',
-    }
+    };
   },
   computed: {
   },

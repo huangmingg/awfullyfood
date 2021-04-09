@@ -1,26 +1,5 @@
 <template>
   <div>
-    <!--b-container fluid>
-    <b-list-group>
-      <b-button variant="outline-info" class="ml-auto" v-on:click="addListing()">Create Listing</b-button>
-      <hr class="dropdown-divider"/>
-      <b-list-group-item
-          v-for="(list, index) in listing"
-          :key="index"
-          class="flex-column align-items-start list-item">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ list.name }}</h5>
-          <small> {{ list.createdAt.toDate().toLocaleDateString() }} </small>
-        </div>
-        <p class="mb-1">
-          {{ list.description }}
-        </p>
-        <small>Expiring at: {{ list.expiredAt.toDate().toLocaleDateString() }}</small>
-      </b-list-group-item>
-    </b-list-group>
-  </b-container-->
-
-    <!--search button-->
     <span class="float-right">
       <div class="input-group">
         <b-input
@@ -49,7 +28,7 @@
     </b-button-group>
 
     <hr class="dropdown-divider">
-    <b-card-group deck>
+    <b-row>
       <b-card
         v-for="list in listing"
         :key="list.id"
@@ -57,17 +36,17 @@
         :img-src="list.photo"
         img-alt="Image"
         img-top
-        img-height="200"
-        img-width="150"
+        img-height="250px"
+        img-width="150px"
         style="max-width: 20rem"
-        class="mb-2 list-item"
+        class="m-3 list-item"
         border-variant="info"
         @click="edit(list.id)"
       >
         <b-card-text>
-          {{ list.description }}
-          <br>
           ${{ list.price }} per {{ list.unit }}
+          <br>
+          {{ list.description }}
           <br>
           <small>Created Date:
             {{ convertTimestamp(list.createdAt) }}</small>
@@ -76,11 +55,11 @@
             {{ convertTimestamp(list.expiredAt) }}</small>
         </b-card-text>
         <b-icon-heart-fill style="color: red" />
-        <span style="color: red">
+        <span>
           {{ list.bookmarks.length }}
         </span>
       </b-card>
-    </b-card-group>
+    </b-row>
   </div>
 </template>
 
@@ -137,7 +116,7 @@ export default {
     },
 
     convertTimestamp(timestamp) {
-      return convertTimestamp(timestamp);
+      return timestamp ? convertTimestamp(timestamp) : 'No expiry stated!';
     },
 
     addListing() {
@@ -153,6 +132,7 @@ export default {
 </script>
 
 <style scoped>
+
 .list-item:hover {
   background-color: rgb(243, 250, 251);
   cursor: pointer;

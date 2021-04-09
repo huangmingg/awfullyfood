@@ -36,12 +36,12 @@ export default {
     orders: {
       type: Array,
       default: function () {
-        return []
+        return [];
       },
       role: {
         type: String,
         default: function () {
-          return ''
+          return '';
         },
       },
     },

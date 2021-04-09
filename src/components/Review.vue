@@ -38,7 +38,7 @@ export default {
     reviews: {
       type: Array,
       default: function () {
-        return []
+        return [];
       },
     },
   },

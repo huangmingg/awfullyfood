@@ -98,7 +98,7 @@ export default {
     authResult: {
       type: Object,
       default: function () {
-        return {}
+        return {};
       },
     },
   },

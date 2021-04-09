@@ -7,14 +7,14 @@
       Back
     </b-button>
     <hr class="dropdown-divider">
-    <p class="headerFont">
-      Create a new listing
-    </p>
+    <b-card-title class="font-weight-bold ml-2">
+      Add a new listing
+    </b-card-title>
     <b-container
       fluid
       class="p-4 bg-light"
     >
-      <b-form>
+      <b-form @submit="onSubmit">
         <b-row>
           <b-img
             width="400"
@@ -22,14 +22,14 @@
             class="border-info product-photo"
             thumbnail
             fluid
-            :src="form.photo"
+            :src="photo.source"
             alt="Product Photo"
             @click="clickImage()"
           />
           <input
             accept="image/*"
             type="file"
-            @change="onFileChange()"
+            @change="onFileChange"
           >
           <b-col>
             <b-form-group
@@ -41,6 +41,7 @@
                 id="input-1"
                 v-model="form.name"
                 type="text"
+                :state="nameState"
                 required
               />
             </b-form-group>
@@ -50,10 +51,11 @@
               label="Category:"
               label-for="input-2"
             >
-              <b-form-radio-group
+              <b-form-select
                 id="input-2"
                 v-model="form.category"
-                :options="options"
+                :options="categories"
+                :state="unitState"
                 required
               />
             </b-form-group>
@@ -67,6 +69,7 @@
                 id="input-3"
                 v-model="form.price"
                 type="number"
+                :state="priceState"
                 required
               />
             </b-form-group>
@@ -76,10 +79,11 @@
               label="Unit:"
               label-for="input-4"
             >
-              <b-form-input
+              <b-form-select
                 id="input-4"
                 v-model="form.unit"
-                type="text"
+                :options="units"
+                :state="unitState"
                 required
               />
             </b-form-group>
@@ -93,6 +97,7 @@
                 id="input-5"
                 v-model="form.quantity"
                 type="number"
+                :state="quantityState"
                 required
               />
             </b-form-group>
@@ -102,9 +107,10 @@
               label="Description:"
               label-for="input-6"
             >
-              <b-form-input
+              <b-form-textarea
                 id="input-6"
                 v-model="form.description"
+                :state="descriptionState"
                 type="text"
                 required
               />
@@ -115,18 +121,20 @@
               label="Expiry Date:"
               label-for="input-7"
             >
-              <b-form-input
+              <b-form-datepicker
                 id="input-7"
                 v-model="form.expiredAt"
-                type="datetime-local"
+                date
                 required
+                :state="expireState"
+                :min="minDate"
               />
             </b-form-group>
 
             <b-button
               class="float-right"
               variant="info"
-              @click="create()"
+              type="submit"
             >
               Create
             </b-button>
@@ -139,133 +147,102 @@
 
 <script>
 import { router } from '@/routes';
-import { createListing, getListingPhoto, updateListingPhoto } from '@/services/list.service';
+import { createListing, getDummyPhoto, updateListingPhoto } from '@/services/list.service';
 import { store } from '@/stores';
 import { authService } from '@/firebase';
 import { getUserProfile } from '@/services/user.service';
+import { convertDateString } from '@/services/utils.service';
 
 export default {
   name: 'SAddListPageVue',
   data() {
     return {
+      selectedPhoto: false,
+      photo: {
+        source: '',
+        location: '',
+      },
       form: {
         name: '',
         price: '',
         quantity: '',
-        unit: '',
+        unit: 'Carton',
         description: '',
         expiredAt: '',
-        category: '',
-        photo: '',
+        category: 'Expiring',
       },
-      options: ['Ugly', 'Expiring'],
+      minDate: new Date(new Date().getTime() + (24 * 60 * 60 * 1000)),
+      categories: ['Ugly', 'Expiring'],
+      units: ['Carton', 'Kg', 'Ml', 'Box', 'Gram', 'Pax'],
     };
+  },
+  computed: {
+    descriptionState() {
+      return this.form.description?.length > 10 ? true : false;
+    },
+    nameState() {
+      return this.form.name?.length > 2 ? true : false;
+    },
+    priceState() {
+      return +this.form.price > 0 ? true : false;
+    },
+    quantityState() {
+      return +this.form.quantity > 0 ? true : false;
+    },
+    unitState() {
+      return this.form.unit ? true : false;
+    },
+    expireState() {
+      return this.form.expiredAt ? true : false;
+    },
   },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
+    this.photo.source = await getDummyPhoto();
   },
   methods: {
     back() {
       router.back();
     },
+
     clickImage() {
       document.querySelector('[type="file"]').click();
     },
 
-    async onFileChange() {
-      const input = document.querySelector('[type="file"]');
-      if (input.files) {
-        const listingId = this.$route.params.id;
-        await updateListingPhoto(listingId, input.files[0]);
-        this.form.photo = await getListingPhoto(listingId);
-      }
-    },
-    validate() {
-      let error = false;
-      if (this.form.name == '') {
-        document.getElementById('input-1').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-1').style.borderColor = '';
-      }
-      if (this.form.category == '') {
-        document.getElementById('input-2').style.color = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-2').style.color = '';
-      }
-      if (this.form.price < 0 || this.form.price == '') {
-        document.getElementById('input-3').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-3').style.borderColor = '';
-      }
-      if (this.form.unit == '') {
-        document.getElementById('input-4').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-4').style.borderColor = '';
-      }
-      if (this.form.quantity <= 0 || this.form.quantity == '') {
-        document.getElementById('input-5').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-5').style.borderColor = '';
-      }
-      if (this.form.description == '') {
-        document.getElementById('input-6').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-6').style.borderColor = '';
-      }
-
-      if (this.form.expiredAt == '') {
-        document.getElementById('input-7').style.borderColor = 'red';
-        error = true;
-      } else {
-        document.getElementById('input-7').style.borderColor = '';
-      }
-
-      if (error) {
-        return false;
-      }
-      return true;
-
-    },
-    create() {
-      if (this.validate()) {
-        const listing = {
-          name: this.form.name,
-          // always to 2dp
-          price: (Math.round(this.form.price * 100) / 100).toFixed(2),
-          quantity: this.form.quantity,
-          unit: this.form.unit,
-          description: this.form.description,
-          expiredAt: new Date(this.form.expiredAt),
-          category: this.form.category,
-          createdAt: new Date(),
-          status: 'Available',
-          interests: [],
-          bookmarks: [],
-          sellerId: store.getters.getProfileState.id,
+    onFileChange(event) {
+      this.selectedPhoto = true;
+      this.photo = { source: '', location: '' };
+      if (event.target.files) {
+        const file = event.target.files[0];
+        this.photo.location = file;
+        if (!file.type.match('image.*')) {
+          return;
+        }
+        let reader = new FileReader();
+        reader.onload = (event) => {
+          this.photo.source = event.target.result;
         };
-        createListing(listing);
-        alert('Listing created');
-        location.reload();
+        reader.readAsDataURL(file);
+      }
+    },
+
+    async onSubmit(event) {
+      event.preventDefault();
+      const payload = { ...this.form, sellerId: store.getters.getProfileId, expiredAt: convertDateString(this.form.expiredAt) };
+      const [res, listingId] = await createListing(payload);
+      if (!res) {
+        alert('Something went wrong, please check the fields and try again');
       } else {
-        alert('Something went wrong, please check the inputs and try again');
+        this.selectedPhoto ? await updateListingPhoto(listingId, this.photo.location) : null;
+        this.back();
       }
     },
   },
 };
 </script>
-
 <style scoped>
-.headerFont {
-  font-size: 25px;
-}
 
 .product-photo {
   max-width: 400px;
