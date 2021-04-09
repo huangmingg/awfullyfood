@@ -20,9 +20,10 @@ const getTransactions = async (saveState = true) => {
     });
 };
 
-const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
+const getPendingTransactionsBySeller = async (sellerId, listingId, saveState = true) => {
   return database.collection('transactions')
     .where('sellerId', '==', sellerId)
+    .where('listingId', '==', listingId)
     .where('isApproved', '==', false)
     .get()
     .then(async (res) => {
@@ -38,9 +39,10 @@ const getPendingTransactionsBySeller = async (sellerId, saveState = true) => {
     });
 };
 
-const getApprovedTransactionsBySeller = async (sellerId, saveState = true) => {
+const getApprovedTransactionsBySeller = async (sellerId, listingId, saveState = true) => {
   return database.collection('transactions')
     .where('sellerId', '==', sellerId)
+    .where('listingId', '==', listingId)
     .where('isApproved', '==', true)
     .get()
     .then(async (res) => {
