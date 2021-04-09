@@ -4,7 +4,7 @@
       fluid
       class="p-4 bg-light"
     >
-      <b-row>
+      <b-row class="mx-2">
         <b-button
           variant="info"
           @click="back()"
@@ -40,14 +40,14 @@
           <b-button
             v-show="edit"
             variant="info"
-            @click="saveList()"
+            @click="onSubmit()"
           >
             Save Listing
           </b-button>
         </b-btn-group>
       </b-row>
       <hr class="dropdown-divider">
-      <b-form>
+      <b-form class="mx-3">
         <b-row>
           <b-img
             width="400"
@@ -80,20 +80,6 @@
             </b-form-group>
 
             <b-form-group
-              id="input-group-2"
-              label="Category:"
-              label-for="input-2"
-            >
-              <b-form-input
-                id="input-2"
-                v-model="form.category"
-                disabled
-                type="text"
-                required
-              />
-            </b-form-group>
-
-            <b-form-group
               id="input-group-3"
               label="Price:"
               label-for="input-3"
@@ -103,20 +89,6 @@
                 v-model="form.price"
                 disabled
                 type="number"
-                required
-              />
-            </b-form-group>
-
-            <b-form-group
-              id="input-group-4"
-              label="Unit:"
-              label-for="input-4"
-            >
-              <b-form-input
-                id="input-4"
-                v-model="form.unit"
-                disabled
-                type="text"
                 required
               />
             </b-form-group>
@@ -134,13 +106,12 @@
                 required
               />
             </b-form-group>
-
             <b-form-group
               id="input-group-6"
               label="Description:"
               label-for="input-6"
             >
-              <b-textarea
+              <b-form-textarea
                 id="input-6"
                 v-model="form.description"
                 disabled
@@ -160,17 +131,46 @@
                 required
               />
             </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              id="input-group-4"
+              label="Unit:"
+              label-for="input-4"
+            >
+              <b-form-select
+                id="input-4"
+                v-model="form.unit"
+                required
+                disabled
+                :options="units"
+              />
+            </b-form-group>
+
+            <b-form-group
+              id="input-group-2"
+              label="Category:"
+              label-for="input-2"
+            >
+              <b-form-select
+                id="input-2"
+                v-model="form.category"
+                required
+                disabled
+                :options="categories"
+              />
+            </b-form-group>
 
             <b-form-group
               id="input-group-7"
               label="Created Date:"
               label-for="input-7"
             >
-              <b-form-input
+              <b-form-datepicker
                 id="input-7"
                 v-model="form.createdAt"
                 disabled
-                type="text"
+                date
                 required
               />
             </b-form-group>
@@ -180,11 +180,11 @@
               label="Expiry Date:"
               label-for="input-8"
             >
-              <b-form-input
+              <b-form-datepicker
                 id="input-8"
                 v-model="form.expiredAt"
                 disabled
-                type="text"
+                date
                 required
               />
             </b-form-group>
@@ -198,27 +198,18 @@
 
 <script>
 import { router } from '@/routes';
-import {
-  getListing,
-  updateListing,
-  getListingPhoto,
-  updateListingPhoto,
-  deleteListing,
-} from '@/services/list.service';
+import { getListing, updateListing, getListingPhoto, updateListingPhoto, deleteListing } from '@/services/list.service';
+import { convertTimestamp, convertDateObject } from '@/services/utils.service';
 
 export default {
   name: 'SListPage',
   data() {
     return {
+      listingId: '',
       edit: false,
-      editableFields: [
-        'input-1',
-        'input-3',
-        'input-4',
-        'input-5',
-        'input-6',
-        'input-9',
-      ],
+      editableFields: ['input-1', 'input-3', 'input-4', 'input-5', 'input-6', 'input-9'],
+      categories: ['Ugly', 'Expiring'],
+      units: ['Carton', 'Kg', 'Ml', 'Box', 'Gram', 'Pax'],
       form: {
         name: '',
         price: 0,
@@ -235,29 +226,25 @@ export default {
   computed: {},
 
   async created() {
-    const listingId = this.$route.params.id;
-    await getListing(listingId);
-    this.retrieveInfo(listingId);
+    const loader = this.$loading.show({ color: 'teal' });
+    this.listingId = this.$route.params.id;
+    await this.retrieveInfo(this.listingId);
+    loader.hide();
   },
+
   methods: {
     back() {
       router.back();
     },
-    retrieveInfo(id) {
-      const itemDetails = getListing(id);
-      itemDetails.then((x) => {
-        this.form.name = x.name;
-        this.form.price = x.price;
-        this.form.quantity = x.quantity;
-        this.form.unit = x.unit;
-        this.form.description = x.description;
-        this.form.expiredAt = x.expiredAt.toDate().toLocaleDateString();
-        this.form.createdAt = x.createdAt.toDate().toLocaleDateString();
-        this.form.category = x.category;
-        //error
-        this.form.photo = getListingPhoto(id);
-        this.form.location = x.location;
-      });
+
+    async retrieveInfo(id) {
+      const itemDetails = await getListing(id);
+      console.log(itemDetails)
+      this.form = {
+        ...itemDetails,
+        'createdAt': convertTimestamp(itemDetails.createdAt, false),
+        'expiredAt': convertTimestamp(itemDetails.expiredAt, false),
+      };
     },
 
     clickImage() {
@@ -269,36 +256,26 @@ export default {
       if (input.files) {
         const listingId = this.$route.params.id;
         await updateListingPhoto(listingId, input.files[0]);
-        console.log(getListingPhoto(listingId))
         this.form.photo = await getListingPhoto(listingId);
       }
     },
 
     editList() {
-      console.log('edit');
       this.toggleEdit(true);
     },
 
-    saveList() {
-      console.log('save');
+    async onSubmit() {
       if (!this.validateForm()) {
         alert('Something went wrong, please check the inputs and try again');
         return;
       }
-      this.editableFields.forEach(
-        (field) => (document.getElementById(field).style = '')
-      );
       this.toggleEdit(false);
-      // update db
-      const change = {
-        name: this.form.name,
-        price: this.form.price,
-        quantity: this.form.quantity,
-        unit: this.form.unit,
-        description: this.form.description,
-        location: this.form.location,
-      };
-      updateListing(this.$route.params.id, change);
+      const res = await updateListing(this.listingId, { ...this.form });
+      if (!res) {
+        alert('Something went wrong with updating the listing, please try again!');
+      } else {
+        this.back();
+      }
     },
 
     toggleEdit(isEdit) {
@@ -350,6 +327,8 @@ export default {
       if (error) {
         return false;
       }
+      this.form.createdAt = convertDateObject(this.form.createdAt);
+      this.form.expiredAt = convertDateObject(this.form.expiredAt);
       return true;
     },
     deleteList: function () {
@@ -358,7 +337,7 @@ export default {
     },
     checkExpire() {
       return (
-        new Date(this.form.expiredAt).toLocaleDateString() < new Date().toLocaleDateString()
+        this.form.expiredAt < new Date().toLocaleDateString()
       );
     },
   },

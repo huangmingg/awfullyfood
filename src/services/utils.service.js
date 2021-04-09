@@ -1,15 +1,27 @@
+import { firestore } from '@/firebase';
+
 const isEmptyObject = function (obj) {
   return !!(!obj || (Object.keys(obj).length === 0 && obj.constructor === Object));
 };
 
-// Converts the timestamp object from firestore to datestring
-const convertTimestamp = function (unixTimestamp) {
-  return unixTimestamp ? new Date(unixTimestamp.seconds * 1000).toLocaleDateString() : 'Date Not Found';
+// Convert the firestore timestamp to date object
+const convertTimestamp = function (firestoreTimestamp, toString= true) {
+  return toString ? firestoreTimestamp.toDate().toLocaleDateString() : firestoreTimestamp.toDate();
 };
 
-// Gets currentTimestamp in seconds
+// Convert date object to firestore timestamp
+const convertDateObject = function (dateObject) {
+  return firestore.Timestamp(Math.trunc(dateObject.getTime() / 1000), dateObject.getTime() % 1000);
+};
+
+// Convert date string to firestore timestamp
+const convertDateString = function (dateString) {
+  return firestore.Timestamp(Math.trunc(Date.parse(dateString) / 1000), Date.parse(dateString) % 1000);
+};
+
+// Get current firestore timestamp representation
 const getCurrentTimestamp = function () {
-  return (new Date().getTime() / 1000);
+  return firestore.Timestamp.now();
 };
 
 const sleep = function (ms) {
@@ -34,6 +46,8 @@ const comparator = function (nestedKey, reverse) {
 export {
   isEmptyObject,
   convertTimestamp,
+  convertDateObject,
+  convertDateString,
   getCurrentTimestamp,
   sleep,
   comparator,

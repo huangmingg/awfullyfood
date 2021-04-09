@@ -154,6 +154,7 @@ import { createListing, getListingPhoto, updateListingPhoto } from '@/services/l
 import { store } from '@/stores';
 import { authService } from '@/firebase';
 import { getUserProfile } from '@/services/user.service';
+import { convertDateString, convertDateObject } from '@/services/utils.service.js';
 
 export default {
   name: 'SAddListPageVue',
@@ -195,6 +196,9 @@ export default {
       }
     },
     validate() {
+      console.log(new Date())
+      console.log(convertDateString(new Date()))
+      console.log(convertDateObject(new Date()))
       let error = false;
       if (this.form.name == '') {
         document.getElementById('input-1').style.borderColor = 'red';
@@ -232,7 +236,6 @@ export default {
       } else {
         document.getElementById('input-6').style.borderColor = '';
       }
-
       if (this.form.location == '') {
         document.getElementById('input-7').style.borderColor = 'red';
         error = true;
@@ -262,9 +265,9 @@ export default {
           quantity: this.form.quantity,
           unit: this.form.unit,
           description: this.form.description,
-          expiredAt: new Date(this.form.expiredAt),
+          expiredAt: convertDateString(this.form.expiredAt),
           category: this.form.category,
-          createdAt: new Date(),
+          createdAt: convertDateString(new Date()),
           status: 'Available',
           interests: [],
           bookmarks: [],
