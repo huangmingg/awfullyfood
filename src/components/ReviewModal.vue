@@ -1,16 +1,18 @@
 <template>
   <div>
     <b-button
+      id="modal-button"
       v-b-modal.review
       variant="outline-info"
       class="ml-auto"
-      :disabled="isDisabled(isApproved)"
     >
       Review
     </b-button>
     <b-modal
       id="review"
+      ref="review-modal"
       centered
+      @hidden="onReset"
     >
       <template #modal-title>
         Submit Your Review
@@ -87,7 +89,6 @@ export default {
   },
   data() {
     return {
-      show: false,
       form: {
         description: '',
         rating: 0,
@@ -113,7 +114,7 @@ export default {
 
     onSubmit() {
       if (this.ratingState && this.descriptionState) {
-        this.show = false;
+        this.$refs['review-modal'].hide();
         this.$emit('submitReview', { ...this.form, transactionId: this.transactionId });
       }
     },

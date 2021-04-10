@@ -9,6 +9,7 @@
     </b-button>
     <b-modal
       id="quantity"
+      v-model="show"
       centered
     >
       <template #modal-title>
