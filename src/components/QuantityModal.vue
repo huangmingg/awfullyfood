@@ -10,6 +10,7 @@
     <b-modal
       id="quantity"
       centered
+      v-model="show"
     >
       <template #modal-title>
         Select your quantity

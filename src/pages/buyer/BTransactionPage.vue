@@ -24,11 +24,14 @@
           >
             View Listing
           </b-button>
-          <ReviewModal
-            :transaction-id="transaction.id"
-            :is-approved="transaction.isApproved"
-            @submitReview="submitReview"
-          />
+          <b-button
+            variant="outline-info"
+            class="ml-auto"
+            :disabled="isDisabled(transaction.isApproved)"
+            @click="reviewTransaction(transaction.id)"
+          >
+            Review
+          </b-button>
         </b-button-group>
       </b-list-group-item>
     </b-list-group>
@@ -56,7 +59,7 @@
             <div>
               <h1> Item: {{ transaction.listName }} </h1>
               <h1> Quantity: {{ transaction.quantity }} </h1>
-              <small> Reviewed at: {{ convertTimestamp(transaction.buyerReview.updatedAt) }}</small>
+              <small> Reviewed at: {{ convertTimestamp(transaction.sellerReview.updatedAt) }}</small>
             </div>
             <b-button
               variant="outline-info"
@@ -69,17 +72,25 @@
         </b-list-group>
       </b-collapse>
     </div>
+    <ReviewModal
+        style="display:none;"
+        id="review-modal"
+        :transaction-id="selectedTransactionId"
+        @submitReview="submitReview"
+    />
   </div>
 </template>
 
 <script>
-import { getTransactionsByBuyer, updateSellerReview } from '@/services/transaction.service';
+
+import ReviewModal from '@/components/ReviewModal';
 import { store } from '@/stores';
 import { router } from '@/routes';
-import { convertTimestamp } from '@/services/utils.service';
-import ReviewModal from '@/components/ReviewModal';
-import { getUserProfile } from '@/services/user.service';
 import { authService } from '@/firebase';
+import { getTransactionsByBuyer } from '@/services/transaction.service';
+import { updateSellerReview } from '@/services/review.service';
+import { convertTimestamp } from '@/services/utils.service';
+import { getUserProfile } from '@/services/user.service';
 
 export default {
   name: 'BTransactionDetailPage',
@@ -89,7 +100,7 @@ export default {
   data() {
     return {
       show: false,
-      selectedListingId: '',
+      selectedTransactionId: '',
       description: '',
       rating: 0,
     };
@@ -110,11 +121,14 @@ export default {
     }
     const loader = this.$loading.show({ color: 'teal' });
     await getTransactionsByBuyer(store.getters.getProfileState?.id);
-    console.log(store.getters.getBuyerReviewedTransaction);
     loader.hide();
   },
 
   methods: {
+    reviewTransaction(transactionId) {
+      this.selectedTransactionId = transactionId;
+      document.getElementById('review-modal').getElementsByTagName('button')[0].click();
+    },
     back() {
       router.back();
     },
@@ -134,7 +148,6 @@ export default {
       return item ? false : true;
     },
     async submitReview(review) {
-      console.log(review);
       const res = await updateSellerReview(review.transactionId, review.rating, review.description);
       if (!res) {
         alert('Something went wrong, please check the fields and try again');
