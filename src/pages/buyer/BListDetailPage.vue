@@ -29,6 +29,14 @@
             </span>
           </span>
         </div>
+        <b>
+          <div
+            v-show="checkExpire()"
+            style="color: red; font-size: 20px"
+          >
+            Expired!
+          </div>
+        </b>
         <div>Category: {{ itemCategory }}</div>
         <div>Price: {{ itemPrice }}</div>
         <div>Quantity: {{ itemQty }}</div>
@@ -40,16 +48,35 @@
         <div class="float-right">
           <span>
             <b-button
+              v-show="checkExpire()==false"
               id="bookmarkBtn"
               @click="changeBMClass()"
+            >
+              <BIconHeartFill variant="white" />
+            </b-button>
+            <b-button
+              v-show="checkExpire()==true"
+              id="expire"
+              title="Expired!"
+              disabled
             >
               <BIconHeartFill variant="white" />
             </b-button>
           </span>
           <span>
             <b-button
+              v-show="checkExpire()==false"
               variant="info"
               @click="validateTransaction()"
+            >
+              I'm interested!
+            </b-button>
+            <b-button
+              v-show="checkExpire()==true"
+              id="expire"
+              variant="info"
+              title="Expired!"
+              disabled
             >
               I'm interested!
             </b-button>
@@ -73,7 +100,7 @@ import { BIconHeartFill } from 'bootstrap-vue';
 import { store } from '@/stores';
 import { authService } from '@/firebase';
 import { toggleBookmark } from '@/services/bookmark.service';
-import { convertTimestamp, convertDateObject } from '@/services/utils.service';
+import { convertTimestamp, convertDateObject, getCurrentTimestamp, convertDateString } from '@/services/utils.service';
 import QuantityModal from '@/components/QuantityModal';
 import {
   createTransaction,
@@ -202,6 +229,19 @@ export default {
 
       // listing id, user id
       toggleBookmark(this.$route.params.id, this.userId);
+    },
+
+    checkExpire() {
+      const expire = convertDateString(this.expiredAt);
+      const expired_s = expire.seconds;
+      const expired_ns = expire.nanoseconds;
+      const curr_s = getCurrentTimestamp().seconds;
+      const curr_ns = getCurrentTimestamp().nanoseconds;
+      if (expired_s < curr_s || (expired_s == curr_s && expired_ns < curr_ns)) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
