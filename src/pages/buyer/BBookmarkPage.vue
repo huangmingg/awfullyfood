@@ -1,93 +1,91 @@
 <template>
   <div class="content">
-    Bookmark Page
-
-    <b-card-group deck>
+    <b-row>
       <b-card
         v-for="list in bookmarks"
         :key="list.id"
-        :title="list.item"
+        :title="list.name"
         :img-src="list.photo"
         img-alt="Image"
         img-top
-        img-height="200"
-        img-width="150"
+        img-height="250px"
+        img-width="150px"
         style="max-width: 20rem"
-        class="mb-2 list-item"
+        class="m-3 list-item"
         border-variant="info"
       >
         <b-card-text>
-          ${{ list.price }} per {{ list.unit }} <br>
-          Quantity: {{ list.quantity }} {{ list.unit }}
+          ${{ list.price }} per {{ list.unit }}
           <small>
             <br>
-            Seller: {{ list.user }}
+            {{ list.description }}
             <br>
+            Quantity: {{ list.quantity }} {{ list.unit }}
             <br>
-            <hr>
-            <b-button
-              :id="list.id"
-              @click="route(list.listingId)"
-            >View Listing</b-button>
-
-            <b-button
-              :id="list.id"
-              @click="removeBookmark(list.listingId)"
-            >Remove Bookmark</b-button>
+            Expiry Date: {{ convertTimestamp(list.expiredAt) }}
           </small>
+          <hr>
+          <b-button-group class="mx-auto">
+            <b-button
+              variant="outline-info"
+              @click="route(list.id)"
+            >
+              View
+            </b-button>
+            <b-button
+              variant="outline-danger"
+              @click="removeBookmark(list.id)"
+            >
+              Remove Bookmark
+            </b-button>
+          </b-button-group>
         </b-card-text>
       </b-card>
-    </b-card-group>
+    </b-row>
   </div>
 </template>
 
 <script>
-import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getUserProfile } from '@/services/user.service';
 import { authService } from '@/firebase';
 import { store } from '@/stores';
-import { getBookmarks, toggleBookmark } from '@/services/bookmark.service';
-import { getListing } from '@/services/list.service';
+import { toggleBookmark, getBookmarkLists } from '@/services/bookmark.service';
+import { convertTimestamp } from '@/services/utils.service';
 
 export default {
   name: 'BBookmarkPage',
   data() {
     return {
-      bookmarks: [],
     };
+  },
+  computed: {
+    bookmarks() {
+      console.log(store.getters.getBookmarkLists);
+      return store.getters.getBookmarkLists;
+    },
   },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
+    const loader = this.$loading.show({ color: 'teal' });
+    await getBookmarkLists(store.getters.getProfileId);
+    loader.hide();
   },
 
-  async mounted() {
-    const bookmarkedListings = await getBookmarks(
-      store.getters.getProfileState?.id
-    );
-    this.bookmarks = await Promise.all(
-      bookmarkedListings.map(async (bookmarkedListing) => {
-        const listing = await getListing(bookmarkedListing);
-        const user = await getDisplayName(listing.sellerId);
-        return {
-          listingId: bookmarkedListing,
-          user,
-          item: listing.name,
-          quantity: listing.quantity,
-          unit: listing.unit,
-          price: listing.price,
-        };
-      })
-    );
-  },
   methods: {
     route(event) {
       this.$router.push({ path: `/buyer/browse/${event}` });
     },
+    convertTimestamp(timestamp) {
+      return convertTimestamp(timestamp);
+    },
     async removeBookmark(listingId) {
       await toggleBookmark(listingId, store.getters.getProfileState?.id);
       alert('Bookmark Removed');
-      location.reload();
+      const loader = this.$loading.show({ color: 'teal' });
+      await getBookmarkLists(store.getters.getProfileId);
+      loader.hide();
     },
   },
 };

@@ -73,10 +73,10 @@
       </b-collapse>
     </div>
     <ReviewModal
-        style="display:none;"
-        id="review-modal"
-        :transaction-id="selectedTransactionId"
-        @submitReview="submitReview"
+      id="review-modal"
+      style="display:none;"
+      :transaction-id="selectedTransactionId"
+      @submitReview="submitReview"
     />
   </div>
 </template>

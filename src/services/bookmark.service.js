@@ -2,16 +2,21 @@ import { store } from '@/stores';
 import { database, firestore } from '@/firebase';
 import { getListing, getListings } from '@/services/list.service';
 
-
 const getBookmarks = async (userId, saveState = true) => {
-  const listings = (
-    await getListings()
-  ).filter((listing) => {
+  const listings = (await getListings(false)).filter((listing) => {
     return listing.bookmarks.map((bm) => { return bm.userId; }).includes(userId);
   });
   const bookmarkedLists = listings.map((listing) => { return listing.id; });
   saveState ? await store.dispatch('updateBookmarks', bookmarkedLists) : null;
   return bookmarkedLists;
+};
+
+const getBookmarkLists = async (userId, saveState = true) => {
+  const listings = (await getListings(false)).filter((listing) => {
+    return listing.bookmarks.map((bm) => { return bm.userId; }).includes(userId);
+  });
+  saveState ? await store.dispatch('updateBookmarkLists', listings) : null;
+  return listings;
 };
 
 
@@ -41,6 +46,7 @@ const isBookmarked = async (listingId, userId) => {
 
 export {
   getBookmarks,
+  getBookmarkLists,
   toggleBookmark,
   isBookmarked,
 };

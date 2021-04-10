@@ -9,8 +9,8 @@
     </b-button>
     <b-modal
       id="quantity"
-      centered
       v-model="show"
+      centered
     >
       <template #modal-title>
         Select your quantity
