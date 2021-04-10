@@ -188,8 +188,7 @@ const updateBuyerReview = async (transactionId, rating, description) => {
 };
 
 const updateSellerReview = async (transactionId, rating, description) => {
-  const nowDate = new Date(Date.now());
-  const reviewPayload = new Review(rating, description, nowDate.toLocaleDateString());
+  const reviewPayload = new Review(rating, description, getCurrentTimestamp());
   return await updateTransaction(transactionId, { sellerReview: { ...reviewPayload } });
 };
 

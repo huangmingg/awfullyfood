@@ -1,3 +1,5 @@
+import { isEmptyObject } from '@/services/utils.service';
+
 export default {
   state: {
     transaction: [],
@@ -20,7 +22,15 @@ export default {
     },
 
     getBuyerReviewedTransaction: (state) => {
+      return state.transaction.filter((t) => {
+        return t.isApproved && !isEmptyObject(t.sellerReview);
+      });
+    },
 
+    getBuyerUnreviewedTransaction: (state) => {
+      return state.transaction.filter((t) => {
+        return isEmptyObject(t.sellerReview);
+      });
     },
 
     getSellerReviewedTransaction: (state) => {
