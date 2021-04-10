@@ -87,7 +87,7 @@ import { router } from '@/routes';
 import Review from '@/components/Review';
 
 export default {
-  name: 'ProfilePage',
+  name: 'SearchUserPage',
   components: { Review },
   data() {
     return {

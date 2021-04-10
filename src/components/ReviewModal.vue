@@ -99,7 +99,7 @@ export default {
       return this.form.rating > 0;
     },
     descriptionState() {
-      return this.form.description?.length > 20 ? true : false;
+      return this.form.description?.length > 20;
     },
   },
   methods: {
