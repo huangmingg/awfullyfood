@@ -12,10 +12,27 @@
           Back
         </b-button>
 
-
         <b-btn-group class="ml-auto">
+          <!--delete button-->
           <b-button
             v-show="!edit"
+            variant="danger"
+            @click="deleteList()"
+          >
+            Delete Listing
+          </b-button>
+          <!--expired-->
+          <b-button
+            v-show="checkExpire()==true"
+            id="expire"
+            variant="info"
+            title="Expired!"
+            disabled
+          >
+            Edit Listing
+          </b-button>
+          <b-button
+            v-show="!edit && checkExpire()==false"
             variant="info"
             @click="editList()"
           >
@@ -175,8 +192,8 @@
 
 <script>
 import { router } from '@/routes';
-import { getListing, updateListing, getListingPhoto, updateListingPhoto } from '@/services/list.service';
-import { convertTimestamp, convertDateObject } from '@/services/utils.service';
+import { getListing, updateListing, getListingPhoto, updateListingPhoto, deleteListing } from '@/services/list.service';
+import { convertTimestamp, convertDateObject, convertDateString, getCurrentTimestamp } from '@/services/utils.service';
 
 export default {
   name: 'SListPage',
@@ -285,6 +302,24 @@ export default {
       }
       return true;
     },
+
+    deleteList: function () {
+      deleteListing(this.$route.params.id);
+      router.back();
+    },
+
+    checkExpire() {
+      const expire = convertDateString(this.form.expiredAt);
+      const expired_s = expire.seconds;
+      const expired_ns = expire.nanoseconds;
+      const curr_s = getCurrentTimestamp().seconds;
+      const curr_ns = getCurrentTimestamp().nanoseconds;
+      if (expired_s < curr_s || (expired_s == curr_s && expired_ns < curr_ns)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
   },
 };
 </script>
@@ -297,5 +332,10 @@ export default {
 
 input[type="file"] {
   display: none;
+}
+
+#expire {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

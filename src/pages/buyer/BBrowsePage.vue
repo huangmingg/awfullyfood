@@ -36,6 +36,14 @@
         @click="navigate(list.id)"
       >
         <b-card-text>
+          <b>
+            <div
+              v-show="checkExpire(list.expiredAt)"
+              style="color: red; font-size: 20px"
+            >
+              Expired!
+            </div>
+          </b>
           {{ list.description }}
           <br>
           ${{ list.price }} per {{ list.unit }}
@@ -62,7 +70,7 @@ import { router } from '@/routes';
 import BrowseModal from '@/components/BrowseModal';
 import SortModal from '@/components/SortModal';
 import { BIconHeartFill } from 'bootstrap-vue';
-import { convertTimestamp } from '@/services/utils.service';
+import { convertTimestamp, getCurrentTimestamp } from '@/services/utils.service';
 import { getUserProfile } from '@/services/user.service';
 import { authService } from '@/firebase';
 
@@ -124,6 +132,18 @@ export default {
     sortListing(order) {
       store.dispatch('setOrder', order);
       store.dispatch('orderList');
+    },
+
+    checkExpire(expiredAt) {
+      const expired_s = expiredAt.seconds;
+      const expired_ns = expiredAt.nanoseconds;
+      const curr_s = getCurrentTimestamp().seconds;
+      const curr_ns = getCurrentTimestamp().nanoseconds;
+      if (expired_s < curr_s || (expired_s == curr_s && expired_ns < curr_ns)) {
+        return true;
+      } else {
+        return false;
+      }
     },
 
   },
