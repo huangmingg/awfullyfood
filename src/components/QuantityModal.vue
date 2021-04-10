@@ -1,21 +1,30 @@
 <template>
   <div>
-    <b-modal
-      id="qty"
-      v-model="show"
-      centered
-      title="Quantity"
+    <b-button
+      v-b-modal.quantity
+      variant="outline-info"
+      class="ml-auto"
     >
-      The maximum quantity is {{ maxQuantity }}.
-      <b-form class="modal-body">     
+      I'm Interested!
+    </b-button>
+    <b-modal
+      id="quantity"
+      centered
+    >
+      <template #modal-title>
+        Select your quantity
+      </template>
+      <div class="d-block text-left">
+        The maximum quantity is {{ maxQuantity }}
+      </div>
+      <b-form>
         <b-form-group
-          id="qtyInput-label"
-          label="Quantity:"
-          label-for="qtyInput"
+          label="Quantity"
+          label-for="quantity-input"
         >
           <b-form-input
-            id="qtyInput"
-            v-model="itemQty"
+            id="quantity-input"
+            v-model="quantity"
             type="number"
             :state="quantityState"
             required
@@ -45,33 +54,20 @@ export default {
   },
   data() {
     return {
-      show: true,
-      itemQty: 0,
+      show: false,
+      quantity: 0,
     };
   },
   computed: {
     quantityState() {
-      return (+this.itemQty > 0 && +this.itemQty <= this.maxQuantity) ? true : false;
+      return (+this.quantity > 0 && +this.quantity <= this.maxQuantity) ? true : false;
     },
   },
   methods: {
     onSubmit() {
-      if (this.validate()) {
+      if (this.quantityState) {
         this.show = false;
-        this.qty();
-      }
-    },
-    qty() {
-      const res = this.itemQty;
-      this.$emit('quantity', res);
-    },
-    validate() {
-      if (this.itemQty <= 0 || this.itemQty > this.maxQuantity) {
-        document.getElementById('qtyInput').style.borderColor = 'red';
-        alert('Something went wrong, please check the inputs and try again');
-        return false;
-      } else {
-        return true;
+        this.$emit('createTransaction', this.quantity);
       }
     },
   },

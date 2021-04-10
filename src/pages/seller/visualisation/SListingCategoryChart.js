@@ -1,16 +1,16 @@
-
 import { Doughnut } from 'vue-chartjs';
-import database from '../../../firebase.js';
+import { store } from '@/stores';
+import { getListingBySeller } from '@/services/list.service';
 
 export default {
   extends: Doughnut,
   data() {
     return {
-      datacollection: {
+      dataCollection: {
         labels: ['Ugly', 'Expiring'],
         datasets: [{
           label: 'Number of Listings per Category',
-          backgroundColor: ['', ''],
+          backgroundColor: ['#0074d9', '#c49f21'],
           data: [0, 0],
         }],
       },
@@ -22,48 +22,33 @@ export default {
         },
         responsive: true,
         maintainAspectRatio: false,
-
       },
     };
   },
-  methods: {
-    fetchItems() {
 
-      database.collection('listings').get().then((querySnapShot) => {
-        querySnapShot.forEach((doc) => {
-          // console.log(doc.data())
-          for (const key of Object.entries(doc.data()).sort()) {
-            // console.log(key)
-            if (key[1] == 'Ugly') {
-              this.datacollection.datasets[0].data[0] += 1;
-              this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour();
-            } else if (key[1] == 'Expired') {
-              this.datacollection.datasets[0].data[1] += 1;
-              this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour();
-            }
-          }
-
-        });
-        this.renderChart(this.datacollection, this.options);
-      });
-    },
-
-    getRandomColour() {
-      const letters = '0123456789ABCDEF'.split('');
-      let colour = '#';
-      for (let i = 0; i < 6; i++) {
-        colour += letters[Math.floor(Math.random() * 16)];
-      }
-      return colour;
-
-    },
-
-    logmsg(msg) {
-      console.log(msg);
-    },
-
+  async created() {
+    await this.initChart();
   },
-  created() {
-    this.fetchItems();
+
+  watch: {
+    dataCollection() {
+      this.renderChart(this.dataCollection, this.options);
+    },
+  },
+
+  methods: {
+    async initChart() {
+      await getListingBySeller(store.getters.getProfileId);
+      await store.dispatch('setFilter', { itemCategory: ['Ugly'] });
+      await store.dispatch('filterList');
+      const ugly = await store.getters.getFilteredList;
+      await store.dispatch('setFilter', { itemCategory: ['Expiring'] });
+      await store.dispatch('filterList');
+      const expiring = await store.getters.getFilteredList;
+      this.dataCollection.datasets[0].data[0] = ugly.length ? ugly.length : 0;
+      this.dataCollection.datasets[0].data[1] = expiring.length ? expiring.length : 0;
+      this.renderChart(this.dataCollection, this.options);
+    },
   },
 };
+

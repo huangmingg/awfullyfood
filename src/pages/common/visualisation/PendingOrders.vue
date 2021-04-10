@@ -5,21 +5,21 @@
     <b-list-group>
       <b-list-group-item
         v-for="(order) in orders"
-        id="listgroup"
+        id="list-group"
         :key="order.id"
         class="flex-column align-items-start list-item"
       >
         <transition name="fade">
-          <div v-if="role == 'Seller'">
+          <div v-if="role === 'Seller'">
             You have a pending order of {{ order.quantity }} {{ order.unit }} of
-            {{ order.item }} for {{ order.user }}!
-            <br>Order created at {{ order.date.toDate().toLocaleDateString() }}.
+            {{ order.listName }} for {{ order.buyerName }}!
+            <br>Order created at {{ convertTimestamp(order.createdAt) }}.
             <hr>
           </div>
           <div v-else>
             You have a pending order of {{ order.quantity }} {{ order.unit }} of
-            {{ order.item }} from {{ order.user }}!
-            <br>Order created at {{ order.date.toDate().toLocaleDateString() }}.
+            {{ order.listName }} from {{ order.sellerName }}!
+            <br>Order created at {{ convertTimestamp(order.createdAt) }}.
             <hr>
           </div>
         </transition>
@@ -30,6 +30,8 @@
 
 <script>
 
+import { convertTimestamp } from '@/services/utils.service';
+
 export default {
   name: 'PendingOrders',
   props: {
@@ -38,12 +40,17 @@ export default {
       default: function () {
         return [];
       },
-      role: {
-        type: String,
-        default: function () {
-          return '';
-        },
+    },
+    role: {
+      type: String,
+      default: function () {
+        return '';
       },
+    },
+  },
+  methods: {
+    convertTimestamp(timestamp) {
+      return timestamp ? convertTimestamp(timestamp) : null;
     },
   },
 };
@@ -51,7 +58,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#listgroup {
+
+#list-group {
   border: none;
 }
 

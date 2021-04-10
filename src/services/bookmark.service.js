@@ -34,7 +34,13 @@ const toggleBookmark = async (listingId, userId) => {
     });
 };
 
+const isBookmarked = async (listingId, userId) => {
+  const list = await getListing(listingId);
+  return list.bookmarks.map((bm) => { return bm.userId; }).includes(userId);
+};
+
 export {
   getBookmarks,
   toggleBookmark,
+  isBookmarked,
 };

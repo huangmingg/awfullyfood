@@ -7,17 +7,19 @@ export class TransactionCreate {
     this.buyerReview = transaction.buyerReview ? transaction.buyerReview : {};
     this.sellerReview = transaction.sellerReview ? transaction.sellerReview : {};
     this.isApproved = transaction.isApproved ? transaction.isApproved : false;
-    this.createdAt = transaction.createdAt;
-    this.completedAt = transaction.completedAt;
-    this.deletedAt = transaction.deletedAt;
+    this.createdAt = transaction.createdAt ? transaction.createdAt : null;
+    this.deletedAt = transaction.deletedAt ? transaction.deletedAt : null;
+    this.completedAt = transaction.completedAt ? transaction.completedAt: null;
   }
 }
 
 export class TransactionRead extends TransactionCreate {
-  constructor(transaction, id, listName) {
+  constructor(transaction, id, listName, buyerName, sellerName) {
     super(transaction);
     this.id = id;
     this.listName = listName;
+    this.buyerName = buyerName;
+    this.sellerName = sellerName;
   }
 }
 

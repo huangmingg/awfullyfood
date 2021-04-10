@@ -4,94 +4,32 @@
     <br>
     <b-list-group deck>
       <b-list-group-item
-        v-for="list in unreviewedListings"
-        :key="list.id"
+        v-for="transaction in unreviewedTransactions"
+        :key="transaction.id"
         class="d-flex justify-content-between list-group-item-action align-items-center"
       >
-        <h1 class="mb-1">
-          Status: {{ getStatus(list.isApproved) }}<br><br>
-
-          Item: {{ list.listName }}
-          <br>
-          Quantity: {{ list.quantity }}
-          <br>
-          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
-        </h1>
-
+        <div>
+          <h1 class="mb-3">
+            Status: {{ getStatus(transaction.isApproved) }}
+          </h1>
+          <h1> Item: {{ transaction.listName }} </h1>
+          <h1> Quantity: {{ transaction.quantity }} </h1>
+          <small>Created at: {{ convertTimestamp(transaction.createdAt) }}</small>
+        </div>
         <b-button-group>
           <b-button
             variant="outline-info"
             class="ml-auto"
-            @click="navigate(list.listingId)"
+            @click="navigate(transaction.listingId)"
           >
             View Listing
           </b-button>
-
-          <b-button
-            variant="outline-info"
-            class="ml-auto"
-            :disabled="isDisabled(list.isApproved)"
-            @click="showModal()"
-          >
-            Review
-          </b-button>
+          <ReviewModal
+            :transaction-id="transaction.id"
+            :is-approved="transaction.isApproved"
+            @submitReview="submitReview"
+          />
         </b-button-group>
-
-        <b-modal
-          id="modal-closing"
-          ref="modal-review"
-          title="Submit Your Review"
-
-          no-close-on-backdrop
-          @show="resetModal"
-          @hidden="resetModal"
-          @ok="handleOk($event,list.id)"
-        >
-          <template #modal-title>
-            Submit Your Review
-          </template>
-          <div class="d-block text-left">
-            Transaction ID: {{ list.id }} <br><br>
-
-            <form
-              ref="form"
-              @submit.stop.prevent="handleSubmit"
-            >
-              <div>
-                <b-form-group
-                  label="Rating"
-                  label-for="rating-inline"
-                  invalid-feedback="Please rate your experience"
-                  :state="value > 0"
-                >
-                  <b-form-rating
-                    id="rating-inline"
-                    v-model="value"
-                    inline
-                    value="1"
-                    :state="value > 0"
-                    no-border
-                    required
-                  />
-                </b-form-group>
-              </div>
-
-              <b-form-group
-                label="Review"
-                label-for="review-input"
-                invalid-feedback="Review is required and must have at least 20 characters"
-                :state="review.length >= 20"
-              >
-                <b-form-textarea
-                  id="review-input"
-                  v-model="review"
-                  :state="review.length >= 20"
-                  required
-                />
-              </b-form-group>
-            </form>
-          </div>
-        </b-modal>
       </b-list-group-item>
     </b-list-group>
     <br>
@@ -111,19 +49,19 @@
       >
         <b-list-group deck>
           <b-list-group-item
-            v-for="list in reviewedListings"
-            :key="list.id"
+            v-for="transaction in reviewedTransactions"
+            :key="transaction.id"
             class="d-flex list-group-item-action justify-content-between align-items-center"
           >
-            <h1 class="mb-1">
-              <small>Item: {{ list.listName }}<br>
-                Quantity: {{ list.quantity }}<br>
-                Reviewed at: {{ list.buyerReview.updatedAt }}</small>
-            </h1>
+            <div>
+              <h1> Item: {{ transaction.listName }} </h1>
+              <h1> Quantity: {{ transaction.quantity }} </h1>
+              <small> Reviewed at: {{ convertTimestamp(transaction.buyerReview.updatedAt) }}</small>
+            </div>
             <b-button
               variant="outline-info"
               class="ml-auto"
-              @click="navigate(list.listingId)"
+              @click="navigate(transaction.listingId)"
             >
               View Listing
             </b-button>
@@ -135,106 +73,77 @@
 </template>
 
 <script>
-import { getTransactionsByBuyer, updateBuyerReview } from '@/services/transaction.service';
+import { getTransactionsByBuyer, updateSellerReview } from '@/services/transaction.service';
 import { store } from '@/stores';
 import { router } from '@/routes';
+import { convertTimestamp } from '@/services/utils.service';
+import ReviewModal from '@/components/ReviewModal';
+import { getUserProfile } from '@/services/user.service';
+import { authService } from '@/firebase';
 
 export default {
   name: 'BTransactionDetailPage',
+  components: {
+    ReviewModal,
+  },
   data() {
     return {
-      product: {},
-      review: '',
-      reviewState: null,
-      value: 0,
-      disabled: false,
-      reviewedListings: {},
-      unreviewedListings: {},
+      show: false,
+      selectedListingId: '',
+      description: '',
+      rating: 0,
     };
   },
+
   computed: {
-    listing() {
-      return store.getters.getList;
+    unreviewedTransactions() {
+      return store.getters.getBuyerUnreviewedTransaction;
+    },
+    reviewedTransactions() {
+      return store.getters.getBuyerReviewedTransaction;
     },
   },
+
   async created() {
-    const res = await getTransactionsByBuyer(store.getters.getProfileState?.id);
-    console.log(res);
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
+    const loader = this.$loading.show({ color: 'teal' });
+    await getTransactionsByBuyer(store.getters.getProfileState?.id);
+    loader.hide();
   },
-  async mounted() {
-    const transactions = (
-      await getTransactionsByBuyer(store.getters.getProfileState?.id)
-    ).filter((ele) => {
-      return ele.isApproved === true;
-    }).filter((ele) => {
-      return ele.buyerReview.size != 0;
-    });
-    this.reviewedListings = transactions;
-    const urtransaction = (
-      await getTransactionsByBuyer(store.getters.getProfileState?.id)
-    ).filter((ele) => {
-      return Object.entries(ele.buyerReview).length === 0;
-    });
-    this.unreviewedListings = urtransaction;
 
-  },
   methods: {
-    checkFormValidity() {
-      if (this.value > 0 && this.review.length >= 20) {
-        const valid = this.$refs.form[0].checkValidity(); // its an array due to for loop above. so add [0]
-        this.reviewState = valid;
-        return valid;
-      }
-      alert('Please fill in your review.');
-
-    },
-    handleOk(bvModalEvt, id) {
-      // Prevent modal from closing
-      bvModalEvt.preventDefault();
-      // Trigger submit handler
-      this.handleSubmit(id);
-    },
-    resetModal() {
-      this.review = '';
-      this.reviewState = null;
-      this.value = 0;
-    },
-    handleSubmit(id) {
-      // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
-        return;
-      }
-      updateBuyerReview(id, this.value, this.review);
-      // Hide the modal manually
-      this.$nextTick(() => {
-        this.$bvModal.hide('modal-closing');
-      });
-    },
     back() {
       router.back();
     },
-    showModal() {
-      this.$refs['modal-review'][0].show();
+    navigate: function (listId) {
+      router.push(`browse/${listId}`);
+    },
+    convertTimestamp(timestamp) {
+      return timestamp ? convertTimestamp(timestamp) : null;
     },
     getStatus: function(item) {
       if (item) {
         return 'Transaction is approved and you can leave a review for the seller.';
       }
       return 'Transaction is not approved.';
-
     },
     isDisabled(item) {
-      if (item) {
-        return false;
-      }
-      return true;
-
+      return item ? false : true;
     },
-    navigate: function (listId) {
-      router.push(`browse/${listId}`);
+    async submitReview(review) {
+      console.log(review);
+      const res = await updateSellerReview(review.transactionId, review.rating, review.description);
+      if (!res) {
+        alert('Something went wrong, please check the fields and try again');
+      } else {
+        const loader = this.$loading.show({ color: 'teal' });
+        await getTransactionsByBuyer(store.getters.getProfileState?.id);
+        loader.hide();
+      }
     },
   },
-
 };
 </script>
 
@@ -251,6 +160,5 @@ h2 {
   padding: 10px;
   text-align: center;
 }
-
 
 </style>

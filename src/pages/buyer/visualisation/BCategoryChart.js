@@ -1,19 +1,19 @@
-
 import { Doughnut } from 'vue-chartjs';
 import { getUserProfile } from '@/services/user.service';
 import { authService } from '@/firebase';
 import { store } from '@/stores';
-import database from '../../../firebase.js';
+import { getTransactionsByBuyer } from '@/services/transaction.service';
+import { getListings } from '@/services/list.service';
 
 export default {
   extends: Doughnut,
   data() {
     return {
-      datacollection: {
+      dataCollection: {
         labels: ['Ugly', 'Expiring'],
         datasets: [{
           label: 'Number of Orders by Category',
-          backgroundColor: ['', ''],
+          backgroundColor: ['#0074d9', '#c49f21'],
           data: [0, 0],
         }],
       },
@@ -25,64 +25,49 @@ export default {
         },
         responsive: true,
         maintainAspectRatio: false,
-
       },
     };
   },
+
   watch: {
-    datacollection() {
-      this.renderChart(this.datacollection, this.options);
+    dataCollection() {
+      this.renderChart(this.dataCollection, this.options);
     },
   },
-  methods: {
-    fetchItems() {
 
-      database.collection('transactions').get().then((querySnapShot) => {
-        querySnapShot.forEach((doc) => {
-          // console.log(doc.data())
-          if (doc.data().isApproved &&
-            doc.data().buyerId == store.getters.getProfileState?.id) {
-            // console.log("hi")
-            const listingId = doc.data().listingId;
-            database
-              .collection('listings')
-              .doc(listingId)
-              .get()
-              .then((querySnapShot2) => {
-                // console.log(querySnapShot2)
-                const key = querySnapShot2.data().category;
-                if (key == 'Ugly') {
-                  // console.log(key)
-                  this.datacollection.datasets[0].data[0] += 1;
-                  this.datacollection.datasets[0].backgroundColor[0] = this.getRandomColour();
-                  // console.log(this.datacollection.datasets[0].data[0])
-                } else if (key == 'Expired') {
-                  this.datacollection.datasets[0].data[1] += 1;
-                  this.datacollection.datasets[0].backgroundColor[1] = this.getRandomColour();
-                  // console.log(this.datacollection.datasets[0].data[1])
-                }
-                this.renderChart(this.datacollection, this.options);
-              });
-          }
-        });
-      });
-    },
-
-    getRandomColour() {
-      const letters = '0123456789ABCDEF'.split('');
-      let colour = '#';
-      for (let i = 0; i < 6; i++) {
-        colour += letters[Math.floor(Math.random() * 16)];
-      }
-      return colour;
-    },
-
-  },
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    await this.fetchItems();
+    const loader = this.$loading.show({ color: 'teal' });
+    await getListings();
+    await store.dispatch('resetFilter');
+    await store.dispatch('filterList');
+    await getTransactionsByBuyer(store.getters.getProfileId);
+    loader.hide();
+    await this.initChart();
+  },
+
+  methods: {
+    async initChart() {
+      const transactions = store.getters.getTransaction;
+      const listings = store.getters.getList;
+      transactions.forEach((t) => {
+        const list = listings.find(element => element.id = t.listingId);
+        switch (list?.category) {
+        case 'Ugly':
+          this.dataCollection.datasets[0].data[0] += 1;
+          break;
+        case 'Expiring':
+          this.dataCollection.datasets[0].data[1] += 1;
+          break;
+        default:
+          break;
+        }
+      }
+      );
+      this.renderChart(this.dataCollection, this.options);
+    },
   },
 
 };

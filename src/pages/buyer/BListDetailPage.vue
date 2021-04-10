@@ -1,238 +1,199 @@
 <template>
   <div>
-    <b-button
-      variant="info"
-      @click="back()"
+    <b-container
+      fluid
+      class="p-4 bg-light"
     >
-      Back
-    </b-button>
-
-    <hr class="dropdown-divider">
-
-    <div class="row">
-      <div class="column">
-        <img :src="itemImg">
-      </div>
-      <div class="column">
-        <div>
-          <span class="header">
-            {{ itemName }}
-          </span>
-          <span class="float-right">
-            <span id="sellerStyle"> By: {{ seller }} </span>
-            <span class="float-right">
-              <b-form-rating
-                v-model="itemRating"
-                variant="info"
-                readonly
+      <b-row class="mx-2">
+        <b-button
+          variant="info"
+          @click="back()"
+        >
+          Back
+        </b-button>
+      </b-row>
+      <hr class="dropdown-divider">
+      <b-form class="mx-3">
+        <b-row>
+          <b-img
+            width="400"
+            height="400"
+            class="border-info product-photo"
+            thumbnail
+            fluid
+            :src="item.photo"
+          />
+          <b-col class="mt-3">
+            <b-button-group>
+              <b-button
+                id="bookmarkBtn"
+                class="mr-1"
+                style="border-radius: 5px"
+                variant="outline-info"
+                @click="toggleBookmark"
+              >
+                <BIconHeartFill :variant="iconColor" />
+              </b-button>
+              <QuantityModal
+                v-if="!checkExpire"
+                :max-quantity="+item.quantity"
+                @createTransaction="createTransaction"
               />
-            </span>
-          </span>
-        </div>
-        <b>
-          <div
-            v-show="checkExpire()"
-            style="color: red; font-size: 20px"
-          >
-            Expired!
-          </div>
-        </b>
-        <div>Category: {{ itemCategory }}</div>
-        <div>Price: {{ itemPrice }}</div>
-        <div>Quantity: {{ itemQty }}</div>
-        <div>Description: {{ itemDescription }}</div>
-        <div>Created Date: {{ createdAt }}</div>
-        <div>Expiry Date: {{ expiredAt }}</div>
-        <br>
-
-        <div class="float-right">
-          <span>
-            <b-button
-              v-show="checkExpire()==false"
-              id="bookmarkBtn"
-              @click="changeBMClass()"
-            >
-              <BIconHeartFill variant="white" />
-            </b-button>
-            <b-button
-              v-show="checkExpire()==true"
-              id="expire"
-              title="Expired!"
-              disabled
-            >
-              <BIconHeartFill variant="white" />
-            </b-button>
-          </span>
-          <span>
-            <b-button
-              v-show="checkExpire()==false"
-              variant="info"
-              @click="validateTransaction()"
-            >
-              I'm interested!
-            </b-button>
-            <b-button
-              v-show="checkExpire()==true"
-              id="expire"
-              variant="info"
-              title="Expired!"
-              disabled
-            >
-              I'm interested!
-            </b-button>
-          </span>
-        </div>
-      </div>
-    </div>
-    <QuantityModal
-      v-if="validTransaction"
-      :max-quantity="parseInt(itemQty)"
-      @quantity="interested"
-    />
+            </b-button-group>
+            <b v-show="checkExpire">
+              <div
+                style="color: red; font-size: 20px"
+              >
+                Expired!
+              </div>
+            </b>
+            <b-card-sub-title class="my-3">
+              Category: {{ item.category }}
+            </b-card-sub-title>
+            <b-card-sub-title class="my-3">
+              Price: ${{ item.price }}
+            </b-card-sub-title>
+            <b-card-sub-title class="my-3">
+              Quantity: {{ item.quantity }} {{ item.unit }}
+            </b-card-sub-title>
+            <b-card-sub-title class="my-3">
+              Description: {{ item.description }}
+            </b-card-sub-title>
+            <b-card-sub-title class="my-3">
+              Created Date: {{ item.createdAt }}
+            </b-card-sub-title>
+            <b-card-sub-title class="my-3">
+              Expiry Date: {{ item.expiredAt }}
+            </b-card-sub-title>
+            <div>
+              <b-card-sub-title class="my-3">
+                By: <b-link :to="userSearchLink">
+                  {{ seller.name }}
+                </b-link>
+                <b-form-rating
+                  id="rating"
+                  v-model="seller.rating"
+                  readonly
+                  inline
+                />
+              </b-card-sub-title>
+            </div>
+          </b-col>
+        </b-row>
+      </b-form>
+      <hr>
+    </b-container>
   </div>
 </template>
 
 <script>
-import { router } from '@/routes';
-import { getDisplayName, getUserProfile } from '@/services/user.service';
-import { getListing } from '@/services/list.service';
+import QuantityModal from '@/components/QuantityModal';
 import { BIconHeartFill } from 'bootstrap-vue';
+import { router } from '@/routes';
 import { store } from '@/stores';
 import { authService } from '@/firebase';
-import { toggleBookmark } from '@/services/bookmark.service';
-import { convertTimestamp, convertDateObject, getCurrentTimestamp, convertDateString } from '@/services/utils.service';
-import QuantityModal from '@/components/QuantityModal';
-import {
-  createTransaction,
-  getTransactionsByListing,
-} from '@/services/transaction.service';
+import { getUserProfile, getDisplayName } from '@/services/user.service';
+import { getListing } from '@/services/list.service';
+import { toggleBookmark, isBookmarked } from '@/services/bookmark.service';
+import { convertTimestamp, getCurrentTimestamp, convertDateString } from '@/services/utils.service';
+import { createTransaction } from '@/services/transaction.service';
+import { getReviews, getAggregatedRating } from '@/services/review.service';
 
 export default {
   name: 'BListDetailPage',
   components: { BIconHeartFill, QuantityModal },
   data() {
     return {
-      itemImg: '',
-      itemName: '',
-      itemCategory: '',
-      itemPrice: '', // price and units
-      itemQty: 0,
-      itemRating: 0,
-      seller: '', // get seller name
-      itemDescription: '',
-      bookmarkAllClasses: ['btn btn-danger', 'btn btn-secondary'],
-      expiredAt: '',
-      createdAt: '',
-      validTransaction: false,
       listingId: '',
-      sellerId: '',
-      userId: '',
+      listingBookmarked: false,
+      seller: {
+        name: '',
+        rating: 0,
+      },
+      item: {
+        sellerId: '',
+        name: '',
+        price: 0,
+        quantity: 0,
+        unit: '',
+        description: '',
+        expiredAt: '',
+        createdAt: '',
+        category: '',
+        photo: '',
+      },
     };
   },
 
+  computed: {
+    iconColor() {
+      return this.listingBookmarked ? 'danger' : 'grey';
+    },
+    userSearchLink() {
+      return `/search?userId=${this.item.sellerId}`;
+    },
+  },
+
   async created() {
+    const loader = this.$loading.show({ color: 'teal' });
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
     }
-    const listingId = this.$route.params.id;
-    this.retrieveInfo(listingId);
+    this.listingId = this.$route.params.id;
+    await this.retrieveInfo(this.listingId);
+    this.listingBookmarked = await isBookmarked(this.listingId, store.getters.getProfileId);
+    loader.hide();
   },
+
   methods: {
     back() {
       router.back();
     },
 
-    validateTransaction() {
-      const allTransactions = getTransactionsByListing(this.listingId);
-      console.log(this.listingId);
-      const findTransaction = allTransactions.then((x) =>
-        x.filter((y) => y.buyerId === this.userId)
-      );
-      findTransaction.then((x) => {
-        if (x.length > 0) {
-          alert(
-            'You have already expressed your interest on ' +
-              convertTimestamp(x[0].createdAt)
-          );
-          this.validTransaction = false;
-        } else {
-          this.validTransaction = true;
-        }
-      });
+    checkUser() {
+      router.push(`search?userId=${this.item.sellerId}`);
     },
 
-    interested(interestedQty) {
+    async retrieveInfo(id) {
+      const itemDetails = await getListing(id);
+      this.item = {
+        ...itemDetails,
+        'createdAt': itemDetails.createdAt ? convertTimestamp(itemDetails.createdAt) : null,
+        'expiredAt': itemDetails.expiredAt ? convertTimestamp(itemDetails.expiredAt) : null,
+      };
+      this.seller.name = await getDisplayName(this.item.sellerId);
+      const sellerReviews = await getReviews(this.item.sellerId, 'Seller');
+      this.seller.rating = await getAggregatedRating(sellerReviews);
+    },
+
+    async createTransaction(quantity) {
+      // TO-DO: Verify if a buyer can make multiple transactions for the same listing
       const transaction = {
         listingId: this.listingId,
-        buyerId: this.userId,
-        sellerId: this.sellerId,
-        quantity: interestedQty,
-        createdAt: convertDateObject(new Date()),
-        completedAt: '',
-        deletedAt: '',
+        buyerId: store.getters.getProfileId,
+        sellerId: this.item.sellerId,
+        quantity: quantity,
+        createdAt: getCurrentTimestamp(),
       };
-      createTransaction(transaction);
-      alert('Seller is notified! Seller will contact you soon!');
-    },
-
-    checkBookmark(bookmarkLst) {
-      let changed = false;
-      for (const bm of bookmarkLst) {
-        if (bm.userId === this.userId) {
-          document.getElementById(
-            'bookmarkBtn'
-          ).className = this.bookmarkAllClasses[0];
-          changed = true;
-          break;
-        }
-      }
-      if (!changed) {
-        document.getElementById(
-          'bookmarkBtn'
-        ).className = this.bookmarkAllClasses[1];
-      }
-    },
-
-    retrieveInfo(listingId) {
-      const itemDetails = getListing(listingId); // retrieve details from database
-      itemDetails.then((x) => {
-        this.itemImg = x.imageURL;
-        this.itemName = x.name;
-        this.itemCategory = x.category;
-        this.itemPrice = `$${x.price} per ${x.unit}`;
-        this.itemQty = x.quantity;
-        this.itemRating = 2.5; // currently no rating component in listing
-        this.itemDescription = x.description;
-        this.expiredAt = convertTimestamp(x.expiredAt);
-        this.createdAt = convertTimestamp(x.createdAt);
-        this.checkBookmark(x.bookmarks);
-        getDisplayName(x.sellerId).then((y) => (this.seller = y));
-        this.listingId = listingId;
-        this.sellerId = x.sellerId;
-        this.userId = store.getters.getProfileState.id;
-      });
-    },
-    // need to update the database (toggling the bookmark buttons)
-    changeBMClass() {
-      const name = document.getElementById('bookmarkBtn').className;
-      if (name == this.bookmarkAllClasses[0]) {
-        // un-bookmark
-        document.getElementById(
-          'bookmarkBtn'
-        ).className = this.bookmarkAllClasses[1];
+      const res = await createTransaction(transaction);
+      if (!res) {
+        alert('Something went wrong, please try again');
       } else {
-        // bookmark
-        document.getElementById(
-          'bookmarkBtn'
-        ).className = this.bookmarkAllClasses[0];
+        alert('Seller is notified! Seller will contact you soon!');
       }
+    },
 
-      // listing id, user id
-      toggleBookmark(this.$route.params.id, this.userId);
+    async toggleBookmark() {
+      const res = await toggleBookmark(this.listingId, store.getters.getProfileId);
+      if (!res) {
+        alert('Something went wrong, please try again');
+      } else {
+        this.listingBookmarked = await isBookmarked(this.listingId, store.getters.getProfileId);
+      }
     },
 
     checkExpire() {
-      const expire = convertDateString(this.expiredAt);
+      const expire = convertDateString(this.item.expiredAt);
       const expired_s = expire.seconds;
       const expired_ns = expire.nanoseconds;
       const curr_s = getCurrentTimestamp().seconds;
@@ -248,19 +209,6 @@ export default {
 </script>
 
 <style scoped>
-.column {
-  float: left;
-  width: 40%;
-  margin: 1%;
-}
-
-/* Clear floats after the columns */
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
 img {
   max-width: 100%;
   max-height: 100%;
@@ -269,16 +217,5 @@ img {
 
 div {
   padding-bottom: 1%;
-}
-
-.header {
-  font-size: 2.5em;
-  font-weight: bold;
-}
-
-#sellerStyle {
-  display: inline-block;
-  padding-right: 10px;
-  padding-top: 5px;
 }
 </style>

@@ -7,22 +7,20 @@
 
     <!--search button-->
     <span class="float-right">
-      <div class="input-group">
-        <b-input
-          id="searchEntry"
-          v-model.lazy="content"
-          type="search"
-          class="form-control rounded mr-1"
-          placeholder="Enter Listing Name"
-          aria-label="Search"
-          aria-describedby="search-addon"
-        />
-      </div>
+      <b-input
+        id="searchEntry"
+        v-model.lazy="content"
+        type="search"
+        class="form-control rounded mr-1"
+        placeholder="Enter Listing Name"
+        aria-label="Search"
+        aria-describedby="search-addon"
+      />
     </span>
 
     <hr class="dropdown-divider">
     <!--listing-->
-    <b-card-group deck>
+    <b-row>
       <b-card
         v-for="list in listing"
         :key="list.id"
@@ -30,10 +28,10 @@
         :img-src="list.photo"
         img-alt="Image"
         img-top
-        img-height="200"
-        img-width="150"
+        img-height="250px"
+        img-width="150px"
         style="max-width: 20rem"
-        class="mb-2 list-item"
+        class="m-3 list-item"
         border-variant="info"
         @click="navigate(list.id)"
       >
@@ -61,7 +59,7 @@
           {{ list.bookmarks.length }}
         </span>
       </b-card>
-    </b-card-group>
+    </b-row>
   </div>
 </template>
 
@@ -153,6 +151,12 @@ export default {
 </script>
 
 <style scoped>
+
+.list-item {
+  width: 450px;
+  height: 500px;
+}
+
 input {
   display: inline-block;
 }

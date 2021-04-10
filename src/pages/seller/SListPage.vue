@@ -153,6 +153,11 @@ export default {
 
 <style scoped>
 
+.list-item {
+  width: 450px;
+  height: 500px;
+}
+
 .list-item:hover {
   background-color: rgb(243, 250, 251);
   cursor: pointer;
