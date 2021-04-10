@@ -24,29 +24,22 @@
             :src="item.photo"
           />
           <b-col class="mt-3">
-            <b-button-group>
-              <b-button
-                id="bookmarkBtn"
-                class="mr-1"
-                style="border-radius: 5px"
-                variant="outline-info"
-                @click="toggleBookmark"
-              >
-                <BIconHeartFill :variant="iconColor" />
-              </b-button>
-              <QuantityModal
-                v-if="!checkExpire"
-                :max-quantity="+item.quantity"
-                @createTransaction="createTransaction"
-              />
-            </b-button-group>
-            <b v-show="checkExpire">
-              <div
-                style="color: red; font-size: 20px"
-              >
-                Expired!
-              </div>
-            </b>
+            <div class="float-right">
+              <b-card-sub-title class="my-3">
+                By: <b-link :to="userSearchLink">
+                  {{ seller.name }}
+                </b-link>
+                <b-form-rating
+                  id="rating"
+                  v-model="seller.rating"
+                  readonly
+                  inline
+                />
+              </b-card-sub-title>
+            </div>
+            <b-card-sub-title class="my-3">
+              Name: {{ item.name }}
+            </b-card-sub-title>
             <b-card-sub-title class="my-3">
               Category: {{ item.category }}
             </b-card-sub-title>
@@ -60,23 +53,35 @@
               Description: {{ item.description }}
             </b-card-sub-title>
             <b-card-sub-title class="my-3">
-              Created Date: {{ item.createdAt }}
+              Created Date: {{ convertTimestamp(item.createdAt) }}
             </b-card-sub-title>
             <b-card-sub-title class="my-3">
-              Expiry Date: {{ item.expiredAt }}
+              Expiry Date: {{ convertTimestamp(item.expiredAt) }}
             </b-card-sub-title>
-            <div>
-              <b-card-sub-title class="my-3">
-                By: <b-link :to="userSearchLink">
-                  {{ seller.name }}
-                </b-link>
-                <b-form-rating
-                  id="rating"
-                  v-model="seller.rating"
-                  readonly
-                  inline
+            <div class="float-right">
+              <b-button-group v-if="!hasExpired">
+                <b-button
+                  id="bookmarkBtn"
+                  class="mr-1"
+                  style="border-radius: 5px"
+                  variant="outline-info"
+                  @click="toggleBookmark"
+                >
+                  <BIconHeartFill :variant="iconColor" />
+                </b-button>
+                <QuantityModal
+                  v-if="!hasExpired"
+                  :max-quantity="+item.quantity"
+                  @createTransaction="createTransaction"
                 />
-              </b-card-sub-title>
+              </b-button-group>
+              <b v-else>
+                <div
+                  style="color: red; font-size: 20px"
+                >
+                  Expired!
+                </div>
+              </b>
             </div>
           </b-col>
         </b-row>
@@ -95,7 +100,7 @@ import { authService } from '@/firebase';
 import { getUserProfile, getDisplayName } from '@/services/user.service';
 import { getListing } from '@/services/list.service';
 import { toggleBookmark, isBookmarked } from '@/services/bookmark.service';
-import { convertTimestamp, getCurrentTimestamp, convertDateString } from '@/services/utils.service';
+import { convertTimestamp, getCurrentTimestamp, hasExpired } from '@/services/utils.service';
 import { createTransaction } from '@/services/transaction.service';
 import { getReviews, getAggregatedRating } from '@/services/review.service';
 
@@ -132,6 +137,9 @@ export default {
     userSearchLink() {
       return `/search?userId=${this.item.sellerId}`;
     },
+    hasExpired() {
+      return hasExpired(this.item.expiredAt);
+    },
   },
 
   async created() {
@@ -154,13 +162,13 @@ export default {
       router.push(`search?userId=${this.item.sellerId}`);
     },
 
+    convertTimestamp(timestamp) {
+      return timestamp ? convertTimestamp(timestamp) : null;
+    },
+
     async retrieveInfo(id) {
       const itemDetails = await getListing(id);
-      this.item = {
-        ...itemDetails,
-        'createdAt': itemDetails.createdAt ? convertTimestamp(itemDetails.createdAt) : null,
-        'expiredAt': itemDetails.expiredAt ? convertTimestamp(itemDetails.expiredAt) : null,
-      };
+      this.item = { ...itemDetails };
       this.seller.name = await getDisplayName(this.item.sellerId);
       const sellerReviews = await getReviews(this.item.sellerId, 'Seller');
       this.seller.rating = await getAggregatedRating(sellerReviews);
@@ -189,19 +197,6 @@ export default {
         alert('Something went wrong, please try again');
       } else {
         this.listingBookmarked = await isBookmarked(this.listingId, store.getters.getProfileId);
-      }
-    },
-
-    checkExpire() {
-      const expire = convertDateString(this.item.expiredAt);
-      const expired_s = expire.seconds;
-      const expired_ns = expire.nanoseconds;
-      const curr_s = getCurrentTimestamp().seconds;
-      const curr_ns = getCurrentTimestamp().nanoseconds;
-      if (expired_s < curr_s || (expired_s == curr_s && expired_ns < curr_ns)) {
-        return true;
-      } else {
-        return false;
       }
     },
   },

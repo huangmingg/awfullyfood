@@ -28,6 +28,11 @@ const sleep = function (ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+
+const hasExpired = function(expiryTimestamp) {
+  return expiryTimestamp < getCurrentTimestamp();
+};
+
 const comparator = function (nestedKey, reverse) {
   return function (a, b) {
     let destA = a;
@@ -51,4 +56,5 @@ export {
   getCurrentTimestamp,
   sleep,
   comparator,
+  hasExpired,
 };

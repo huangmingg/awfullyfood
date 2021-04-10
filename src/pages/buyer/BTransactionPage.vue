@@ -110,6 +110,7 @@ export default {
     }
     const loader = this.$loading.show({ color: 'teal' });
     await getTransactionsByBuyer(store.getters.getProfileState?.id);
+    console.log(store.getters.getBuyerReviewedTransaction);
     loader.hide();
   },
 

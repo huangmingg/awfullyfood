@@ -2,7 +2,6 @@ import { database } from '@/firebase';
 import { store } from '@/stores';
 import { TransactionCreate, TransactionRead, TransactionUpdate } from '@/models/transaction.class';
 import { getCurrentTimestamp } from '@/services/utils.service';
-import { Review } from '@/models/review.class';
 import { getListingName } from '@/services/list.service';
 import { getDisplayName } from '@/services/user.service';
 
@@ -181,17 +180,6 @@ const approveTransaction = async (transactionId) => {
   return await updateTransaction(transactionId, approvePayload);
 };
 
-const updateBuyerReview = async (transactionId, rating, description) => {
-  const nowDate = new Date(Date.now());
-  const reviewPayload = new Review(rating, description, nowDate.toLocaleDateString());
-  return await updateTransaction(transactionId, { buyerReview: { ...reviewPayload } });
-};
-
-const updateSellerReview = async (transactionId, rating, description) => {
-  const reviewPayload = new Review(rating, description, getCurrentTimestamp());
-  return await updateTransaction(transactionId, { sellerReview: { ...reviewPayload } });
-};
-
 export {
   getTransactions,
   getTransactionsByBuyer,
@@ -203,7 +191,5 @@ export {
   updateTransaction,
   deleteTransaction,
   approveTransaction,
-  updateBuyerReview,
-  updateSellerReview,
 };
 

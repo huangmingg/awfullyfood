@@ -162,9 +162,8 @@
 <script>
 
 import { getUserProfile } from '@/services/user.service';
-import {
-  getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction, updateSellerReview,
-} from '@/services/transaction.service';
+import { updateBuyerReview } from '@/services/review.service';
+import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction } from '@/services/transaction.service';
 import { store } from '@/stores';
 import { router } from '@/routes';
 
@@ -175,7 +174,7 @@ export default {
       profile: {},
       review: '',
       reviewState: null,
-      value: 0, 
+      value: 0,
       pendingListings: {},
       approvedListings: {},
       listingId: '',
@@ -185,7 +184,7 @@ export default {
   },
   async created() {
     this.listingId = this.$route.params.id;
-    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id,this.listingId); 
+    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
     this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
   },
   methods: {
@@ -216,7 +215,7 @@ export default {
       }
       // Update Firebase Data
       approveTransaction(id);
-      updateSellerReview(id, this.value, this.review);
+      updateBuyerReview(id, this.value, this.review);
 
       // Hide the modal manually
       this.$nextTick(() => {
@@ -227,6 +226,7 @@ export default {
     back() {
       router.back();
     },
+
     async contact(id) {
       this.profile = await getUserProfile(id, false);
       console.log(this.profile);
