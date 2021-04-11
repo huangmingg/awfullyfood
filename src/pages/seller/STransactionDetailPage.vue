@@ -9,7 +9,7 @@
       >
         <h1 class="mb-1">
           Buyer is interested in {{ list.quantity }}!<br>
-          <small>Created at: {{ list.createdAt.toDate().toLocaleDateString() }}</small>
+          <small>Created at: {{ convertTimestamp(list.createdAt) }}</small>
         </h1>
 
 
@@ -166,6 +166,7 @@ import { updateBuyerReview } from '@/services/review.service';
 import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction } from '@/services/transaction.service';
 import { store } from '@/stores';
 import { router } from '@/routes';
+import { convertTimestamp } from '@/services/utils.service';
 
 export default {
   name: 'STransactionDetailPage',
@@ -196,6 +197,9 @@ export default {
       }
       alert('Please fill in your review.');
 
+    },
+    convertTimestamp(timestamp) {
+      return timestamp ? convertTimestamp(timestamp) : null;
     },
     resetModal() {
       this.review = '';
