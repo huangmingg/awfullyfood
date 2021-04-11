@@ -77,14 +77,14 @@
               </b-button-group>
               <b v-else>
                 <div
-                    v-if="hasExpired"
+                  v-if="hasExpired"
                   style="color: red; font-size: 16px"
                 >
                   This listing has expired!
                 </div>
                 <div
-                    v-else-if="isSoldOut"
-                    style="color: red; font-size: 16px"
+                  v-else-if="isSoldOut"
+                  style="color: red; font-size: 16px"
                 >
                   This listing is sold out!
                 </div>

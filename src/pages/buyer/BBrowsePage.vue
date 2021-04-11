@@ -38,14 +38,14 @@
         <b-card-text>
           <b>
             <div
-                v-if="checkExpire(list.expiredAt)"
-                style="color: red; font-size: 16px"
+              v-if="checkExpire(list.expiredAt)"
+              style="color: red; font-size: 16px"
             >
               This listing has expired!
             </div>
             <div
-                v-else-if="isSoldOut(list.quantity)"
-                style="color: red; font-size: 16px"
+              v-else-if="isSoldOut(list.quantity)"
+              style="color: red; font-size: 16px"
             >
               This listing is sold out!
             </div>

@@ -12,7 +12,10 @@
           Back
         </b-button>
 
-        <b-btn-group class="ml-auto" v-if="!hasExpired">
+        <b-btn-group
+          v-if="!hasExpired"
+          class="ml-auto"
+        >
           <b-button
             v-show="!edit"
             style="border-radius: 5px"
