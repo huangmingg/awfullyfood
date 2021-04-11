@@ -72,7 +72,7 @@
                 <QuantityModal
                   v-if="!hasExpired"
                   :max-quantity="+item.quantity"
-                  @createTransaction="createTransaction"
+                  @submitTransaction="submitTransaction"
                 />
               </b-button-group>
               <b v-else>
@@ -98,7 +98,7 @@ import { router } from '@/routes';
 import { store } from '@/stores';
 import { authService } from '@/firebase';
 import { getUserProfile, getDisplayName } from '@/services/user.service';
-import { getListing } from '@/services/list.service';
+import { getListing, getTransactionsByListing } from '@/services/list.service';
 import { toggleBookmark, isBookmarked } from '@/services/bookmark.service';
 import { convertTimestamp, getCurrentTimestamp, hasExpired } from '@/services/utils.service';
 import { createTransaction } from '@/services/transaction.service';
@@ -174,8 +174,19 @@ export default {
       this.seller.rating = await getAggregatedRating(sellerReviews);
     },
 
-    async createTransaction(quantity) {
-      // TO-DO: Verify if a buyer can make multiple transactions for the same listing
+    async validateTransaction() {
+      const listingTransactions = await getTransactionsByListing(this.listingId);
+      const res = listingTransactions.find((ele) => ele.buyerId === store.getters.getProfileId);
+      return res ? true : false;
+    },
+
+    async submitTransaction(quantity) {
+      const validated = await this.validateTransaction();
+      console.log(validated);
+      if (!validated) {
+        alert('You cannot make multiple transactions for the same listing!');
+        return;
+      }
       const transaction = {
         listingId: this.listingId,
         buyerId: store.getters.getProfileId,

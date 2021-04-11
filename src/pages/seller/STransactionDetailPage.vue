@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-button variant="info" @click="back()">
+      Back
+    </b-button>
+
     <h2>Pending Transactions</h2>
     <b-list-group deck>
       <b-list-group-item
@@ -143,19 +147,12 @@
             <h1 class="mb-1">
               <small>
                 Buyer is interested in {{ list.quantity }}!<br>
-                Approved at: {{ list.sellerReview.updatedAt }}</small>
+                Approved at: {{ convertTimestamp(list.sellerReview.updatedAt) }}</small>
             </h1>
           </b-list-group-item>
         </b-list-group>
       </b-collapse>
     </div>
-
-
-    <br><br>
-
-    <b-button @click="back()">
-      Back
-    </b-button>
   </div>
 </template>
 

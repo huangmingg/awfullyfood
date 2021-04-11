@@ -176,7 +176,7 @@ const deleteTransaction = async (transactionId) => {
 };
 
 const approveTransaction = async (transactionId) => {
-  const approvePayload = { isApproved: true };
+  const approvePayload = { isApproved: true, completedAt: getCurrentTimestamp() };
   return await updateTransaction(transactionId, approvePayload);
 };
 

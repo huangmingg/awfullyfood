@@ -46,7 +46,7 @@
 
 <script>
 export default {
-  name: 'QuantityModalVue',
+  name: 'QuantityModal',
   props: {
     maxQuantity: {
       type: Number,
@@ -68,7 +68,7 @@ export default {
     onSubmit() {
       if (this.quantityState) {
         this.show = false;
-        this.$emit('createTransaction', this.quantity);
+        this.$emit('submitTransaction', this.quantity);
       }
     },
   },

@@ -303,9 +303,9 @@ export default {
       return true;
     },
 
-    deleteList: function () {
-      deleteListing(this.$route.params.id);
-      router.back();
+    async deleteList () {
+      const res = await deleteListing(this.$route.params.id);
+      res ? router.back() : alert('Something went wrong, please try again!');
     },
 
     checkExpire() {
