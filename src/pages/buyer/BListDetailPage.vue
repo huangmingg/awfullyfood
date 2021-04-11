@@ -59,7 +59,7 @@
               Expiry Date: {{ convertTimestamp(item.expiredAt) }}
             </b-card-sub-title>
             <div class="float-right">
-              <b-button-group v-if="!hasExpired">
+              <b-button-group v-if="!hasExpired && !isSoldOut">
                 <b-button
                   id="bookmarkBtn"
                   class="mr-1"
@@ -72,14 +72,21 @@
                 <QuantityModal
                   v-if="!hasExpired"
                   :max-quantity="+item.quantity"
-                  @createTransaction="createTransaction"
+                  @submitTransaction="submitTransaction"
                 />
               </b-button-group>
               <b v-else>
                 <div
-                  style="color: red; font-size: 20px"
+                  v-if="hasExpired"
+                  style="color: red; font-size: 16px"
                 >
-                  Expired!
+                  This listing has expired!
+                </div>
+                <div
+                  v-else-if="isSoldOut"
+                  style="color: red; font-size: 16px"
+                >
+                  This listing is sold out!
                 </div>
               </b>
             </div>
@@ -101,7 +108,7 @@ import { getUserProfile, getDisplayName } from '@/services/user.service';
 import { getListing } from '@/services/list.service';
 import { toggleBookmark, isBookmarked } from '@/services/bookmark.service';
 import { convertTimestamp, getCurrentTimestamp, hasExpired } from '@/services/utils.service';
-import { createTransaction } from '@/services/transaction.service';
+import { createTransaction, getTransactionsByListing } from '@/services/transaction.service';
 import { getReviews, getAggregatedRating } from '@/services/review.service';
 
 export default {
@@ -140,6 +147,9 @@ export default {
     hasExpired() {
       return hasExpired(this.item.expiredAt);
     },
+    isSoldOut() {
+      return +this.item.quantity === 0 ? true : false;
+    },
   },
 
   async created() {
@@ -174,8 +184,18 @@ export default {
       this.seller.rating = await getAggregatedRating(sellerReviews);
     },
 
-    async createTransaction(quantity) {
-      // TO-DO: Verify if a buyer can make multiple transactions for the same listing
+    async checkTransactionExists(listingId) {
+      const listingTransactions = await getTransactionsByListing(listingId);
+      const res = listingTransactions.find((ele) => ele.buyerId === store.getters.getProfileId);
+      return res ? true : false;
+    },
+
+    async submitTransaction(quantity) {
+      const validated = await this.checkTransactionExists(this.listingId);
+      if (validated) {
+        alert('You cannot make multiple transactions for the same listing!');
+        return;
+      }
       const transaction = {
         listingId: this.listingId,
         buyerId: store.getters.getProfileId,

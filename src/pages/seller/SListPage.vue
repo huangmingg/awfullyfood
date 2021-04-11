@@ -38,7 +38,6 @@
         img-top
         img-height="250px"
         img-width="150px"
-        style="max-width: 20rem"
         class="m-3 list-item"
         border-variant="info"
         @click="edit(list.id)"
@@ -54,7 +53,7 @@
         <b-card-text>
           ${{ list.price }} per {{ list.unit }}
           <br>
-          {{ list.description }}
+          {{ wrapText(list.description) }}
           <br>
           <small>Created Date:
             {{ convertTimestamp(list.createdAt) }}</small>
@@ -147,6 +146,10 @@ export default {
         return false;
       }
     },
+
+    wrapText(text) {
+      return text ? `${text.substring(0, 40)}...` : '';
+    },
   },
 };
 </script>
@@ -154,8 +157,7 @@ export default {
 <style scoped>
 
 .list-item {
-  width: 450px;
-  height: 500px;
+  width: 20%;
 }
 
 .list-item:hover {

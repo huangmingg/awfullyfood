@@ -38,13 +38,19 @@
         <b-card-text>
           <b>
             <div
-              v-show="checkExpire(list.expiredAt)"
-              style="color: red; font-size: 20px"
+              v-if="checkExpire(list.expiredAt)"
+              style="color: red; font-size: 16px"
             >
-              Expired!
+              This listing has expired!
+            </div>
+            <div
+              v-else-if="isSoldOut(list.quantity)"
+              style="color: red; font-size: 16px"
+            >
+              This listing is sold out!
             </div>
           </b>
-          {{ list.description }}
+          {{ wrapText(list.description) }}
           <br>
           ${{ list.price }} per {{ list.unit }}
           <small>
@@ -116,6 +122,10 @@ export default {
       router.push(`browse/${listId}`);
     },
 
+    isSoldOut(quantity) {
+      return +quantity === 0 ? true : false;
+    },
+
     convertTimestamp(timestamp) {
       return convertTimestamp(timestamp);
     },
@@ -146,6 +156,10 @@ export default {
       }
     },
 
+    wrapText(text) {
+      return text ? `${text.substring(0, 40)}...` : '';
+    },
+
   },
 };
 </script>
@@ -153,8 +167,7 @@ export default {
 <style scoped>
 
 .list-item {
-  width: 450px;
-  height: 500px;
+  width: 20%;
 }
 
 input {

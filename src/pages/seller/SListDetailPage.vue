@@ -12,27 +12,13 @@
           Back
         </b-button>
 
-        <b-btn-group class="ml-auto">
-          <!--delete button-->
+        <b-btn-group
+          v-if="!hasExpired"
+          class="ml-auto"
+        >
           <b-button
             v-show="!edit"
-            variant="danger"
-            @click="deleteList()"
-          >
-            Delete Listing
-          </b-button>
-          <!--expired-->
-          <b-button
-            v-show="checkExpire()==true"
-            id="expire"
-            variant="info"
-            title="Expired!"
-            disabled
-          >
-            Edit Listing
-          </b-button>
-          <b-button
-            v-show="!edit && checkExpire()==false"
+            style="border-radius: 5px"
             variant="info"
             @click="editList()"
           >
@@ -40,6 +26,7 @@
           </b-button>
           <b-button
             v-show="edit"
+            style="border-radius: 5px"
             variant="info"
             @click="onSubmit()"
           >
@@ -89,7 +76,6 @@
               <b-form-input
                 id="input-3"
                 v-model="form.price"
-                :state="priceState"
                 disabled
                 type="number"
                 required
@@ -135,7 +121,6 @@
                 id="input-4"
                 v-model="form.unit"
                 required
-                :state="unitState"
                 disabled
                 :options="units"
               />
@@ -193,7 +178,12 @@
 <script>
 import { router } from '@/routes';
 import { getListing, updateListing, getListingPhoto, updateListingPhoto, deleteListing } from '@/services/list.service';
-import { convertTimestamp, convertDateObject, convertDateString, getCurrentTimestamp } from '@/services/utils.service';
+import {
+  convertTimestamp,
+  convertDateObject,
+  convertDateString,
+  getCurrentTimestamp,
+} from '@/services/utils.service';
 
 export default {
   name: 'SListPage',
@@ -201,9 +191,9 @@ export default {
     return {
       listingId: '',
       edit: false,
-      editableFields: ['input-1', 'input-3', 'input-4', 'input-5', 'input-6'],
+      editableFields: ['input-1', 'input-5', 'input-6'],
       categories: ['Ugly', 'Expiring'],
-      units: ['Carton', 'Kg', 'Ml', 'Box', 'Gram', 'Pax'],
+      units: ['Carton', 'Kg', 'Box', 'Gram', 'Pax'],
       form: {
         name: '',
         price: 0,
@@ -224,14 +214,11 @@ export default {
     nameState() {
       return this.edit ? this.form.name?.length > 2 ? true : false : null;
     },
-    priceState() {
-      return this.edit ? +this.form.price > 0 ? true : false : null;
-    },
     quantityState() {
       return this.edit ? +this.form.quantity > 0 ? true : false : null;
     },
-    unitState() {
-      return this.edit ? this.form.unit ? true : false : null;
+    hasExpired() {
+      return this.form.expiredAt < Date.now();
     },
   },
 
@@ -279,7 +266,11 @@ export default {
         return;
       }
       this.toggleEdit(false);
-      const res = await updateListing(this.listingId, { ...this.form });
+      const res = await updateListing(this.listingId, {
+        ...this.form,
+        createdAt: this.form.createdAt ? convertDateObject(this.form.createdAt) : null,
+        expiredAt: this.form.expiredAt ? convertDateObject(this.form.expiredAt) : null,
+      });
       if (!res) {
         alert('Something went wrong with updating the listing, please try again!');
       } else {
@@ -295,17 +286,15 @@ export default {
     },
 
     validateForm() {
-      this.form.createdAt = this.form.createdAt ? convertDateObject(this.form.createdAt) : null;
-      this.form.expiredAt = this.form.expiredAt ?convertDateObject(this.form.expiredAt) : null;
-      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
+      if (!this.descriptionState || !this.quantityState || !this.nameState) {
         return false;
       }
       return true;
     },
 
-    deleteList: function () {
-      deleteListing(this.$route.params.id);
-      router.back();
+    async deleteList () {
+      const res = await deleteListing(this.$route.params.id);
+      res ? router.back() : alert('Something went wrong, please try again!');
     },
 
     checkExpire() {
