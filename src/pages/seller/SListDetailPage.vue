@@ -12,27 +12,10 @@
           Back
         </b-button>
 
-        <b-btn-group class="ml-auto">
-          <!--delete button-->
+        <b-btn-group class="ml-auto" v-if="!hasExpired">
           <b-button
             v-show="!edit"
-            variant="danger"
-            @click="deleteList()"
-          >
-            Delete Listing
-          </b-button>
-          <!--expired-->
-          <b-button
-            v-show="checkExpire()==true"
-            id="expire"
-            variant="info"
-            title="Expired!"
-            disabled
-          >
-            Edit Listing
-          </b-button>
-          <b-button
-            v-show="!edit && checkExpire()==false"
+            style="border-radius: 5px"
             variant="info"
             @click="editList()"
           >
@@ -40,6 +23,7 @@
           </b-button>
           <b-button
             v-show="edit"
+            style="border-radius: 5px"
             variant="info"
             @click="onSubmit()"
           >
@@ -89,7 +73,6 @@
               <b-form-input
                 id="input-3"
                 v-model="form.price"
-                :state="priceState"
                 disabled
                 type="number"
                 required
@@ -192,7 +175,12 @@
 <script>
 import { router } from '@/routes';
 import { getListing, updateListing, getListingPhoto, updateListingPhoto, deleteListing } from '@/services/list.service';
-import { convertTimestamp, convertDateObject, convertDateString, getCurrentTimestamp } from '@/services/utils.service';
+import {
+  convertTimestamp,
+  convertDateObject,
+  convertDateString,
+  getCurrentTimestamp,
+} from '@/services/utils.service';
 
 export default {
   name: 'SListPage',
@@ -200,7 +188,7 @@ export default {
     return {
       listingId: '',
       edit: false,
-      editableFields: ['input-1', 'input-3', 'input-5', 'input-6'],
+      editableFields: ['input-1', 'input-5', 'input-6'],
       categories: ['Ugly', 'Expiring'],
       units: ['Carton', 'Kg', 'Box', 'Gram', 'Pax'],
       form: {
@@ -223,11 +211,11 @@ export default {
     nameState() {
       return this.edit ? this.form.name?.length > 2 ? true : false : null;
     },
-    priceState() {
-      return this.edit ? +this.form.price > 0 ? true : false : null;
-    },
     quantityState() {
       return this.edit ? +this.form.quantity > 0 ? true : false : null;
+    },
+    hasExpired() {
+      return this.form.expiredAt < Date.now();
     },
   },
 
@@ -295,7 +283,7 @@ export default {
     },
 
     validateForm() {
-      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState) {
+      if (!this.descriptionState || !this.quantityState || !this.nameState) {
         return false;
       }
       return true;
