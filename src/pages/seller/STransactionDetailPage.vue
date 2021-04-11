@@ -71,7 +71,6 @@
                 no-close-on-backdrop
                 @show="resetModal"
                 @hidden="resetModal"
-                @ok="handleOk($event,list.id)"
               >
                 <template #modal-title>
                   Submit Your Review
@@ -117,6 +116,17 @@
                     </b-form-group>
                   </form>
                 </div>
+                <template #modal-footer>
+                  <b-button-group>
+                    <b-button
+                        variant="info"
+                        class="float-right"
+                        @click="handleOk($event,list.id)"
+                    >
+                      Submit
+                    </b-button>
+                  </b-button-group>
+                </template>
               </b-modal>
             </div>
           </b-nav-item-dropdown>
@@ -232,7 +242,6 @@ export default {
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-closing');
-        // location.reload() //can only updateReview and get into approve part after several REFRESHES
       });
       const loader = this.$loading.show({ color: 'teal' });
       await getTransactionsBySeller(store.getters.getProfileState?.id);
