@@ -99,9 +99,10 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
     });
 };
 
-const getTransactionsBySeller = async (sellerId, saveState = true) => {
+const getTransactionsBySeller = async (sellerId, listingId, saveState = true) => {
   return database.collection('transactions')
     .where('sellerId', '==', sellerId)
+    .where('listingId', '==', listingId)
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {

@@ -204,7 +204,7 @@ export default {
     }
     this.listingId = this.$route.params.id;
     const loader = this.$loading.show({ color: 'teal' });
-    await getTransactionsBySeller(store.getters.getProfileState?.id);
+    await getTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
     loader.hide();
   },
   methods: {
