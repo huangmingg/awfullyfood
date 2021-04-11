@@ -2,7 +2,7 @@ import { database } from '@/firebase';
 import { store } from '@/stores';
 import { TransactionCreate, TransactionRead, TransactionUpdate } from '@/models/transaction.class';
 import { getCurrentTimestamp } from '@/services/utils.service';
-import { getListingName } from '@/services/list.service';
+import { getListingName, getListing, updateListing } from '@/services/list.service';
 import { getDisplayName } from '@/services/user.service';
 
 const getTransactions = async (saveState = true) => {
@@ -170,17 +170,50 @@ const updateTransaction = async (transactionId, payload) => {
     });
 };
 
+const getTransaction = async (transactionId) => {
+  return database.collection('transactions')
+    .doc(transactionId)
+    .get()
+    .then(async (res) => {
+      return new TransactionRead(
+        res.data(),
+        res.id,
+        await getListingName(res.data()?.listingId),
+        await getDisplayName(res.data()?.buyerId),
+        await getDisplayName(res.data()?.sellerId)
+      );
+    })
+    .catch((error) => {
+      console.log(error);
+      return {};
+    });
+};
+
 const deleteTransaction = async (transactionId) => {
   const deletePayload = { deletedAt: getCurrentTimestamp() };
   return await updateTransaction(transactionId, deletePayload);
 };
 
 const approveTransaction = async (transactionId) => {
+  const transaction = await getTransaction(transactionId);
+  const listing = await getListing(transaction.listingId);
+  if (!transaction || !listing) {
+    console.log('Error in fetching transaction or listing');
+    return false;
+  }
+  const transactionQuantity = transaction.quantity;
+  const listingQuantity = listing.quantity;
+  if (transactionQuantity > listingQuantity) {
+    console.log('Transaction quantity is more than listing quantity!');
+    return false;
+  }
+  const updateListRes = await updateListing(transaction.listingId, { quantity: +listingQuantity - +transactionQuantity });
   const approvePayload = { isApproved: true, completedAt: getCurrentTimestamp() };
-  return await updateTransaction(transactionId, approvePayload);
+  return updateListRes ? await updateTransaction(transactionId, approvePayload) : false;
 };
 
 export {
+  getTransaction,
   getTransactions,
   getTransactionsByBuyer,
   getTransactionsByListing,

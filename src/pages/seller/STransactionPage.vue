@@ -38,8 +38,7 @@ export default {
   },
 
   async created() {
-    const res = await getListingBySeller(store.getters.getProfileState?.id);
-    console.log(res);
+    await getListingBySeller(store.getters.getProfileState?.id);
   },
 
   methods: {

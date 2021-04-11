@@ -119,9 +119,9 @@
                 <template #modal-footer>
                   <b-button-group>
                     <b-button
-                        variant="info"
-                        class="float-right"
-                        @click="handleOk($event,list.id)"
+                      variant="info"
+                      class="float-right"
+                      @click="handleOk($event,list.id)"
                     >
                       Submit
                     </b-button>
@@ -236,8 +236,8 @@ export default {
         return;
       }
       // Update Firebase Data
-      await approveTransaction(id);
-      await updateBuyerReview(id, this.value, this.review);
+      const approveRes = await approveTransaction(id);
+      approveRes ? await updateBuyerReview(id, this.value, this.review) : null;
 
       // Hide the modal manually
       this.$nextTick(() => {

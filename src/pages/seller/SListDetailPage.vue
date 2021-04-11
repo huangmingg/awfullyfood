@@ -135,7 +135,6 @@
                 id="input-4"
                 v-model="form.unit"
                 required
-                :state="unitState"
                 disabled
                 :options="units"
               />
@@ -201,9 +200,9 @@ export default {
     return {
       listingId: '',
       edit: false,
-      editableFields: ['input-1', 'input-3', 'input-4', 'input-5', 'input-6'],
+      editableFields: ['input-1', 'input-3', 'input-5', 'input-6'],
       categories: ['Ugly', 'Expiring'],
-      units: ['Carton', 'Kg', 'Ml', 'Box', 'Gram', 'Pax'],
+      units: ['Carton', 'Kg', 'Box', 'Gram', 'Pax'],
       form: {
         name: '',
         price: 0,
@@ -229,9 +228,6 @@ export default {
     },
     quantityState() {
       return this.edit ? +this.form.quantity > 0 ? true : false : null;
-    },
-    unitState() {
-      return this.edit ? this.form.unit ? true : false : null;
     },
   },
 
@@ -279,7 +275,11 @@ export default {
         return;
       }
       this.toggleEdit(false);
-      const res = await updateListing(this.listingId, { ...this.form });
+      const res = await updateListing(this.listingId, {
+        ...this.form,
+        createdAt: this.form.createdAt ? convertDateObject(this.form.createdAt) : null,
+        expiredAt: this.form.expiredAt ? convertDateObject(this.form.expiredAt) : null,
+      });
       if (!res) {
         alert('Something went wrong with updating the listing, please try again!');
       } else {
@@ -295,9 +295,7 @@ export default {
     },
 
     validateForm() {
-      this.form.createdAt = this.form.createdAt ? convertDateObject(this.form.createdAt) : null;
-      this.form.expiredAt = this.form.expiredAt ?convertDateObject(this.form.expiredAt) : null;
-      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState || !this.unitState) {
+      if (!this.descriptionState || !this.quantityState || !this.priceState || !this.nameState) {
         return false;
       }
       return true;
