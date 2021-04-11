@@ -34,7 +34,9 @@ export default {
     },
 
     getSellerReviewedTransaction: (state) => {
-
+      return state.transaction.filter((t) => {
+        return t.isApproved && !isEmptyObject(t.buyerReview);
+      });
     },
   },
   mutations: {

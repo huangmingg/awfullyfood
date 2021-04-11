@@ -98,10 +98,10 @@ import { router } from '@/routes';
 import { store } from '@/stores';
 import { authService } from '@/firebase';
 import { getUserProfile, getDisplayName } from '@/services/user.service';
-import { getListing, getTransactionsByListing } from '@/services/list.service';
+import { getListing } from '@/services/list.service';
 import { toggleBookmark, isBookmarked } from '@/services/bookmark.service';
 import { convertTimestamp, getCurrentTimestamp, hasExpired } from '@/services/utils.service';
-import { createTransaction } from '@/services/transaction.service';
+import { createTransaction, getTransactionsByListing } from '@/services/transaction.service';
 import { getReviews, getAggregatedRating } from '@/services/review.service';
 
 export default {
@@ -174,16 +174,15 @@ export default {
       this.seller.rating = await getAggregatedRating(sellerReviews);
     },
 
-    async validateTransaction() {
-      const listingTransactions = await getTransactionsByListing(this.listingId);
+    async checkTransactionExists(listingId) {
+      const listingTransactions = await getTransactionsByListing(listingId);
       const res = listingTransactions.find((ele) => ele.buyerId === store.getters.getProfileId);
       return res ? true : false;
     },
 
     async submitTransaction(quantity) {
-      const validated = await this.validateTransaction();
-      console.log(validated);
-      if (!validated) {
+      const validated = await this.checkTransactionExists(this.listingId);
+      if (validated) {
         alert('You cannot make multiple transactions for the same listing!');
         return;
       }

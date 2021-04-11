@@ -1,6 +1,9 @@
 <template>
   <div>
-    <b-button variant="info" @click="back()">
+    <b-button
+      variant="info"
+      @click="back()"
+    >
       Back
     </b-button>
 
@@ -147,7 +150,7 @@
             <h1 class="mb-1">
               <small>
                 Buyer is interested in {{ list.quantity }}!<br>
-                Approved at: {{ convertTimestamp(list.sellerReview.updatedAt) }}</small>
+                Approved at: {{ convertTimestamp(list.buyerReview.updatedAt) }}</small>
             </h1>
           </b-list-group-item>
         </b-list-group>
@@ -160,10 +163,11 @@
 
 import { getUserProfile } from '@/services/user.service';
 import { updateBuyerReview } from '@/services/review.service';
-import { getApprovedTransactionsBySeller, getPendingTransactionsBySeller, approveTransaction } from '@/services/transaction.service';
+import { approveTransaction, getTransactionsBySeller } from '@/services/transaction.service';
+import { convertTimestamp } from '@/services/utils.service';
 import { store } from '@/stores';
 import { router } from '@/routes';
-import { convertTimestamp } from '@/services/utils.service';
+import { authService } from '@/firebase';
 
 export default {
   name: 'STransactionDetailPage',
@@ -173,17 +177,25 @@ export default {
       review: '',
       reviewState: null,
       value: 0,
-      pendingListings: {},
-      approvedListings: {},
       listingId: '',
     };
   },
   computed: {
+    pendingListings() {
+      return store.getters.getPendingTransaction;
+    },
+    approvedListings() {
+      return store.getters.getSellerReviewedTransaction;
+    },
   },
   async created() {
+    if (!store.getters.getProfileState) {
+      await getUserProfile(authService.currentUser.uid);
+    }
     this.listingId = this.$route.params.id;
-    this.pendingListings = await getPendingTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
-    this.approvedListings = await getApprovedTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
+    const loader = this.$loading.show({ color: 'teal' });
+    await getTransactionsBySeller(store.getters.getProfileState?.id);
+    loader.hide();
   },
   methods: {
     checkFormValidity() {
@@ -193,7 +205,6 @@ export default {
         return valid;
       }
       alert('Please fill in your review.');
-
     },
     convertTimestamp(timestamp) {
       return timestamp ? convertTimestamp(timestamp) : null;
@@ -209,21 +220,25 @@ export default {
       // Trigger submit handler
       this.handleSubmit(id);
     },
-    handleSubmit(id) {
+    async handleSubmit(id) {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
         return;
       }
       // Update Firebase Data
-      approveTransaction(id);
-      updateBuyerReview(id, this.value, this.review);
+      await approveTransaction(id);
+      await updateBuyerReview(id, this.value, this.review);
 
       // Hide the modal manually
       this.$nextTick(() => {
         this.$bvModal.hide('modal-closing');
         // location.reload() //can only updateReview and get into approve part after several REFRESHES
       });
+      const loader = this.$loading.show({ color: 'teal' });
+      await getTransactionsBySeller(store.getters.getProfileState?.id);
+      loader.hide();
     },
+
     back() {
       router.back();
     },
