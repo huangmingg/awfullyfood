@@ -74,6 +74,7 @@
               <b-form-input
                 id="input-2"
                 v-model="form.name"
+                :state="nameState"
                 disabled
                 type="text"
                 required
@@ -89,6 +90,7 @@
                 id="input-3"
                 v-model="form.phoneNumber"
                 disabled
+                :state="numberState"
                 type="number"
                 required
               />
@@ -102,6 +104,7 @@
               <b-form-input
                 id="input-4"
                 v-model="form.address"
+                :state="addressState"
                 disabled
                 type="text"
                 required
@@ -149,6 +152,18 @@ export default {
     };
   },
 
+  computed: {
+    nameState() {
+      return this.edit ? this.form.name.trim() ? true : false : null;
+    },
+    numberState() {
+      return this.edit ? this.form.phoneNumber.trim() ? true : false : null;
+    },
+    addressState() {
+      return this.edit ? this.form.address.trim() ? true : false : null;
+    },
+  },
+
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
@@ -169,13 +184,13 @@ export default {
     },
 
     async saveProfile() {
-      if (!this.validateForm()) {
-        alert('Something went wrong, please check the input and try again');
-        return;
+      if (!this.nameState || !this.numberState || !this.addressState) {
+        alert('Please fill up the required fills!');
+      } else {
+        this.toggleEdit(false);
+        await updateUser(this.form.id, this.form);
+        await getUserProfile(authService.currentUser.uid);
       }
-      this.toggleEdit(false);
-      await updateUser(this.form.id, this.form);
-      await getUserProfile(authService.currentUser.uid);
     },
 
     toggleEdit(isEdit) {
@@ -183,10 +198,6 @@ export default {
       this.editableFields.forEach((field) => {
         document.getElementById(field).disabled = !isEdit;
       });
-    },
-
-    validateForm() {
-      return true;
     },
 
     clickImage() {
