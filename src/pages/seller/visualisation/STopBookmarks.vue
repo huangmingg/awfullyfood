@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: 'STopLikes',
+  name: 'STopBookmarks',
   props: {
     listings: {
       type: Array,

@@ -29,7 +29,7 @@
         <SListingCategoryChart />
       </li>
       <li class="orderList">
-        <STopLikes :listings="topLikes" />
+        <STopBookmarks :listings="topBookmarks" />
       </li>
       <li class="orderList">
         <STopInterest :listings="topInterests" />
@@ -47,7 +47,7 @@ import { store } from '@/stores';
 import OrderHistory from '@/pages/common/visualisation/OrderHistory';
 import PendingOrders from '@/pages/common/visualisation/PendingOrders';
 import SListingCategoryChart from '@/pages/seller/visualisation/SListingCategoryChart';
-import STopLikes from './visualisation/STopLikes.vue';
+import STopBookmarks from './visualisation/STopBookmarks.vue';
 import STopInterest from './visualisation/STopInterest.vue';
 
 export default {
@@ -55,7 +55,7 @@ export default {
   components: {
     SListingCategoryChart,
     STopInterest,
-    STopLikes,
+    STopBookmarks,
     OrderHistory,
     PendingOrders,
   },
@@ -67,11 +67,19 @@ export default {
     pendingOrders() {
       return store.getters.getPendingTransaction;
     },
-    topLikes() {
-      return [...store.getters.getMostBookmarkedList].reverse();
+    topBookmarks() {
+      return [...store.getters.getMostBookmarkedList].sort(function(a, b) {
+        if (a.bookmarks.length < b.bookmarks.length) return 1;
+        if (a.bookmarks.length > b.bookmarks.length) return -1;
+        return 0;
+      });
     },
     topInterests() {
-      return [...store.getters.getMostInterestedList].reverse();
+      return [...store.getters.getMostInterestedList].sort(function(a, b) {
+        if (a.interests.length < b.interests.length) return 1;
+        if (a.interests.length > b.interests.length) return -1;
+        return 0;
+      });
     },
   },
 
