@@ -116,6 +116,8 @@ export default {
       if (this.ratingState && this.descriptionState) {
         this.$refs['review-modal'].hide();
         this.$emit('submitReview', { ...this.form, transactionId: this.transactionId });
+      } else {
+        alert('Please fill in your review.');
       }
     },
   },
