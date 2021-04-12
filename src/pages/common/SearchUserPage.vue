@@ -3,6 +3,13 @@
     fluid
     class="p-4 bg-light"
   >
+    <b-button
+      variant="info"
+      @click="back()"
+    >
+      Back
+    </b-button>
+    <hr>
     <b-row class="mx-2">
       <b-input-group>
         <b-form-input
@@ -144,6 +151,9 @@ export default {
 
     sanitizeQuery(userId) {
       return userId.trim();
+    },
+    back() {
+      router.back();
     },
   },
 };
