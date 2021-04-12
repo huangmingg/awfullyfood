@@ -5,8 +5,8 @@ export class ListingCreate {
     this.sellerId = list.sellerId;
     this.name = list.name;
     this.description = list.description;
-    this.price = list.price;
-    this.quantity = list.quantity;
+    this.price = +list.price;
+    this.quantity = +list.quantity;
     this.unit = list.unit;
     this.category = list.category;
     this.status = list.status ? list.status : 'Available';
