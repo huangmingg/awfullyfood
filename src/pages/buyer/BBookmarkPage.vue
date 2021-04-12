@@ -60,7 +60,6 @@ export default {
   },
   computed: {
     bookmarks() {
-      console.log(store.getters.getBookmarkLists);
       return store.getters.getBookmarkLists;
     },
   },
