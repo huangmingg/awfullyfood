@@ -58,7 +58,7 @@
         <b-form-input
           id="input-4"
           v-model="form.address"
-          placeholder="Enter phone number"
+          placeholder="Enter address"
           type="text"
           required
         />

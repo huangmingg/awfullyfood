@@ -192,10 +192,10 @@ export default {
   },
   computed: {
     pendingListings() {
-      return store.getters.getPendingTransaction;
+      return store.getters.getPendingTransactionForList(this.listingId);
     },
     approvedListings() {
-      return store.getters.getSellerReviewedTransaction;
+      return store.getters.getSellerReviewedTransactionForList(this.listingId);
     },
   },
   async created() {
@@ -204,7 +204,7 @@ export default {
     }
     this.listingId = this.$route.params.id;
     const loader = this.$loading.show({ color: 'teal' });
-    await getTransactionsBySeller(store.getters.getProfileState?.id,this.listingId);
+    await getTransactionsBySeller(store.getters.getProfileState?.id);
     loader.hide();
   },
   methods: {

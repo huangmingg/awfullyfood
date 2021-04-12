@@ -50,7 +50,7 @@ export default {
 
   methods: {
     async initChart() {
-      const transactions = store.getters.getTransaction;
+      const transactions = store.getters.getApprovedTransaction;
       const listings = store.getters.getList;
       transactions.forEach((t) => {
         const list = listings.find(element => element.id = t.listingId);
