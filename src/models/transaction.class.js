@@ -3,7 +3,7 @@ export class TransactionCreate {
     this.listingId = transaction.listingId;
     this.buyerId = transaction.buyerId;
     this.sellerId = transaction.sellerId;
-    this.quantity = transaction.quantity;
+    this.quantity = +transaction.quantity;
     this.buyerReview = transaction.buyerReview ? transaction.buyerReview : {};
     this.sellerReview = transaction.sellerReview ? transaction.sellerReview : {};
     this.isApproved = transaction.isApproved ? transaction.isApproved : false;
