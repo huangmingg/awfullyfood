@@ -1,5 +1,4 @@
 import { filterList, orderList } from '@/services/list.service';
-import { comparator } from '@/services/utils.service';
 
 export default {
   state: {
@@ -26,11 +25,11 @@ export default {
     },
 
     getMostBookmarkedList: (state) => {
-      return [...state.list].filter((e) => { return e.bookmarks.length; }).sort(comparator(['bookmarks', 'length'])).slice(0, 5);
+      return [...state.list].filter((e) => { return e.bookmarks.length; });
     },
 
     getMostInterestedList: (state) => {
-      return [...state.list].filter((e) => { return e.interests.length; }).sort(comparator(['interests', 'length'])).slice(0, 5);
+      return [...state.list].filter((e) => { return e.interests.length; });
     },
   },
   mutations: {
