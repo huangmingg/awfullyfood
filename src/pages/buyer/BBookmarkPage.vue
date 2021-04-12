@@ -18,7 +18,7 @@
           ${{ list.price }} per {{ list.unit }}
           <small>
             <br>
-            {{ list.description }}
+            {{ wrapText(list.description) }}
             <br>
             Quantity: {{ list.quantity }} {{ list.unit }}
             <br>
@@ -86,6 +86,9 @@ export default {
       const loader = this.$loading.show({ color: 'teal' });
       await getBookmarkLists(store.getters.getProfileId);
       loader.hide();
+    },
+    wrapText(text) {
+      return text ? `${text.substring(0, 40)}...` : '';
     },
   },
 };
