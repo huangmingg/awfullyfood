@@ -29,12 +29,6 @@ export default {
     };
   },
 
-  watch: {
-    dataCollection() {
-      this.renderChart(this.dataCollection, this.options);
-    },
-  },
-
   async created() {
     if (!store.getters.getProfileState) {
       await getUserProfile(authService.currentUser.uid);
@@ -53,7 +47,7 @@ export default {
       const transactions = store.getters.getApprovedTransaction;
       const listings = store.getters.getList;
       transactions.forEach((t) => {
-        const list = listings.find(element => element.id = t.listingId);
+        const list = listings.find(element => element.id === t.listingId);
         switch (list?.category) {
         case 'Ugly':
           this.dataCollection.datasets[0].data[0] += 1;
