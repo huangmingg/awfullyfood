@@ -68,10 +68,10 @@ export default {
       return store.getters.getPendingTransaction;
     },
     topLikes() {
-      return store.getters.getMostBookmarkedList;
+      return [...store.getters.getMostBookmarkedList].reverse();
     },
     topInterests() {
-      return store.getters.getMostInterestedList;
+      return [...store.getters.getMostInterestedList].reverse();
     },
   },
 
