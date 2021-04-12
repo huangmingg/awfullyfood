@@ -29,10 +29,10 @@
         <SListingCategoryChart />
       </li>
       <li class="orderList">
-        <STopLikes :listings="listings" />
+        <STopLikes :listings="topLikes" />
       </li>
       <li class="orderList">
-        <STopInterest :listings="listings" />
+        <STopInterest :listings="topInterests" />
       </li>
     </ul>
   </div>
@@ -67,8 +67,11 @@ export default {
     pendingOrders() {
       return store.getters.getPendingTransaction;
     },
-    listings() {
-      return store.getters.getList;
+    topLikes() {
+      return store.getters.getMostBookmarkedList;
+    },
+    topInterests() {
+      return store.getters.getMostInterestedList;
     },
   },
 

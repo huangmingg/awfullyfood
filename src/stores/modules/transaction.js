@@ -21,6 +21,12 @@ export default {
       });
     },
 
+    getPendingTransactionForList: (state) => (listingId) => {
+      return state.transaction.filter((t) => {
+        return !t.isApproved && t.listingId === listingId;
+      });
+    },
+
     getBuyerReviewedTransaction: (state) => {
       return state.transaction.filter((t) => {
         return t.isApproved && !isEmptyObject(t.sellerReview);
@@ -36,6 +42,12 @@ export default {
     getSellerReviewedTransaction: (state) => {
       return state.transaction.filter((t) => {
         return t.isApproved && !isEmptyObject(t.buyerReview);
+      });
+    },
+
+    getSellerReviewedTransactionForList: (state) => (listingId) => {
+      return state.transaction.filter((t) => {
+        return t.isApproved && !isEmptyObject(t.buyerReview) && t.listingId === listingId;
       });
     },
   },

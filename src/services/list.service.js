@@ -60,7 +60,6 @@ const getListing = async (listingId) => {
 
 const createListing = async (payload) => {
   const listing = new ListingCreate(payload);
-  console.log(listing);
   return database.collection('listings').add( { ...listing })
     .then((docRef) => {
       console.log('Document written with ID: ', docRef.id);

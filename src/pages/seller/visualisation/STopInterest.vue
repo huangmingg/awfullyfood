@@ -8,7 +8,7 @@
         :key="list.id"
       >
         {{ list.quantity }} {{ list.unit }} of {{ list.name }} <br>
-        {{ list.bookmarks.length }} bookmarked. <br>
+        {{ list.interests.length }} interested. <br>
         <b-button
           :id="list.id"
           variant="outline-info"

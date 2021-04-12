@@ -1,4 +1,4 @@
-import { database } from '@/firebase';
+import { database, firestore } from '@/firebase';
 import { store } from '@/stores';
 import { TransactionCreate, TransactionRead, TransactionUpdate } from '@/models/transaction.class';
 import { getCurrentTimestamp } from '@/services/utils.service';
@@ -99,10 +99,9 @@ const getTransactionsByBuyer = async (buyerId, saveState = true) => {
     });
 };
 
-const getTransactionsBySeller = async (sellerId, listingId, saveState = true) => {
+const getTransactionsBySeller = async (sellerId, saveState = true) => {
   return database.collection('transactions')
     .where('sellerId', '==', sellerId)
-    .where('listingId', '==', listingId)
     .get()
     .then(async (res) => {
       const output = await Promise.all(res.docs.map(async (doc) => {
@@ -146,7 +145,29 @@ const getTransactionsByListing = async (listingId, saveState = false) => {
     });
 };
 
+const createInterest = async (listingId, buyerId) => {
+  const payload = { buyerId, updatedAt: getCurrentTimestamp() };
+  const interests = firestore.FieldValue.arrayUnion(payload);
+  return database.collection('listings').doc(listingId).update(
+    {
+      interests,
+    }
+  )
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+};
+
 const createTransaction = async (payload) => {
+  const updateListing = await createInterest(payload.listingId, payload.buyerId);
+  if (!updateListing) {
+    console.log('Something went wrong while updating listing with buyer interest');
+    return false;
+  }
   const transaction = new TransactionCreate(payload);
   return database.collection('transactions').add({ ...transaction })
     .then((docRef) => {
@@ -225,5 +246,6 @@ export {
   updateTransaction,
   deleteTransaction,
   approveTransaction,
+  createInterest,
 };
 
