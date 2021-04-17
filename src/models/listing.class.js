@@ -33,7 +33,9 @@ export class ListingUpdate {
       ...data.name && { name: data.name },
       ...data.description && { description: data.description },
       ...data.price && { price: data.price },
-      ...data.quantity && { quantity: data.quantity },
+      quantity: data.quantity,
+      //...data.quantity && { quantity: data.quantity },
+      //^ this returns { }, rather than {quantity: 0}
       ...data.unit && { unit: data.unit },
       ...data.category && { category: data.category },
       ...data.status && { status: data.status },
@@ -43,6 +45,8 @@ export class ListingUpdate {
       ...data.expiredAt && { expiredAt: data.expiredAt },
       ...data.deletedAt && { deletedAt: data.deletedAt },
     });
+    console.log(obj);
+    console.log(getData(obj));
     for (const [key, value] of Object.entries(getData(obj))) {
       this[key] = value;
     }

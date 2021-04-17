@@ -44,10 +44,16 @@
       >
         <b>
           <div
-            v-show="checkExpire(list.expiredAt)"
-            style="color: red; font-size: 20px"
+            v-if="checkExpire(list.expiredAt)"
+            style="color: red; font-size: 16px"
           >
             Expired!
+          </div>
+          <div
+            v-else-if="isSoldOut(list.quantity)"
+            style="color: red; font-size: 16px"
+          >
+            This listing is sold out!
           </div>
         </b>
         <b-card-text>
@@ -116,6 +122,10 @@ export default {
   methods: {
     edit(listId) {
       router.push(`list/detail/${listId}`);
+    },
+
+    isSoldOut(quantity) {
+      return +quantity === 0 ? true : false;
     },
 
     sanitizeQuery() {

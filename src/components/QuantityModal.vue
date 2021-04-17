@@ -61,7 +61,8 @@ export default {
   },
   computed: {
     quantityState() {
-      return (+this.quantity > 0 && +this.quantity <= this.maxQuantity) ? true : false;
+      //this.quantity % 1 == 0 checks for whole number
+      return (+this.quantity > 0 && +this.quantity <= this.maxQuantity && this.quantity % 1 == 0) ? true : false;
     },
   },
   methods: {
