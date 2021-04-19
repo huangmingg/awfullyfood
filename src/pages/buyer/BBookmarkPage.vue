@@ -15,6 +15,20 @@
         border-variant="info"
       >
         <b-card-text>
+          <b>
+            <div
+              v-if="hasExpired(list.expiredAt)"
+              style="color: red; font-size: 16px"
+            >
+              This listing has expired!
+            </div>
+            <div
+              v-else-if="isSoldOut(list.quantity)"
+              style="color: red; font-size: 16px"
+            >
+              This listing is sold out!
+            </div>
+          </b>
           ${{ list.price }} per {{ list.unit }}
           <small>
             <br>
@@ -50,7 +64,7 @@ import { getUserProfile } from '@/services/user.service';
 import { authService } from '@/firebase';
 import { store } from '@/stores';
 import { toggleBookmark, getBookmarkLists } from '@/services/bookmark.service';
-import { convertTimestamp } from '@/services/utils.service';
+import { convertTimestamp, hasExpired } from '@/services/utils.service';
 
 export default {
   name: 'BBookmarkPage',
@@ -88,6 +102,12 @@ export default {
     },
     wrapText(text) {
       return text ? `${text.substring(0, 40)}...` : '';
+    },
+    hasExpired(date) {
+      return hasExpired(date);
+    },
+    isSoldOut(qty) {
+      return +qty === 0 ? true : false;
     },
   },
 };
